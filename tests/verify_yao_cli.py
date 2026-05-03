@@ -54,6 +54,7 @@ def main() -> None:
     assert (created / "reports" / "reference-synthesis.md").exists(), created
     assert (created / "reports" / "output-risk-profile.md").exists(), created
     assert (created / "reports" / "artifact-design-profile.md").exists(), created
+    assert (created / "reports" / "prompt-quality-profile.md").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
     assert "Honest Boundaries" in (created / "SKILL.md").read_text(encoding="utf-8"), created
 
@@ -84,6 +85,7 @@ def main() -> None:
     assert (quickstart_root / "reports" / "intent-confidence.md").exists(), quickstart_root
     assert (quickstart_root / "reports" / "reference-synthesis.md").exists(), quickstart_root
     assert (quickstart_root / "reports" / "artifact-design-profile.md").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "prompt-quality-profile.md").exists(), quickstart_root
     assert quickstart_result["payload"]["archetype"] == "production", quickstart_result
     assert quickstart_result["payload"]["guidance"]["experience_note"], quickstart_result
     assert quickstart_result["payload"]["guidance"]["problem_diagnosis"]["candidates"], quickstart_result
@@ -93,6 +95,9 @@ def main() -> None:
     assert quickstart_result["payload"]["reference_mode"]["mode"] == "silent", quickstart_result
     assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["reference_synthesis"].endswith(
         "reports/reference-synthesis.md"
+    ), quickstart_result
+    assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["prompt_quality_profile"].endswith(
+        "reports/prompt-quality-profile.md"
     ), quickstart_result
     assert "uncertainty_or_conflict" not in quickstart_result["payload"], quickstart_result
 
@@ -179,6 +184,11 @@ def main() -> None:
     assert artifact_design_result["payload"]["artifacts"]["markdown"].endswith("reports/artifact-design-profile.md"), artifact_design_result
     assert artifact_design_result["payload"]["summary"]["quality_gates"], artifact_design_result
 
+    prompt_quality_result = run("prompt-quality-profile", str(created))
+    assert prompt_quality_result["ok"], prompt_quality_result
+    assert prompt_quality_result["payload"]["artifacts"]["markdown"].endswith("reports/prompt-quality-profile.md"), prompt_quality_result
+    assert prompt_quality_result["payload"]["summary"]["quality_matrix"], prompt_quality_result
+
     directions_result = run("iteration-directions", str(created))
     assert directions_result["ok"], directions_result
     assert directions_result["payload"]["artifacts"]["markdown"].endswith("reports/iteration-directions.md"), directions_result
@@ -227,6 +237,7 @@ def main() -> None:
     assert "iteration_ledger" in report_result["payload"]["artifacts"], report_result
     assert "portability_score" in report_result["payload"]["artifacts"], report_result
     assert "artifact_design_profile" in report_result["payload"]["artifacts"], report_result
+    assert "prompt_quality_profile" in report_result["payload"]["artifacts"], report_result
 
     package_dir = tmp_root / "dist"
     package_result = run("package", ".", "--platform", "generic", "--output-dir", str(package_dir))

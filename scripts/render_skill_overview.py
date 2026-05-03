@@ -78,6 +78,10 @@ def load_artifact_design(skill_dir: Path) -> dict:
     return load_json(skill_dir / "reports" / "artifact-design-profile.json")
 
 
+def load_prompt_quality(skill_dir: Path) -> dict:
+    return load_json(skill_dir / "reports" / "prompt-quality-profile.json")
+
+
 def extract_title(body: str, fallback: str) -> str:
     for line in body.splitlines():
         if line.startswith("# "):
@@ -225,6 +229,19 @@ def artifact_design_highlights(profile: dict) -> list[str]:
     return highlights[:4]
 
 
+def prompt_quality_highlights(profile: dict) -> list[str]:
+    highlights = []
+    primary = profile.get("primary_task_family", {})
+    complexity = profile.get("complexity", {})
+    if primary.get("label"):
+        highlights.append(f"Primary prompt task family: {primary['label']}.")
+    if complexity.get("band"):
+        highlights.append(f"Complexity: {complexity['band']} — {complexity.get('reason', '')}")
+    for item in profile.get("quality_matrix", [])[:2]:
+        highlights.append(f"{item.get('label', 'Quality')}: {item.get('score', 'n/a')}/100.")
+    return highlights[:4]
+
+
 def build_summary(skill_dir: Path) -> dict:
     skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
     frontmatter, body = parse_frontmatter(skill_text)
@@ -244,6 +261,7 @@ def build_summary(skill_dir: Path) -> dict:
     benchmark = load_benchmark(skill_dir)
     reference_synthesis = load_reference_synthesis(skill_dir)
     artifact_design = load_artifact_design(skill_dir)
+    prompt_quality = load_prompt_quality(skill_dir)
 
     return {
         "name": name,
@@ -262,6 +280,11 @@ def build_summary(skill_dir: Path) -> dict:
             "design_system": artifact_design.get("design_system", "content-led editorial"),
             "primary_label": artifact_design.get("primary_artifact", {}).get("label", "General artifact"),
             "highlights": artifact_design_highlights(artifact_design),
+        },
+        "prompt_quality": {
+            "relevance": prompt_quality.get("relevance", "prompt-aware"),
+            "overall_quality_score": prompt_quality.get("overall_quality_score", "n/a"),
+            "highlights": prompt_quality_highlights(prompt_quality),
         },
         "metadata": {
             "canonical_format": interface_data.get("compatibility", {}).get("canonical_format", "agent-skills"),
@@ -309,6 +332,8 @@ def render_html(summary: dict) -> str:
     synthesis_html = "".join(f"<li>{html.escape(item)}</li>" for item in summary.get("synthesis_highlights", []))
     artifact_design = summary.get("artifact_design", {})
     artifact_design_html = "".join(f"<li>{html.escape(item)}</li>" for item in artifact_design.get("highlights", []))
+    prompt_quality = summary.get("prompt_quality", {})
+    prompt_quality_html = "".join(f"<li>{html.escape(item)}</li>" for item in prompt_quality.get("highlights", []))
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -550,6 +575,19 @@ def render_html(summary: dict) -> str:
         <div>
           <p><strong>{html.escape(str(artifact_design.get("primary_label", "General artifact")))}</strong> · {html.escape(str(artifact_design.get("design_system", "content-led editorial")))}</p>
           <ul class="strengths">{artifact_design_html or "<li>No artifact design profile has been generated yet.</li>"}</ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <h2>Prompt quality direction</h2>
+          <p>Use this to understand whether role, task, format, complexity, and quality checks are strong enough for prompt-facing behavior.</p>
+        </div>
+        <div>
+          <p><strong>{html.escape(str(prompt_quality.get("relevance", "prompt-aware")))}</strong> · score {html.escape(str(prompt_quality.get("overall_quality_score", "n/a")))} / 100</p>
+          <ul class="strengths">{prompt_quality_html or "<li>No prompt quality profile has been generated yet.</li>"}</ul>
         </div>
       </div>
     </section>

@@ -54,6 +54,8 @@ def main() -> None:
     assert (created / "reports" / "reference-synthesis.json").exists(), created
     assert (created / "reports" / "artifact-design-profile.md").exists(), created
     assert (created / "reports" / "artifact-design-profile.json").exists(), created
+    assert (created / "reports" / "prompt-quality-profile.md").exists(), created
+    assert (created / "reports" / "prompt-quality-profile.json").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
     assert (created / "reports" / "iteration-directions.json").exists(), created
 
@@ -69,6 +71,7 @@ def main() -> None:
     assert "Patterns worth borrowing now" in report_html, report_html[:1200]
     assert "Reference synthesis" in report_html, report_html[:1500]
     assert "Artifact design direction" in report_html, report_html[:2000]
+    assert "Prompt quality direction" in report_html, report_html[:2400]
 
     intent_text = (created / "reports" / "intent-dialogue.md").read_text(encoding="utf-8")
     assert "Questions To Ask" in intent_text, intent_text[:400]

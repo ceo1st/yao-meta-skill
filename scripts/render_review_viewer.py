@@ -10,6 +10,7 @@ from render_intent_dialogue import render_intent_dialogue
 from render_iteration_directions import render_iteration_directions
 from render_artifact_design_profile import render_artifact_design_profile
 from render_output_risk_profile import render_output_risk_profile
+from render_prompt_quality_profile import render_prompt_quality_profile
 from render_reference_scan import render_reference_scan
 from render_reference_synthesis import render_reference_synthesis
 from render_skill_overview import render_skill_overview
@@ -68,6 +69,11 @@ def load_artifact_design_summary(skill_dir: Path) -> dict:
     return payload if isinstance(payload, dict) else {}
 
 
+def load_prompt_quality_summary(skill_dir: Path) -> dict:
+    payload = load_json(skill_dir / "reports" / "prompt-quality-profile.json")
+    return payload if isinstance(payload, dict) else {}
+
+
 def ensure_report_inputs(skill_dir: Path) -> dict:
     overview_json = skill_dir / "reports" / "skill-overview.json"
     intent_confidence_json = skill_dir / "reports" / "intent-confidence.json"
@@ -76,6 +82,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
     reference_synthesis_json = skill_dir / "reports" / "reference-synthesis.json"
     output_risk_json = skill_dir / "reports" / "output-risk-profile.json"
     artifact_design_json = skill_dir / "reports" / "artifact-design-profile.json"
+    prompt_quality_json = skill_dir / "reports" / "prompt-quality-profile.json"
     directions_json = skill_dir / "reports" / "iteration-directions.json"
 
     overview_payload = load_json(overview_json) if overview_json.exists() else {}
@@ -85,6 +92,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
     reference_synthesis_payload = load_json(reference_synthesis_json) if reference_synthesis_json.exists() else {}
     output_risk_payload = load_json(output_risk_json) if output_risk_json.exists() else {}
     artifact_design_payload = load_json(artifact_design_json) if artifact_design_json.exists() else {}
+    prompt_quality_payload = load_json(prompt_quality_json) if prompt_quality_json.exists() else {}
     directions_payload = load_json(directions_json) if directions_json.exists() else {}
 
     intent_confidence = intent_confidence_payload or render_intent_confidence(skill_dir)["summary"]
@@ -93,6 +101,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
     reference_synthesis = reference_synthesis_payload or render_reference_synthesis(skill_dir)["summary"]
     output_risk = output_risk_payload or render_output_risk_profile(skill_dir)["summary"]
     artifact_design = artifact_design_payload or render_artifact_design_profile(skill_dir)["summary"]
+    prompt_quality = prompt_quality_payload or render_prompt_quality_profile(skill_dir)["summary"]
     overview = overview_payload or render_skill_overview(skill_dir)["summary"]
     iteration = directions_payload.get("summary", {}) or render_iteration_directions(skill_dir)["summary"]
     feedback = load_feedback_summary(skill_dir)
@@ -103,6 +112,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
     reference_synthesis = load_reference_synthesis_summary(skill_dir)
     output_risk = load_output_risk_summary(skill_dir) or output_risk
     artifact_design = load_artifact_design_summary(skill_dir) or artifact_design
+    prompt_quality = load_prompt_quality_summary(skill_dir) or prompt_quality
     return {
         "overview": overview,
         "intent_confidence": intent_confidence,
@@ -117,6 +127,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
         "reference_synthesis": reference_synthesis,
         "output_risk": output_risk,
         "artifact_design": artifact_design,
+        "prompt_quality": prompt_quality,
     }
 
 
@@ -250,6 +261,7 @@ def evidence_readiness(report: dict) -> dict:
     reference_synthesis = report.get("reference_synthesis", {})
     output_risk = report.get("output_risk", {})
     artifact_design = report.get("artifact_design", {})
+    prompt_quality = report.get("prompt_quality", {})
     benchmark = report.get("benchmark", {})
     synthesis = reference_synthesis.get("synthesis", {}) if isinstance(reference_synthesis, dict) else {}
     pattern_gate = synthesis.get("pattern_gate", {}) if isinstance(synthesis, dict) else {}
@@ -286,6 +298,11 @@ def evidence_readiness(report: dict) -> dict:
             "status": "ready" if artifact_design.get("primary_artifact") else "needs review",
             "detail": artifact_design.get("primary_artifact", {}).get("direction", "No artifact design profile attached."),
         },
+        {
+            "label": "Prompt quality profile",
+            "status": "ready" if prompt_quality.get("quality_matrix") else "needs review",
+            "detail": f"{prompt_quality.get('overall_quality_score', 0)}/100 prompt-facing quality score.",
+        },
     ]
     ready_count = sum(1 for item in checks if item["status"] == "ready")
     return {
@@ -310,6 +327,7 @@ def render_html(report: dict) -> str:
     reference_synthesis = report.get("reference_synthesis", {})
     output_risk = report.get("output_risk", {})
     artifact_design = report.get("artifact_design", {})
+    prompt_quality = report.get("prompt_quality", {})
     architecture = architecture_steps(overview)
     compare_table_rows = compare_rows(compare)
     benchmark_rows = benchmark_cards(benchmark)
@@ -361,6 +379,26 @@ def render_html(report: dict) -> str:
     design_gate_items = "".join(
         f"<li>{html.escape(item)}</li>" for item in artifact_design.get("quality_gates", [])[:5]
     ) or "<li>No artifact design quality gates attached yet.</li>"
+
+    prompt_quality_items = "".join(
+        (
+            "<li>"
+            f"<strong>{html.escape(item.get('label', item.get('key', 'Quality')))}</strong> · "
+            f"{html.escape(str(item.get('score', 'n/a')))} / 100<br>"
+            f"<span>{html.escape(item.get('repair', ''))}</span>"
+            "</li>"
+        )
+        for item in prompt_quality.get("quality_matrix", [])[:5]
+    ) or "<li>No prompt quality profile attached yet.</li>"
+    rtf_items = "".join(
+        (
+            "<li>"
+            f"<strong>{html.escape(key.title())}</strong><br>"
+            f"<span>{html.escape(str(value))}</span>"
+            "</li>"
+        )
+        for key, value in prompt_quality.get("rtf_to_skill", {}).items()
+    ) or "<li>No RTF mapping attached yet.</li>"
 
     readiness_html = "".join(
         (
@@ -799,6 +837,18 @@ def render_html(report: dict) -> str:
       <div class="panel">
         <h2>Visual quality gates</h2>
         <ul>{design_gate_items}</ul>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Prompt quality profile</h2>
+        <p class="minor">Relevance: {html.escape(str(prompt_quality.get('relevance', 'not generated')))} · score {html.escape(str(prompt_quality.get('overall_quality_score', 'n/a')))} / 100 · complexity {html.escape(str(prompt_quality.get('complexity', {}).get('band', 'n/a')))}</p>
+        <ul>{prompt_quality_items}</ul>
+      </div>
+      <div class="panel">
+        <h2>RTF to skill mapping</h2>
+        <ul>{rtf_items}</ul>
       </div>
     </section>
 

@@ -50,6 +50,8 @@ def main() -> None:
     assert "Output risk profile" in html_text, html_text[:1600]
     assert "Artifact design profile" in html_text, html_text[:2200]
     assert "Visual quality gates" in html_text, html_text[:2400]
+    assert "Prompt quality profile" in html_text, html_text[:2600]
+    assert "RTF to skill mapping" in html_text, html_text[:2800]
     assert "Reference coach" in html_text, html_text[:900]
     assert "Reference synthesis" in html_text, html_text[:1200]
     assert "Top three next moves" in html_text, html_text[:500]

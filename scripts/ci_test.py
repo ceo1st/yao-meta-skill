@@ -38,6 +38,8 @@ DEFAULT_TARGETS = [
     "github-benchmark-scan-check",
     "reference-synthesis-check",
     "output-risk-profile-check",
+    "artifact-design-profile-check",
+    "prompt-quality-profile-check",
     "iteration-directions-check",
     "description-drift-history",
     "iteration-ledger",

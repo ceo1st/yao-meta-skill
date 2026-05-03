@@ -24,6 +24,7 @@ It turns rough workflows, transcripts, prompts, notes, and runbooks into reusabl
 - a generated visual HTML overview for each newly initialized skill
 - a side-by-side HTML review studio for first-pass human review
 - an artifact design profile that defines visual direction, layout patterns, and quality gates for reports, tutorials, dashboards, screenshots, and review pages
+- a prompt quality profile that abstracts need modeling, RTF mapping, complexity, and quality checks into reviewer-visible evidence instead of bloating `SKILL.md`
 - three high-value next iteration directions after the first package is created
 - a lightweight feedback log that does not require a full promotion cycle
 - a baseline compare report for with-skill vs baseline review
@@ -82,7 +83,7 @@ Weighted score formula: `sum(score / 10 * weight)`.
 2. Start with a short, human intent dialogue so the real job, outputs, exclusions, constraints, and standards are explicit.
 3. Let `quickstart` clarify intent first, then run silent benchmark scan and reference synthesis; it only surfaces explicit questions when intent is still unclear or when there is a real design conflict.
 4. Use the archetype-aware `quickstart` or the full authoring flow to generate or improve the package in scaffold, production, library, or governed mode.
-5. Review the generated `reports/intent-dialogue.md`, `reports/intent-confidence.md`, `reports/reference-synthesis.md`, `reports/artifact-design-profile.md`, `reports/skill-overview.html`, and `reports/iteration-directions.md` before adding more structure.
+5. Review the generated `reports/intent-dialogue.md`, `reports/intent-confidence.md`, `reports/reference-synthesis.md`, `reports/artifact-design-profile.md`, `reports/prompt-quality-profile.md`, `reports/skill-overview.html`, and `reports/iteration-directions.md` before adding more structure.
 
 Or use the unified authoring CLI:
 
@@ -95,6 +96,7 @@ python3 scripts/yao.py reference-scan my-skill \
   --local-constraint "Current Library Naming::structure::Keep naming aligned with the local skill library.::Do not inherit private references."
 python3 scripts/yao.py review-viewer my-skill
 python3 scripts/yao.py artifact-design-profile my-skill
+python3 scripts/yao.py prompt-quality-profile my-skill
 python3 scripts/yao.py feedback my-skill --note "Tighten exclusions before adding scripts." --rating 4 --category boundary
 python3 scripts/yao.py baseline-compare
 python3 scripts/yao.py check-update

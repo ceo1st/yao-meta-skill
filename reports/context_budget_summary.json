@@ -6,9 +6,9 @@
       "path": ".",
       "budget_tier": "production",
       "budget_limit": 1000,
-      "initial_tokens": 951,
-      "skill_body_tokens": 775,
-      "quality_density": 136.7,
+      "initial_tokens": 969,
+      "skill_body_tokens": 793,
+      "quality_density": 134.2,
       "unused_resource_dirs": [],
       "ok": true,
       "warnings": []
