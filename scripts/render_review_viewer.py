@@ -102,8 +102,9 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
     output_risk = output_risk_payload or render_output_risk_profile(skill_dir)["summary"]
     artifact_design = artifact_design_payload or render_artifact_design_profile(skill_dir)["summary"]
     prompt_quality = prompt_quality_payload or render_prompt_quality_profile(skill_dir)["summary"]
+    iteration_payload = directions_payload or render_iteration_directions(skill_dir)
+    iteration = iteration_payload.get("summary", {})
     overview = overview_payload or render_skill_overview(skill_dir)["summary"]
-    iteration = directions_payload.get("summary", {}) or render_iteration_directions(skill_dir)["summary"]
     feedback = load_feedback_summary(skill_dir)
     baseline = load_baseline_summary(skill_dir)
     compare = load_specific_compare(skill_dir)
@@ -118,7 +119,7 @@ def ensure_report_inputs(skill_dir: Path) -> dict:
         "intent_confidence": intent_confidence,
         "intent": intent,
         "reference": reference,
-        "iteration": directions_payload if directions_payload else {"summary": iteration, "directions": []},
+        "iteration": iteration_payload,
         "feedback": feedback,
         "baseline": baseline,
         "compare": compare,

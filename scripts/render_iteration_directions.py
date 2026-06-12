@@ -184,7 +184,7 @@ def build_directions(skill_dir: Path) -> tuple[dict, list[dict]]:
                 "Create an iteration evidence loop",
                 "The package should show what changed and why after the first draft.",
                 [
-                    "Generate a visual overview and keep it aligned with the package.",
+                    "Generate the HTML skill report and keep it aligned with the package.",
                     "Record reference scan choices and non-goals.",
                     "Capture the next iteration choice explicitly before adding more files.",
                 ],

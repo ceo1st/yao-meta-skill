@@ -80,7 +80,9 @@ def main() -> None:
     assert "Highest Leverage Moves" in markdown, markdown[:1800]
 
     overview_html = (created / "reports" / "skill-overview.html").read_text(encoding="utf-8")
-    assert "System model" in overview_html, overview_html[:2400]
+    assert "原理结构" in overview_html, overview_html[:2400]
+    assert "质量评估" in overview_html, overview_html[:2600]
+    assert 'aria-label="Skill principle flow"' in overview_html, overview_html[:3000]
 
     rerender_result = run("system-model", str(created))
     assert rerender_result["ok"], rerender_result

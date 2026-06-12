@@ -54,6 +54,13 @@ def main() -> None:
     assert (created / "reports" / "system-model.md").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
     assert "Honest Boundaries" in (created / "SKILL.md").read_text(encoding="utf-8"), created
+    init_report_view = init_result["payload"]["report_view"]
+    assert init_report_view["html_report"].endswith("reports/skill-overview.html"), init_report_view
+    assert Path(init_report_view["html_report"]).exists(), init_report_view
+    assert "Skill 已创建完成" in init_report_view["message"], init_report_view
+    assert "概述、指标、原理、触发边界、输入输出、质量评估、风险治理、包体资产和升级路线" in init_report_view["message"], init_report_view
+    assert "默认使用中文简体" in init_report_view["message"], init_report_view
+    assert "切换英文版" in init_report_view["message"], init_report_view
 
     quickstart_result = run(
         "quickstart",
@@ -91,6 +98,13 @@ def main() -> None:
     assert quickstart_result["payload"]["intent_confidence"]["score"] >= 70, quickstart_result
     assert quickstart_result["payload"]["recommendation"]["summary"], quickstart_result
     assert quickstart_result["payload"]["reference_mode"]["mode"] == "silent", quickstart_result
+    quickstart_report_view = quickstart_result["payload"]["report_view"]
+    assert quickstart_report_view["html_report"].endswith("reports/skill-overview.html"), quickstart_report_view
+    assert Path(quickstart_report_view["html_report"]).exists(), quickstart_report_view
+    assert "Skill 已创建完成" in quickstart_report_view["message"], quickstart_report_view
+    assert "默认使用中文简体" in quickstart_report_view["message"], quickstart_report_view
+    assert quickstart_result["payload"]["guidance"]["next_steps"][0].startswith("Open reports/skill-overview.html"), quickstart_result
+    assert "audit report" in quickstart_result["payload"]["guidance"]["next_steps"][0], quickstart_result
     assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["reference_synthesis"].endswith(
         "reports/reference-synthesis.md"
     ), quickstart_result
@@ -101,6 +115,11 @@ def main() -> None:
         "reports/system-model.md"
     ), quickstart_result
     assert "uncertainty_or_conflict" not in quickstart_result["payload"], quickstart_result
+    quickstart_manifest = json.loads((quickstart_root / "manifest.json").read_text(encoding="utf-8"))
+    assert quickstart_manifest["status"] == "active", quickstart_manifest
+    assert quickstart_manifest["lifecycle_stage"] == "production", quickstart_manifest
+    quickstart_validate_result = run("validate", str(quickstart_root), "--require-manifest")
+    assert quickstart_validate_result["ok"], quickstart_validate_result
 
     quickstart_conflict_result = run(
         "quickstart",

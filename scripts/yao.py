@@ -503,8 +503,11 @@ def command_quickstart(args: argparse.Namespace) -> int:
             sys.stderr.write("I am surfacing this because intent is still settling and the package should not deepen on guesswork.\n")
     else:
         sys.stderr.write("I will keep the underlying benchmark evidence in the reviewer reports and move ahead with this recommendation.\n")
+    if payload.get("report_view", {}).get("html_report"):
+        sys.stderr.write(f"Skill report: {payload['report_view']['html_report']}\n")
 
     next_steps = [
+        "Open reports/skill-overview.html to review the generated Skill audit report.",
         "Open reports/intent-dialogue.md and tighten the real job, outputs, and exclusions.",
         "Open reports/review-viewer.html to explain the package to a first-time reviewer.",
         "Use reports/iteration-directions.md to choose only one high-value next move before adding more files.",
@@ -520,6 +523,7 @@ def command_quickstart(args: argparse.Namespace) -> int:
         "mode": mode,
         "archetype": archetype,
         "artifacts": payload.get("artifacts", {}),
+        "report_view": payload.get("report_view", {}),
         "intent_confidence": {
             "score": confidence["score"],
             "band": confidence["band"],
@@ -1115,7 +1119,7 @@ def build_parser() -> argparse.ArgumentParser:
     report_cmd.add_argument("--refresh-optimization", action="store_true")
     report_cmd.set_defaults(func=command_report)
 
-    skill_report_cmd = subparsers.add_parser("skill-report", help="Render a visual overview report for a skill package.")
+    skill_report_cmd = subparsers.add_parser("skill-report", help="Render the HTML skill report for a skill package.")
     skill_report_cmd.add_argument("skill_dir", nargs="?", default=".")
     skill_report_cmd.add_argument("--output-html")
     skill_report_cmd.add_argument("--output-json")

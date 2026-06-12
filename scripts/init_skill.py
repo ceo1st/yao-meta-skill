@@ -67,7 +67,7 @@ README_TEMPLATE = """# {title}
 4. Review `reports/intent-confidence.md` to see whether the real job, inputs, outputs, and exclusions are clear enough yet.
 5. Open `reports/reference-synthesis.md` to see the GitHub benchmarks plus curated official, research, and principle tracks in one place.
 6. Follow the workflow steps in `SKILL.md`.
-7. Check `reports/skill-overview.html` if you want a fast visual explanation of the package.
+7. Check `reports/skill-overview.html` for the generated bilingual HTML skill audit report: overview, metrics, capability profile, principle, contract, quality, risk, assets, and iteration roadmap. It defaults to Simplified Chinese and includes an English switch in the top right.
 8. Open `reports/review-viewer.html` for a compact visual review of the package.
 9. Check `reports/output-risk-profile.md` to see likely output mistakes and self-repair checks.
 10. Check `reports/artifact-design-profile.md` to see the intended artifact direction, layout patterns, visual quality gates, and anti-patterns.
@@ -95,7 +95,7 @@ README_TEMPLATE = """# {title}
 - `reports/artifact-design-profile.md`: artifact-specific design direction, layout patterns, visual quality gates, and anti-patterns
 - `reports/prompt-quality-profile.md`: prompt-facing need model, RTF mapping, complexity, and quality matrix
 - `reports/system-model.md`: systems-thinking model for boundary, feedback loops, drift, failure patterns, and leverage points
-- `reports/skill-overview.html`: visual overview report
+- `reports/skill-overview.html`: white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, a top-right language switch, metrics, SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
 - `reports/review-viewer.html`: compact review page for architecture, usage, feedback, and next steps
 - `reports/iteration-directions.md`: the top three next iteration directions
 """
@@ -137,13 +137,13 @@ MODE_CONFIG = {
     },
     "production": {
         "maturity_tier": "production",
-        "lifecycle_stage": "active",
+        "lifecycle_stage": "production",
         "context_budget_tier": "production",
         "review_cadence": "monthly",
     },
     "library": {
         "maturity_tier": "library",
-        "lifecycle_stage": "active",
+        "lifecycle_stage": "library",
         "context_budget_tier": "library",
         "review_cadence": "quarterly",
     },
@@ -201,6 +201,24 @@ def build_manifest(name: str, mode: str, archetype: str) -> dict:
             "scripts",
             "reports",
         ],
+    }
+
+
+def build_report_view(artifacts: dict) -> dict:
+    html_report = artifacts.get("skill_overview_html", "")
+    json_report = artifacts.get("skill_overview_json", "")
+    system_model = artifacts.get("system_model_md", "")
+    return {
+        "title": "Skill 总结报告",
+        "html_report": html_report,
+        "json_report": json_report,
+        "system_model": system_model,
+        "message": (
+            f"Skill 已创建完成。建议先打开总结报告：{html_report}。"
+            "它会展示这个 Skill 的概述、指标、原理、触发边界、输入输出、质量评估、风险治理、包体资产和升级路线；"
+            "报告默认使用中文简体，右上角可以切换英文版。"
+        ),
+        "next_action": "Open reports/skill-overview.html before editing more files.",
     }
 
 
@@ -285,8 +303,8 @@ def initialize_skill(
     artifact_design_profile = render_artifact_design_profile(root)
     prompt_quality_profile = render_prompt_quality_profile(root)
     system_model = render_system_model(root)
-    overview = render_skill_overview(root)
     iteration_directions = render_iteration_directions(root)
+    overview = render_skill_overview(root)
     review_viewer = render_review_viewer(root)
     artifacts = {
         "readme": str(root / "README.md"),
@@ -318,6 +336,7 @@ def initialize_skill(
     if benchmark_scan is not None:
         artifacts["github_benchmark_scan_md"] = benchmark_scan["artifacts"]["markdown"]
         artifacts["github_benchmark_scan_json"] = benchmark_scan["artifacts"]["json"]
+    report_view = build_report_view(artifacts)
     return {
         "ok": True,
         "root": str(root),
@@ -328,6 +347,7 @@ def initialize_skill(
         "reference_synthesis": reference_synthesis["summary"],
         "system_model": system_model["summary"],
         "artifacts": artifacts,
+        "report_view": report_view,
     }
 
 

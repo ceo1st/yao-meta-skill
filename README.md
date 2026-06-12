@@ -84,7 +84,7 @@ Weighted score formula: `sum(score / 10 * weight)`.
 2. Start with a short, human intent dialogue so the real job, outputs, exclusions, constraints, and standards are explicit.
 3. Let `quickstart` clarify intent first, then run silent benchmark scan and reference synthesis; it only surfaces explicit questions when intent is still unclear or when there is a real design conflict.
 4. Use the archetype-aware `quickstart` or the full authoring flow to generate or improve the package in scaffold, production, library, or governed mode.
-5. Review the generated `reports/intent-dialogue.md`, `reports/intent-confidence.md`, `reports/reference-synthesis.md`, `reports/artifact-design-profile.md`, `reports/prompt-quality-profile.md`, `reports/system-model.md`, `reports/skill-overview.html`, and `reports/iteration-directions.md` before adding more structure.
+5. Review the generated `reports/skill-overview.html` first for the bilingual HTML skill report. It defaults to Simplified Chinese and provides an English switch in the top right. Then inspect `reports/intent-dialogue.md`, `reports/intent-confidence.md`, `reports/reference-synthesis.md`, `reports/artifact-design-profile.md`, `reports/prompt-quality-profile.md`, `reports/system-model.md`, and `reports/iteration-directions.md` before adding more structure.
 
 Or use the unified authoring CLI:
 
@@ -104,6 +104,37 @@ python3 scripts/yao.py baseline-compare
 python3 scripts/yao.py check-update
 python3 scripts/yao.py package . --platform generic --output-dir dist
 ```
+
+## Local Development Source
+
+Development source: this repository is the source of truth for authoring and review.
+
+Disabled mirror: `~/.agents/skills.disabled/yao-meta-skill` is the local backup mirror for this source. Keeping the mirror outside `~/.agents/skills` prevents Codex from showing a duplicate `Yao Meta Skill` while this repository is also visible in the active workspace.
+
+Sync the current source into the disabled mirror:
+
+```bash
+make sync-local-install
+```
+
+The sync command copies Git-tracked files plus new source files in code and guidance directories such as `scripts/`, `tests/`, `references/`, and `docs/`. It skips untracked business-skill folders and untracked private reports by default, so local experiments do not leak into the mirror.
+
+Restore an active global Codex install only when you intentionally want this skill discoverable outside the development workspace:
+
+```bash
+make sync-active-install
+```
+
+That active install writes to `~/.agents/skills/yao-meta-skill` and can make Codex show a second `Yao Meta Skill` entry while this repository is open as a skills workspace.
+
+## Generated Artifact Boundaries
+
+Keep this repository focused on the meta-skill factory.
+
+- Put reusable factory examples in `examples/`.
+- Put reusable benchmark evidence, regression results, and release evidence in `reports/`.
+- Keep private analysis reports, customer-specific outputs, and one-off generated business skills outside this repository unless they are intentionally promoted into an example or regression fixture.
+- Place real generated skills as sibling skill directories under the local skill workspace, not as top-level folders inside `yao-meta-skill`.
 
 ## 5-Minute Workflow
 
@@ -325,6 +356,7 @@ Utility scripts that make the meta-skill operational:
 - `render_regression_history.py`: turns milestone snapshots into a readable regression history report
 - `cross_packager.py`: builds client-specific export artifacts with explicit platform contracts and validation
 - `render_portability_report.py`: scores cross-environment portability from neutral metadata, degradation rules, and consumer validation coverage
+- `render_skill_overview.py`: generates the white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, top-right language switch, v2 scorecard, inline SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
 - `init_skill.py`, `lint_skill.py`, `validate_skill.py`, `diff_eval.py`: minimal authoring toolchain
 - `check_update.py`: checks GitHub for a newer `VERSION` or remote manifest version and reports a reinstall hint without modifying local files
 - `render_output_risk_profile.py`: predicts output-specific failure modes such as generic headings, citation clutter, screenshot mistakes, weak Markdown tables, and missing execution assumptions

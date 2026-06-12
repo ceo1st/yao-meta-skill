@@ -15,5 +15,16 @@ tests/tmp_github_benchmark_scan/
 tests/tmp_intent_confidence/
 tests/tmp_reference_synthesis/
 tests/tmp_output_risk_profile/
+tests/tmp_artifact_design_profile/
+tests/tmp_prompt_quality_profile/
+tests/tmp_system_model/
+tests/tmp_security/
+tests/tmp_baseline_compare.*
 reports/release_snapshots/
 .yao/
+
+# Local business-skill experiments belong outside this meta-skill repo unless promoted intentionally.
+geo-ranking-article-generator/
+
+# Private or one-off pattern analysis reports should not be committed as factory evidence.
+reports/*pattern-analysis*.md
