@@ -11,6 +11,11 @@
     "deliverables": [
       "SKILL.md",
       "agents/interface.yaml",
+      "reports/skill-ir.json",
+      "reports/output_quality_scorecard.md",
+      "reports/conformance_matrix.md",
+      "reports/security_trust_report.md",
+      "reports/skill_atlas.html",
       "reports/skill-overview.html"
     ],
     "flow": [
@@ -44,20 +49,19 @@
     },
     "evidence_score": {
       "label": "证据充分",
-      "score": 75,
+      "score": 100,
       "reasons": [
-        "已生成 6 / 8 类报告证据。",
-        "intent-confidence.json 已存在。",
-        "reference-synthesis.json 已存在。",
-        "artifact-design-profile.json 已存在。",
-        "证据不足：缺少 intent-dialogue.json, output-risk-profile.json。"
+        "已生成 13 / 13 类报告证据。",
+        "skill-ir.json 已存在。",
+        "intent-dialogue.json 已存在。",
+        "intent-confidence.json 已存在。"
       ]
     },
     "maintainability_score": {
       "label": "可维护性",
       "score": 100,
       "reasons": [
-        "SKILL.md 约 362 个词/字。",
+        "SKILL.md 约 366 个词/字。",
         "入口文件保持克制，可维护性较好。",
         "references/ 已承载扩展指导。",
         "scripts/ 已承载确定性逻辑。",
@@ -78,7 +82,7 @@
       "label": "上下文成本",
       "score": 42,
       "reasons": [
-        "入口约 362 个词/字，references 约 10018 个词/字。",
+        "入口约 366 个词/字，references 约 11029 个词/字。",
         "分数越高代表上下文成本越低。",
         "上下文成本偏高，建议压缩入口或拆分 references。"
       ]
@@ -175,13 +179,14 @@
   "quality_review": {
     "strengths": [
       "触发面保持精简，并锚定在 frontmatter description。",
-      "已打包 agents/interface.yaml，便于后续做跨平台适配。",
-      "长指导被拆到 references 中，入口文件可以保持轻量。",
-      "确定性辅助逻辑放在 scripts 中，而不是藏在提示词里。",
-      "包内包含可随 Skill 迁移的质量门禁或触发检查。"
+      "已生成 Skill IR，核心语义可先于平台打包被审查和迁移。",
+      "已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。",
+      "已生成 Runtime Conformance Matrix，可审查目标端消费能力。",
+      "已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。",
+      "已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。"
     ],
     "gaps": [
-      "上下文成本需要补强：入口约 362 个词/字，references 约 10018 个词/字。"
+      "上下文成本需要补强：入口约 366 个词/字，references 约 11029 个词/字。"
     ],
     "recommendations": [
       "先改触发边界，再扩展工作流。",
@@ -189,12 +194,12 @@
       "每次升级后重新生成报告并检查分数原因。"
     ],
     "artifact_design": {
-      "design_system": "content-led editorial",
+      "design_system": "evidence frame",
       "highlights": [
-        "High-trust editorial report with a clear first-screen thesis, compact evidence blocks, and decisions separated from supporting detail.",
-        "Keep the first screen useful without requiring the reader to parse every detail.",
-        "Use tables only for comparisons; move explanations below the table.",
-        "Keep source notes readable without flooding the body with markers."
+        "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit.",
+        "Name the working directory and required inputs for commands.",
+        "Mark destructive, networked, or external side-effect operations.",
+        "Prefer the smallest runnable snippet over broad framework scaffolding."
       ]
     },
     "prompt_quality": {
@@ -208,11 +213,11 @@
     },
     "system_model": {
       "stability": {
-        "score": 78,
+        "score": 86,
         "band": "stable-first-pass"
       },
       "highlights": [
-        "Stability: stable-first-pass (78/100).",
+        "Stability: stable-first-pass (86/100).",
         "Owned job: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
         "Leverage: Clarify the real job boundary — Ask one focused question and update intent context before adding assets.",
         "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language."
@@ -231,22 +236,22 @@
       {
         "name": "输出漂移风险",
         "impact": 2,
-        "probability": 2,
-        "signal": "已生成 6 / 8 类报告证据。",
+        "probability": 1,
+        "signal": "已生成 13 / 13 类报告证据。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
         "name": "证据不足风险",
         "impact": 3,
-        "probability": 2,
-        "signal": "已生成 6 / 8 类报告证据。",
+        "probability": 1,
+        "signal": "已生成 13 / 13 类报告证据。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
         "name": "包体膨胀风险",
         "impact": 2,
         "probability": 1,
-        "signal": "SKILL.md 约 362 个词/字。",
+        "signal": "SKILL.md 约 366 个词/字。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
@@ -257,7 +262,121 @@
         "response": "先补证据和边界，再增加包体复杂度。"
       }
     ],
-    "risk_families": [],
+    "risk_families": [
+      {
+        "key": "markdown_readability",
+        "label": "Markdown readability",
+        "matched_keywords": [
+          "md",
+          "report",
+          "doc"
+        ],
+        "score": 3,
+        "risks": [
+          "Tables can render as dense grids with weak hierarchy or poor mobile readability.",
+          "Long bullets can make the output look complete while hiding the actual decision logic.",
+          "Mixed heading levels can reduce scanability."
+        ],
+        "constraints": [
+          "Use tables only when comparison is the main job; otherwise prefer compact cards or grouped bullets.",
+          "Keep table cells short and move explanations below the table.",
+          "Use heading levels consistently and keep each section anchored to a user-facing outcome."
+        ],
+        "self_repair": [
+          "Preview whether each table still reads well when columns are narrow.",
+          "Convert any table with paragraph-length cells into bullets or cards."
+        ]
+      },
+      {
+        "key": "citation_clutter",
+        "label": "Citation and footnote clutter",
+        "matched_keywords": [
+          "source",
+          "reference"
+        ],
+        "score": 2,
+        "risks": [
+          "Footnote markers or dense citation notes can interrupt the reading flow.",
+          "Evidence can be over-attached to obvious statements and under-attached to risky claims.",
+          "Source notes may become more prominent than the tutorial itself."
+        ],
+        "constraints": [
+          "Attach citations only to claims that need evidence, not to every sentence.",
+          "Group source notes at the end of a section when inline markers would hurt readability.",
+          "Keep the main sentence readable without requiring the reader to chase a footnote."
+        ],
+        "self_repair": [
+          "Remove decorative citations that do not support a material claim.",
+          "Move repeated source explanations into one compact source note."
+        ]
+      },
+      {
+        "key": "visual_capture",
+        "label": "Screenshot and visual capture",
+        "matched_keywords": [
+          "capture"
+        ],
+        "score": 1,
+        "risks": [
+          "Screenshots can be captured from the wrong state, wrong viewport, or wrong crop.",
+          "Missing screenshots can cause the skill to invent visual references instead of declaring the gap.",
+          "Image descriptions can omit the action-relevant region."
+        ],
+        "constraints": [
+          "Never invent a screenshot; state when visual evidence is missing.",
+          "Record the source, viewport, and crop intent for any screenshot-dependent output.",
+          "Describe what the reader should inspect in the image, not just that an image exists."
+        ],
+        "self_repair": [
+          "Check that every screenshot reference points to a real provided or generated asset.",
+          "Reword any visual instruction that depends on an unseen screen state."
+        ]
+      },
+      {
+        "key": "code_or_command_safety",
+        "label": "Code and command safety",
+        "matched_keywords": [
+          "script"
+        ],
+        "score": 1,
+        "risks": [
+          "Commands can omit environment assumptions, working directory, or rollback notes.",
+          "Code snippets can look runnable while missing required inputs.",
+          "Error handling can be either absent or over-engineered."
+        ],
+        "constraints": [
+          "Name the working directory, required inputs, and expected output for each command.",
+          "Mark destructive or external side-effect operations explicitly.",
+          "Prefer the smallest runnable snippet over broad framework code."
+        ],
+        "self_repair": [
+          "Scan each command for cwd, input, output, and side-effect assumptions.",
+          "Remove speculative error handling that is not tied to a real failure mode."
+        ]
+      },
+      {
+        "key": "tone_and_specificity",
+        "label": "Tone and specificity",
+        "matched_keywords": [
+          "summary"
+        ],
+        "score": 1,
+        "risks": [
+          "Headings and summaries can drift into generic, interchangeable language.",
+          "The output can sound polished but lose the user's actual taste, audience, or scenario.",
+          "Strong claims can appear without examples or constraints."
+        ],
+        "constraints": [
+          "Anchor titles and summaries in the user's audience, object, and concrete outcome.",
+          "Avoid placeholder phrases such as comprehensive guide, ultimate solution, or key insights unless the source demands them.",
+          "Preserve one distinctive phrase, constraint, or standard from the user's input."
+        ],
+        "self_repair": [
+          "Replace generic title candidates with scenario-specific alternatives.",
+          "Delete any polished sentence that could fit almost any project unchanged."
+        ]
+      }
+    ],
     "human_judgment_boundary": [
       "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
       "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
@@ -294,28 +413,28 @@
         "path": "references",
         "label": "Extended guidance and reusable notes",
         "kind": "folder",
-        "file_count": 23
+        "file_count": 28
       },
       {
         "path": "scripts",
         "label": "Deterministic helpers or local tooling",
         "kind": "folder",
-        "file_count": 65
+        "file_count": 49
       },
       {
         "path": "evals",
         "label": "Trigger and quality checks",
         "kind": "folder",
-        "file_count": 25
+        "file_count": 27
       },
       {
         "path": "reports",
         "label": "Generated evidence and overview artifacts",
         "kind": "folder",
-        "file_count": 118
+        "file_count": 142
       }
     ],
-    "file_count": 235,
+    "file_count": 250,
     "folder_count": 4,
     "distribution": [
       {
@@ -336,24 +455,34 @@
       },
       {
         "label": "references",
-        "value": 23
+        "value": 28
       },
       {
         "label": "scripts",
-        "value": 65
+        "value": 49
       },
       {
         "label": "evals",
-        "value": 25
+        "value": 27
       },
       {
         "label": "reports",
-        "value": 118
+        "value": 142
       }
     ]
   },
   "iteration_roadmap": {
     "items": [
+      {
+        "title": "Borrow one proven pattern on purpose",
+        "why": "You already have public benchmark objects. The next gain is to choose one pattern intentionally instead of absorbing everything loosely.",
+        "actions": [
+          "Read the strongest pattern from obra/superpowers.",
+          "Decide whether to borrow method, structure, execution, or portability, but only one of them first.",
+          "Record what you will not borrow so the package stays light."
+        ],
+        "unlocks": "A cleaner package shape with less accidental over-design."
+      },
       {
         "title": "Harden portability semantics",
         "why": "The skill already signals reuse across environments, so contract clarity matters early.",
@@ -453,33 +582,34 @@
       "path": "references",
       "label": "Extended guidance and reusable notes",
       "kind": "folder",
-      "file_count": 23
+      "file_count": 28
     },
     {
       "path": "scripts",
       "label": "Deterministic helpers or local tooling",
       "kind": "folder",
-      "file_count": 65
+      "file_count": 49
     },
     {
       "path": "evals",
       "label": "Trigger and quality checks",
       "kind": "folder",
-      "file_count": 25
+      "file_count": 27
     },
     {
       "path": "reports",
       "label": "Generated evidence and overview artifacts",
       "kind": "folder",
-      "file_count": 118
+      "file_count": 142
     }
   ],
   "strengths": [
     "触发面保持精简，并锚定在 frontmatter description。",
-    "已打包 agents/interface.yaml，便于后续做跨平台适配。",
-    "长指导被拆到 references 中，入口文件可以保持轻量。",
-    "确定性辅助逻辑放在 scripts 中，而不是藏在提示词里。",
-    "包内包含可随 Skill 迁移的质量门禁或触发检查。"
+    "已生成 Skill IR，核心语义可先于平台打包被审查和迁移。",
+    "已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。",
+    "已生成 Runtime Conformance Matrix，可审查目标端消费能力。",
+    "已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。",
+    "已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。"
   ],
   "scenarios": [
     "把重复流程沉淀为可复用的 agent skill。",
@@ -533,6 +663,16 @@
   ],
   "roadmap": [
     {
+      "title": "Borrow one proven pattern on purpose",
+      "why": "You already have public benchmark objects. The next gain is to choose one pattern intentionally instead of absorbing everything loosely.",
+      "actions": [
+        "Read the strongest pattern from obra/superpowers.",
+        "Decide whether to borrow method, structure, execution, or portability, but only one of them first.",
+        "Record what you will not borrow so the package stays light."
+      ],
+      "unlocks": "A cleaner package shape with less accidental over-design."
+    },
+    {
       "title": "Harden portability semantics",
       "why": "The skill already signals reuse across environments, so contract clarity matters early.",
       "actions": [
@@ -560,18 +700,57 @@
     "如果需求仍然模糊，优先回到 intent dialogue 收紧边界，再扩展包体结构。"
   ],
   "benchmark_highlights": [],
+  "skill_ir": {
+    "schema_version": "2.0.0",
+    "target_count": 4,
+    "trigger_samples": 8,
+    "output_eval_cases": 2
+  },
+  "output_quality": {
+    "case_count": 3,
+    "baseline_pass_rate": 0.0,
+    "with_skill_pass_rate": 100.0,
+    "delta": 100.0,
+    "regression_count": 0,
+    "gate_pass": true,
+    "failure_taxonomy": []
+  },
+  "runtime_conformance": {
+    "target_count": 5,
+    "pass_count": 5,
+    "fail_count": 0
+  },
+  "trust_security": {
+    "scanned_files": 124,
+    "script_count": 49,
+    "secret_findings": 0,
+    "dependency_files": [
+      "requirements-ci.txt"
+    ],
+    "network_script_count": 2,
+    "interactive_script_count": 0,
+    "package_sha256": "d70bd9083059198c4346c743131852b32038e59000d86ed11cae4399df6988ac"
+  },
+  "skill_atlas": {
+    "skill_count": 12,
+    "route_collision_count": 5,
+    "owner_gap_count": 9,
+    "stale_count": 10,
+    "shared_resource_count": 0,
+    "no_route_opportunity_count": 0
+  },
   "synthesis_highlights": [
     "Borrow a first-time operator flow that explains itself before it asks for more structure.",
     "Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.",
     "Borrow the discipline of defining what the skill should not own before growing the package."
   ],
   "artifact_design": {
-    "design_system": "content-led editorial",
+    "design_system": "evidence frame",
     "highlights": [
-      "High-trust editorial report with a clear first-screen thesis, compact evidence blocks, and decisions separated from supporting detail.",
-      "Keep the first screen useful without requiring the reader to parse every detail.",
-      "Use tables only for comparisons; move explanations below the table.",
-      "Keep source notes readable without flooding the body with markers."
+      "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit.",
+      "Name the working directory and required inputs for commands.",
+      "Mark destructive, networked, or external side-effect operations.",
+      "Prefer the smallest runnable snippet over broad framework scaffolding."
     ]
   },
   "prompt_quality": {
@@ -585,11 +764,11 @@
   },
   "system_model": {
     "stability": {
-      "score": 78,
+      "score": 86,
       "band": "stable-first-pass"
     },
     "highlights": [
-      "Stability: stable-first-pass (78/100).",
+      "Stability: stable-first-pass (86/100).",
       "Owned job: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
       "Leverage: Clarify the real job boundary — Ask one focused question and update intent context before adding assets.",
       "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language."

@@ -16,6 +16,7 @@ Contents:
 - `../reports/description_optimization*.{json,md}`: generated route-optimization reports for the root skill
 - `failure-cases.md`: current weak spots and regression targets
 - `packaging_expectations.json`: required packaging behaviors for supported targets
+- `output/`: Output Eval Lab cases and schema for with-skill vs baseline assertion grading
 - `../reports/`: generated suite JSON plus the homepage-visible family summary panel source
 
 Use:
@@ -35,6 +36,8 @@ python3 tests/verify_route_confusion.py
 python3 tests/verify_failure_regressions.py
 python3 scripts/cross_packager.py . --platform openai --platform claude --expectations evals/packaging_expectations.json --zip
 python3 tests/verify_packager_failures.py
+python3 scripts/run_output_eval.py
+python3 tests/verify_output_eval_lab.py
 ```
 
 Regression scope now includes:
@@ -54,3 +57,4 @@ Regression scope now includes:
 - judge-backed blind-holdout verification that adds a rubric-based second opinion for blind prompts
 - calibration summaries that surface score gaps, threshold margins, and risk bands for each acceptance gate
 - family-level drift history that records which blind and adversarial families stay clean over time
+- output-quality scorecards that compare without-skill and with-skill artifacts through assertion grading

@@ -78,6 +78,16 @@ def main() -> None:
         "report_contract",
     }
     assert expected_v2_keys.issubset(overview_json.keys()), overview_json.keys()
+    assert "reports/skill-ir.json" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/output_quality_scorecard.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/conformance_matrix.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/security_trust_report.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/skill_atlas.html" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert overview_json["skill_ir"]["schema_version"] in {"", "2.0.0"}, overview_json.get("skill_ir")
+    assert "output_quality" in overview_json, overview_json.keys()
+    assert "runtime_conformance" in overview_json, overview_json.keys()
+    assert "trust_security" in overview_json, overview_json.keys()
+    assert "skill_atlas" in overview_json, overview_json.keys()
     assert [item["title"] for item in overview_json["iteration_roadmap"]["items"]] == [
         item["title"] for item in directions_json["directions"]
     ], {
@@ -130,6 +140,7 @@ def main() -> None:
     assert "执行流程" in report_html, report_html[:5000]
     assert "调用方式" in report_html, report_html[:5000]
     assert "证据不足" in report_html or "证据充分" in report_html, report_html[:8000]
+    assert "原始说明可切换到英文查看；默认中文报告保留结论与结构说明。" not in report_html, report_html[:12000]
     assert "理解用户请求" in report_html, report_html[:5000]
     assert overview_json["logic_steps"][0] in report_html, overview_json.get("logic_steps")
     assert overview_json["usage_steps"][0] in report_html, overview_json.get("usage_steps")

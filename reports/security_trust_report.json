@@ -1,0 +1,433 @@
+{
+  "ok": true,
+  "skill_dir": ".",
+  "summary": {
+    "scanned_files": 124,
+    "script_count": 49,
+    "secret_findings": 0,
+    "dependency_files": [
+      "requirements-ci.txt"
+    ],
+    "network_script_count": 2,
+    "interactive_script_count": 0,
+    "package_sha256": "d70bd9083059198c4346c743131852b32038e59000d86ed11cae4399df6988ac"
+  },
+  "failures": [],
+  "warnings": [
+    "Scripts without argparse/help surface: scripts/render_context_reports.py, scripts/render_social_preview.py, scripts/skill_report_charts.py, scripts/skill_report_metrics.py, scripts/skill_report_model.py",
+    "Network-capable scripts require bounded host policy: scripts/check_update.py, scripts/github_benchmark_scan.py"
+  ],
+  "secrets": [],
+  "scripts": [
+    {
+      "path": "scripts/build_confusion_matrix.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/build_skill_atlas.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/check_update.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": true,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/ci_test.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": true
+    },
+    {
+      "path": "scripts/collect_feedback.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/context_sizer.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/create_iteration_snapshot.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/cross_packager.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/diff_eval.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/export_skill_ir.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/github_benchmark_scan.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": true,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/governance_check.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/init_skill.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/judge_blind_eval.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/lint_skill.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/optimize_description.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/promotion_checker.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_artifact_design_profile.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_baseline_compare.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_context_reports.py",
+      "has_argparse": false,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_description_drift_history.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_eval_dashboard.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": true
+    },
+    {
+      "path": "scripts/render_intent_confidence.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_intent_dialogue.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_iteration_directions.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_iteration_ledger.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_output_risk_profile.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_portability_report.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_prompt_quality_profile.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_reference_scan.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_reference_synthesis.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_regression_history.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_review_viewer.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_skill_overview.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_social_preview.py",
+      "has_argparse": false,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/render_system_model.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/resource_boundary_check.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/run_conformance_suite.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/run_description_optimization_suite.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/run_eval_suite.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": true
+    },
+    {
+      "path": "scripts/run_output_eval.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/skill_report_charts.py",
+      "has_argparse": false,
+      "has_main_guard": false,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/skill_report_metrics.py",
+      "has_argparse": false,
+      "has_main_guard": false,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/skill_report_model.py",
+      "has_argparse": false,
+      "has_main_guard": false,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/sync_local_install.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": true
+    },
+    {
+      "path": "scripts/trigger_eval.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/trust_check.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/validate_skill.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": false
+    },
+    {
+      "path": "scripts/yao.py",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_subprocess": true
+    }
+  ],
+  "dependencies": {
+    "present": [
+      "requirements-ci.txt"
+    ],
+    "pinned": [
+      "PyYAML==6.0.3"
+    ],
+    "unpinned": []
+  },
+  "trust_metadata": {
+    "source_tier": "local",
+    "remote_inline_execution": "forbid",
+    "remote_metadata_policy": "allow-metadata-only"
+  },
+  "artifacts": {
+    "json": "reports/security_trust_report.json",
+    "markdown": "reports/security_trust_report.md"
+  }
+}

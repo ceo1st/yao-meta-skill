@@ -858,6 +858,71 @@ def command_baseline_compare(args: argparse.Namespace) -> int:
     return 0 if result["ok"] else 2
 
 
+def command_skill_ir(args: argparse.Namespace) -> int:
+    cmd = [str(Path(args.skill_dir).resolve())]
+    if args.output_json:
+        cmd.extend(["--output-json", args.output_json])
+    if args.validate_only:
+        cmd.append("--validate-only")
+    result = run_script("export_skill_ir.py", cmd)
+    print(json.dumps(result["payload"] if result["payload"] is not None else result, ensure_ascii=False, indent=2))
+    return 0 if result["ok"] else 2
+
+
+def command_output_eval(args: argparse.Namespace) -> int:
+    cmd = []
+    if args.cases:
+        cmd.extend(["--cases", args.cases])
+    if args.output_json:
+        cmd.extend(["--output-json", args.output_json])
+    if args.output_md:
+        cmd.extend(["--output-md", args.output_md])
+    result = run_script("run_output_eval.py", cmd)
+    print(json.dumps(result["payload"] if result["payload"] is not None else result, ensure_ascii=False, indent=2))
+    return 0 if result["ok"] else 2
+
+
+def command_conformance(args: argparse.Namespace) -> int:
+    cmd = [str(Path(args.skill_dir).resolve())]
+    for target in args.target or []:
+        cmd.extend(["--target", target])
+    if args.output_json:
+        cmd.extend(["--output-json", args.output_json])
+    if args.output_md:
+        cmd.extend(["--output-md", args.output_md])
+    result = run_script("run_conformance_suite.py", cmd)
+    print(json.dumps(result["payload"] if result["payload"] is not None else result, ensure_ascii=False, indent=2))
+    return 0 if result["ok"] else 2
+
+
+def command_trust(args: argparse.Namespace) -> int:
+    cmd = [str(Path(args.skill_dir).resolve())]
+    if args.output_json:
+        cmd.extend(["--output-json", args.output_json])
+    if args.output_md:
+        cmd.extend(["--output-md", args.output_md])
+    result = run_script("trust_check.py", cmd)
+    print(json.dumps(result["payload"] if result["payload"] is not None else result, ensure_ascii=False, indent=2))
+    return 0 if result["ok"] else 2
+
+
+def command_skill_atlas(args: argparse.Namespace) -> int:
+    cmd = ["--workspace-root", str(Path(args.workspace_root).resolve())]
+    if args.output_dir:
+        cmd.extend(["--output-dir", args.output_dir])
+    if args.report_html:
+        cmd.extend(["--report-html", args.report_html])
+    if args.report_json:
+        cmd.extend(["--report-json", args.report_json])
+    if args.overlap_threshold is not None:
+        cmd.extend(["--overlap-threshold", str(args.overlap_threshold)])
+    if args.today:
+        cmd.extend(["--today", args.today])
+    result = run_script("build_skill_atlas.py", cmd)
+    print(json.dumps(result["payload"] if result["payload"] is not None else result, ensure_ascii=False, indent=2))
+    return 0 if result["ok"] else 2
+
+
 def command_review(args: argparse.Namespace) -> int:
     target_name = resolve_promotion_target(args.target)
     bundle_dir = ROOT / "reports" / "iteration_bundles" / target_name
@@ -1245,6 +1310,40 @@ def build_parser() -> argparse.ArgumentParser:
         help="Render a lightweight with-skill vs baseline comparison across tracked targets.",
     )
     baseline_compare_cmd.set_defaults(func=command_baseline_compare)
+
+    skill_ir_cmd = subparsers.add_parser("skill-ir", help="Export platform-neutral Skill IR for a skill package.")
+    skill_ir_cmd.add_argument("skill_dir", nargs="?", default=".")
+    skill_ir_cmd.add_argument("--output-json")
+    skill_ir_cmd.add_argument("--validate-only", action="store_true")
+    skill_ir_cmd.set_defaults(func=command_skill_ir)
+
+    output_eval_cmd = subparsers.add_parser("output-eval", help="Run Output Eval Lab assertion grading.")
+    output_eval_cmd.add_argument("--cases")
+    output_eval_cmd.add_argument("--output-json")
+    output_eval_cmd.add_argument("--output-md")
+    output_eval_cmd.set_defaults(func=command_output_eval)
+
+    conformance_cmd = subparsers.add_parser("conformance", help="Run runtime conformance checks for Skill OS targets.")
+    conformance_cmd.add_argument("skill_dir", nargs="?", default=".")
+    conformance_cmd.add_argument("--target", action="append", choices=["openai", "claude", "agent-skills", "vscode", "generic"])
+    conformance_cmd.add_argument("--output-json")
+    conformance_cmd.add_argument("--output-md")
+    conformance_cmd.set_defaults(func=command_conformance)
+
+    trust_cmd = subparsers.add_parser("trust", help="Run trust and security checks for a skill package.")
+    trust_cmd.add_argument("skill_dir", nargs="?", default=".")
+    trust_cmd.add_argument("--output-json")
+    trust_cmd.add_argument("--output-md")
+    trust_cmd.set_defaults(func=command_trust)
+
+    skill_atlas_cmd = subparsers.add_parser("skill-atlas", help="Build a portfolio-level Skill Atlas for a workspace.")
+    skill_atlas_cmd.add_argument("--workspace-root", default=".")
+    skill_atlas_cmd.add_argument("--output-dir")
+    skill_atlas_cmd.add_argument("--report-html")
+    skill_atlas_cmd.add_argument("--report-json")
+    skill_atlas_cmd.add_argument("--overlap-threshold", type=float)
+    skill_atlas_cmd.add_argument("--today")
+    skill_atlas_cmd.set_defaults(func=command_skill_atlas)
 
     package_cmd = subparsers.add_parser("package", help="Export compatibility artifacts for selected targets.")
     package_cmd.add_argument("skill_dir", nargs="?", default=".")

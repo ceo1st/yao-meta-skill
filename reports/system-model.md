@@ -2,7 +2,7 @@
 
 Skill: `yao-meta-skill`
 
-- Stability score: `78/100`
+- Stability score: `86/100`
 - Stability band: `stable-first-pass`
 - Doctrine: Structure drives behavior: improve the boundary, feedback loops, drift watch, and leverage points before adding weight.
 
@@ -38,14 +38,20 @@ Skill: `yao-meta-skill`
   - Borrow a first-time operator flow that explains itself before it asks for more structure.
   - Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
   - Borrow the discipline of defining what the skill should not own before growing the package.
-  - Do not mimic product polish that adds UI bulk without improving clarity.
-  - Do not create experimental overhead that exceeds the skill's real risk tier.
+  - Borrow the way it turns a messy workflow into a repeatable operating path.
+  - Borrow the clear execution entrypoints and command structure.
 
 ### Output quality loop
 
 - Signal: Generated output may fail in recurring domain-specific ways.
 - Response: Apply predicted output-risk families as self-repair checks before final output.
 - Evidence: reports/output-risk-profile.md
+- Current risk families:
+  - Markdown readability
+  - Citation and footnote clutter
+  - Screenshot and visual capture
+  - Code and command safety
+  - Tone and specificity
 
 ### Reviewer feedback loop
 
@@ -72,6 +78,12 @@ Skill: `yao-meta-skill`
 - Watch signal: Outputs remain valid but become generic, cluttered, or weakly aligned with the user's domain.
 - Countermeasure: Refresh output-risk and artifact-design profiles, then add one self-repair check.
 - Cadence: after the first 3-5 real uses
+- Risk families:
+  - Markdown readability
+  - Citation and footnote clutter
+  - Screenshot and visual capture
+  - Code and command safety
+  - Tone and specificity
 
 ### Reference drift
 
@@ -101,6 +113,12 @@ Skill: `yao-meta-skill`
 
 - Symptom: The result is structurally correct but generic, cluttered, or weakly matched to the user's domain.
 - Repair: Use output-risk families as pre-final checks.
+- Current Risk Families:
+  - Markdown readability
+  - Citation and footnote clutter
+  - Screenshot and visual capture
+  - Code and command safety
+  - Tone and specificity
 
 ### Prompt-behavior mismatch
 
@@ -120,6 +138,11 @@ Skill: `yao-meta-skill`
 
 - Why: The description is the highest-leverage routing surface.
 - Move: Name the recurring job, expected input, output, and strongest non-goal in compact language.
+
+### 3. Install output self-repair checks
+
+- Why: The likely failure families are: Markdown readability, Citation and footnote clutter, Screenshot and visual capture.
+- Move: Add only the checks that prevent recurring output mistakes.
 
 ### 4. Borrow one pattern, not a whole product
 

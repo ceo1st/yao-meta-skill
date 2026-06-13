@@ -52,6 +52,7 @@ def main() -> None:
     assert (created / "reports" / "artifact-design-profile.md").exists(), created
     assert (created / "reports" / "prompt-quality-profile.md").exists(), created
     assert (created / "reports" / "system-model.md").exists(), created
+    assert (created / "reports" / "skill-ir.json").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
     assert "Honest Boundaries" in (created / "SKILL.md").read_text(encoding="utf-8"), created
     init_report_view = init_result["payload"]["report_view"]
@@ -61,6 +62,9 @@ def main() -> None:
     assert "概述、指标、原理、触发边界、输入输出、质量评估、风险治理、包体资产和升级路线" in init_report_view["message"], init_report_view
     assert "默认使用中文简体" in init_report_view["message"], init_report_view
     assert "切换英文版" in init_report_view["message"], init_report_view
+    init_skill_ir = init_result["payload"]["skill_ir"]
+    assert init_skill_ir["name"] == "cli-demo-skill", init_skill_ir
+    assert init_skill_ir["trigger_samples"] >= 1, init_skill_ir
 
     quickstart_result = run(
         "quickstart",
@@ -218,6 +222,52 @@ def main() -> None:
     directions_result = run("iteration-directions", str(created))
     assert directions_result["ok"], directions_result
     assert directions_result["payload"]["artifacts"]["markdown"].endswith("reports/iteration-directions.md"), directions_result
+
+    skill_ir_result = run("skill-ir", str(created))
+    assert skill_ir_result["ok"], skill_ir_result
+    assert skill_ir_result["payload"]["artifacts"]["json"].endswith("reports/skill-ir.json"), skill_ir_result
+    created_skill_ir = json.loads((created / "reports" / "skill-ir.json").read_text(encoding="utf-8"))
+    assert created_skill_ir["schema_version"] == "2.0.0", created_skill_ir
+    assert created_skill_ir["trigger_surface"]["description"], created_skill_ir
+
+    output_eval_result = run(
+        "output-eval",
+        "--cases",
+        str(ROOT / "evals" / "output" / "cases.jsonl"),
+        "--output-json",
+        str(created / "reports" / "output_quality_scorecard.json"),
+        "--output-md",
+        str(created / "reports" / "output_quality_scorecard.md"),
+    )
+    assert output_eval_result["ok"], output_eval_result
+    assert output_eval_result["payload"]["summary"]["with_skill_pass_rate"] > output_eval_result["payload"]["summary"]["baseline_pass_rate"], output_eval_result
+
+    conformance_result = run("conformance", str(created))
+    assert conformance_result["ok"], conformance_result
+    assert conformance_result["payload"]["summary"]["target_count"] == 5, conformance_result
+    assert conformance_result["payload"]["artifacts"]["markdown"].endswith("reports/conformance_matrix.md"), conformance_result
+
+    trust_result = run("trust", str(created))
+    assert trust_result["ok"], trust_result
+    assert trust_result["payload"]["summary"]["secret_findings"] == 0, trust_result
+    assert trust_result["payload"]["artifacts"]["markdown"].endswith("reports/security_trust_report.md"), trust_result
+
+    atlas_result = run(
+        "skill-atlas",
+        "--workspace-root",
+        str(tmp_root),
+        "--output-dir",
+        str(tmp_root / "skill_atlas"),
+        "--report-html",
+        str(tmp_root / "skill_atlas.html"),
+        "--report-json",
+        str(tmp_root / "skill_atlas.json"),
+        "--today",
+        "2026-06-13",
+    )
+    assert atlas_result["ok"], atlas_result
+    assert atlas_result["payload"]["summary"]["skill_count"] >= 2, atlas_result
+    assert atlas_result["payload"]["artifacts"]["report_html"].endswith("skill_atlas.html"), atlas_result
 
     feedback_result = run(
         "feedback",

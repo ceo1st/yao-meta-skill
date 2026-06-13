@@ -5,6 +5,7 @@ import re
 from datetime import date
 from pathlib import Path
 
+from export_skill_ir import build_skill_ir, validate_ir
 from github_benchmark_scan import run_github_benchmark_scan
 from render_intent_confidence import render_intent_confidence
 from render_intent_dialogue import render_intent_dialogue
@@ -72,8 +73,9 @@ README_TEMPLATE = """# {title}
 9. Check `reports/output-risk-profile.md` to see likely output mistakes and self-repair checks.
 10. Check `reports/artifact-design-profile.md` to see the intended artifact direction, layout patterns, visual quality gates, and anti-patterns.
 11. Check `reports/prompt-quality-profile.md` to see the need model, RTF-to-skill mapping, complexity, and prompt-facing quality matrix.
-12. Review `reports/iteration-directions.md` for the three most valuable next moves.
-13. Review `reports/system-model.md` to understand the boundary, feedback loops, drift watch, failure map, and highest-leverage next changes.
+12. Review `reports/skill-ir.json` for the platform-neutral Skill IR contract before platform-specific packaging.
+13. Review `reports/iteration-directions.md` for the three most valuable next moves.
+14. Review `reports/system-model.md` to understand the boundary, feedback loops, drift watch, failure map, and highest-leverage next changes.
 
 ## Honest Boundaries
 
@@ -95,6 +97,7 @@ README_TEMPLATE = """# {title}
 - `reports/artifact-design-profile.md`: artifact-specific design direction, layout patterns, visual quality gates, and anti-patterns
 - `reports/prompt-quality-profile.md`: prompt-facing need model, RTF mapping, complexity, and quality matrix
 - `reports/system-model.md`: systems-thinking model for boundary, feedback loops, drift, failure patterns, and leverage points
+- `reports/skill-ir.json`: platform-neutral 2.0 Skill IR contract for trigger, workflow, resources, evals, risk, and governance
 - `reports/skill-overview.html`: white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, a top-right language switch, metrics, SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
 - `reports/review-viewer.html`: compact review page for architecture, usage, feedback, and next steps
 - `reports/iteration-directions.md`: the top three next iteration directions
@@ -222,6 +225,24 @@ def build_report_view(artifacts: dict) -> dict:
     }
 
 
+def render_skill_ir(root: Path) -> dict:
+    payload = build_skill_ir(root)
+    failures = validate_ir(payload)
+    output_json = root / "reports" / "skill-ir.json"
+    output_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {
+        "ok": not failures,
+        "artifacts": {"json": str(output_json)},
+        "summary": {
+            "name": payload.get("name"),
+            "maturity": payload.get("governance", {}).get("maturity"),
+            "target_count": len(payload.get("targets", [])),
+            "trigger_samples": len(payload.get("trigger_surface", {}).get("should_trigger", [])),
+        },
+        "failures": failures,
+    }
+
+
 def dedupe_references(references: list[dict]) -> list[dict]:
     seen = set()
     deduped = []
@@ -303,6 +324,7 @@ def initialize_skill(
     artifact_design_profile = render_artifact_design_profile(root)
     prompt_quality_profile = render_prompt_quality_profile(root)
     system_model = render_system_model(root)
+    skill_ir = render_skill_ir(root)
     iteration_directions = render_iteration_directions(root)
     overview = render_skill_overview(root)
     review_viewer = render_review_viewer(root)
@@ -328,6 +350,7 @@ def initialize_skill(
         "prompt_quality_profile_json": prompt_quality_profile["artifacts"]["json"],
         "system_model_md": system_model["artifacts"]["markdown"],
         "system_model_json": system_model["artifacts"]["json"],
+        "skill_ir_json": skill_ir["artifacts"]["json"],
         "iteration_directions_md": iteration_directions["artifacts"]["markdown"],
         "iteration_directions_json": iteration_directions["artifacts"]["json"],
         "review_viewer_html": review_viewer["artifacts"]["html"],
@@ -346,6 +369,7 @@ def initialize_skill(
         "intent_confidence": intent_confidence["summary"],
         "reference_synthesis": reference_synthesis["summary"],
         "system_model": system_model["summary"],
+        "skill_ir": skill_ir["summary"],
         "artifacts": artifacts,
         "report_view": report_view,
     }

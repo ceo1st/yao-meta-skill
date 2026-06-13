@@ -1,16 +1,28 @@
 {
   "skill_name": "yao-meta-skill",
-  "design_system": "content-led editorial",
+  "design_system": "evidence frame",
   "primary_artifact": {
-    "key": "report",
-    "label": "Report or brief",
-    "direction": "High-trust editorial report with a clear first-screen thesis, compact evidence blocks, and decisions separated from supporting detail.",
+    "key": "code_or_cli",
+    "label": "Code, CLI, or implementation guide",
+    "direction": "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit.",
     "matched_keywords": [
-      "report",
-      "summary"
+      "code",
+      "script",
+      "command"
     ]
   },
   "artifact_families": [
+    {
+      "key": "code_or_cli",
+      "label": "Code, CLI, or implementation guide",
+      "score": 3,
+      "matched_keywords": [
+        "code",
+        "script",
+        "command"
+      ],
+      "direction": "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit."
+    },
     {
       "key": "report",
       "label": "Report or brief",
@@ -22,24 +34,24 @@
       "direction": "High-trust editorial report with a clear first-screen thesis, compact evidence blocks, and decisions separated from supporting detail."
     },
     {
-      "key": "code_or_cli",
-      "label": "Code, CLI, or implementation guide",
+      "key": "visual_capture",
+      "label": "Screenshot or visual evidence",
       "score": 1,
       "matched_keywords": [
-        "script"
+        "screenshot"
       ],
-      "direction": "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit."
+      "direction": "Evidence-led visual artifact that records source, viewport, crop intent, and the exact region the reader should inspect."
     }
   ],
   "layout_patterns": [
-    "thesis",
-    "evidence blocks",
-    "decision table",
-    "risks",
-    "next actions",
     "prerequisites",
     "commands",
-    "expected output"
+    "expected output",
+    "failure handling",
+    "rollback or cleanup",
+    "thesis",
+    "evidence blocks",
+    "decision table"
   ],
   "design_tokens": {
     "type": [
@@ -64,12 +76,14 @@
     ]
   },
   "quality_gates": [
+    "Name the working directory and required inputs for commands.",
+    "Mark destructive, networked, or external side-effect operations.",
+    "Prefer the smallest runnable snippet over broad framework scaffolding.",
     "Keep the first screen useful without requiring the reader to parse every detail.",
     "Use tables only for comparisons; move explanations below the table.",
     "Keep source notes readable without flooding the body with markers.",
-    "Name the working directory and required inputs for commands.",
-    "Mark destructive, networked, or external side-effect operations.",
-    "Prefer the smallest runnable snippet over broad framework scaffolding."
+    "Never invent missing screenshots or visual states.",
+    "Record source, viewport, and crop intent."
   ],
   "anti_patterns": [
     "Do not copy Kami's fixed parchment background as a default.",

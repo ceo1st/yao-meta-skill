@@ -3,9 +3,14 @@ from pathlib import Path
 
 
 REPORT_EVIDENCE = [
+    "skill-ir.json",
     "intent-dialogue.json",
     "intent-confidence.json",
     "reference-synthesis.json",
+    "output_quality_scorecard.json",
+    "conformance_matrix.json",
+    "security_trust_report.json",
+    "skill_atlas.json",
     "artifact-design-profile.json",
     "prompt-quality-profile.json",
     "system-model.json",
@@ -117,7 +122,14 @@ def trigger_metric(skill_dir: Path) -> dict:
 
 def evidence_metric(skill_dir: Path) -> dict:
     reports_dir = skill_dir / "reports"
-    present = [name for name in REPORT_EVIDENCE if (reports_dir / name).exists()]
+    present = []
+    for name in REPORT_EVIDENCE:
+        if name == "skill-ir.json":
+            if (reports_dir / name).exists() or any((skill_dir / "skill-ir" / "examples").glob("*.json")):
+                present.append(name)
+            continue
+        if (reports_dir / name).exists():
+            present.append(name)
     score = round(len(present) / len(REPORT_EVIDENCE) * 100)
     reasons = []
     if present:

@@ -103,6 +103,11 @@ python3 scripts/yao.py feedback my-skill --note "Tighten exclusions before addin
 python3 scripts/yao.py baseline-compare
 python3 scripts/yao.py check-update
 python3 scripts/yao.py package . --platform generic --output-dir dist
+python3 scripts/yao.py skill-ir . --output-json skill-ir/examples/yao-meta-skill.json
+python3 scripts/yao.py output-eval
+python3 scripts/yao.py conformance .
+python3 scripts/yao.py trust .
+python3 scripts/yao.py skill-atlas --workspace-root .
 ```
 
 ## Local Development Source
@@ -357,6 +362,11 @@ Utility scripts that make the meta-skill operational:
 - `cross_packager.py`: builds client-specific export artifacts with explicit platform contracts and validation
 - `render_portability_report.py`: scores cross-environment portability from neutral metadata, degradation rules, and consumer validation coverage
 - `render_skill_overview.py`: generates the white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, top-right language switch, v2 scorecard, inline SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
+- `export_skill_ir.py`: exports the 2.0 platform-neutral Skill IR contract from `SKILL.md`, manifest, interface metadata, evals, resources, and reports
+- `run_output_eval.py`: runs the Output Eval Lab v0 with static with-skill vs baseline assertion grading and writes `reports/output_quality_scorecard.*`
+- `run_conformance_suite.py`: verifies runtime conformance for OpenAI, Claude, Agent Skills, VS Code/Copilot-style, and generic targets
+- `trust_check.py`: generates the trust/security report for scripts, dependencies, secret risk, trust metadata, and package integrity
+- `build_skill_atlas.py`: builds the Skill Atlas catalog, route-overlap matrix, dependency graph, stale report, owner gaps, and HTML overview for a multi-skill workspace
 - `init_skill.py`, `lint_skill.py`, `validate_skill.py`, `diff_eval.py`: minimal authoring toolchain
 - `check_update.py`: checks GitHub for a newer `VERSION` or remote manifest version and reports a reinstall hint without modifying local files
 - `render_output_risk_profile.py`: predicts output-specific failure modes such as generic headings, citation clutter, screenshot mistakes, weak Markdown tables, and missing execution assumptions

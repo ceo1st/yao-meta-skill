@@ -6,7 +6,23 @@ Skill: `yao-meta-skill`
 
 ## Live GitHub Benchmarks
 
-- No live GitHub benchmarks are attached yet.
+### obra/superpowers
+- URL: https://github.com/obra/superpowers
+- Stars: `226125`
+- Borrow: Borrow the way it turns a messy workflow into a repeatable operating path.
+- Borrow: Borrow the clear execution entrypoints and command structure.
+
+### affaan-m/ECC
+- URL: https://github.com/affaan-m/ECC
+- Stars: `214381`
+- Borrow: Borrow the way it turns a messy workflow into a repeatable operating path.
+- Borrow: Borrow the clear execution entrypoints and command structure.
+
+### multica-ai/andrej-karpathy-skills
+- URL: https://github.com/multica-ai/andrej-karpathy-skills
+- Stars: `174264`
+- Borrow: Borrow explicit validation and quality gates that make iteration safer.
+- Borrow: Borrow the way it separates explanation, examples, and reusable structure.
 
 ## Curated World-Class Pattern Tracks
 
@@ -36,22 +52,29 @@ Skill: `yao-meta-skill`
 - Borrow a first-time operator flow that explains itself before it asks for more structure.
 - Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
 - Borrow the discipline of defining what the skill should not own before growing the package.
+- Borrow the way it turns a messy workflow into a repeatable operating path.
+- Borrow the clear execution entrypoints and command structure.
 
 ## Avoid Now
 
 - Do not mimic product polish that adds UI bulk without improving clarity.
 - Do not create experimental overhead that exceeds the skill's real risk tier.
 - Do not expand execution assets until route boundaries stay clean.
+- Do not import process overhead that only exists for that project's scale.
+- Do not copy repo-specific commands or environment assumptions verbatim.
 
 ## Pattern Gate
 
-- Summary: 1 accepted, 2 deferred using threshold 4/4.
+- Summary: 3 accepted, 3 deferred using threshold 4/4.
 - Acceptance threshold: `4/4`
 - Accepted patterns:
   - **Official workflow product ergonomics**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **obra/superpowers**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **affaan-m/ECC**: 4/4 (recurrence, generativity, distinctiveness, boundary)
 - Deferred patterns:
   - **Hypothesis-test-learn loop**: missing distinctiveness
   - **Boundary-first design**: missing distinctiveness
+  - **multica-ai/andrej-karpathy-skills**: missing generativity
 
 ## Default Recommendation
 

@@ -23,6 +23,8 @@ KNOWN_ENTRIES = [
     ("reports", "Generated evidence and overview artifacts"),
 ]
 
+IGNORED_PACKAGE_PARTS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist"}
+
 REPORT_NAV_V2 = [
     {"label": "技能概述", "label_en": "Overview", "href": "overview"},
     {"label": "总览指标", "label_en": "Metrics", "href": "metrics"},
@@ -144,7 +146,19 @@ def package_entries(skill_dir: Path) -> list[dict]:
         target = skill_dir / rel_path
         if target.exists():
             kind = "folder" if target.is_dir() else "file"
-            count = len([path for path in target.rglob("*") if path.is_file()]) if target.is_dir() else 1
+            if target.is_dir():
+                count = len(
+                    [
+                        path
+                        for path in target.rglob("*")
+                        if path.is_file()
+                        and not path.is_symlink()
+                        and not any(part in IGNORED_PACKAGE_PARTS for part in path.relative_to(target).parts)
+                        and path.suffix not in {".pyc", ".pyo"}
+                    ]
+                )
+            else:
+                count = 1
             items.append({"path": rel_path, "label": label, "kind": kind, "file_count": count})
     return items
 
@@ -178,6 +192,16 @@ def compact_unique(items: list[str], limit: int = 6) -> list[str]:
 
 def derive_strengths(skill_dir: Path, metadata: dict) -> list[str]:
     strengths = ["触发面保持精简，并锚定在 frontmatter description。"]
+    if (skill_dir / "reports" / "skill-ir.json").exists() or (skill_dir / "skill-ir" / "examples").exists():
+        strengths.append("已生成 Skill IR，核心语义可先于平台打包被审查和迁移。")
+    if (skill_dir / "reports" / "output_quality_scorecard.json").exists():
+        strengths.append("已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。")
+    if (skill_dir / "reports" / "conformance_matrix.json").exists():
+        strengths.append("已生成 Runtime Conformance Matrix，可审查目标端消费能力。")
+    if (skill_dir / "reports" / "security_trust_report.json").exists():
+        strengths.append("已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。")
+    if (skill_dir / "reports" / "skill_atlas.json").exists():
+        strengths.append("已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。")
     if (skill_dir / "agents" / "interface.yaml").exists():
         strengths.append("已打包 agents/interface.yaml，便于后续做跨平台适配。")
     if (skill_dir / "references").exists() and any((skill_dir / "references").iterdir()):
@@ -188,7 +212,7 @@ def derive_strengths(skill_dir: Path, metadata: dict) -> list[str]:
         strengths.append("包内包含可随 Skill 迁移的质量门禁或触发检查。")
     if metadata.get("maturity_tier"):
         strengths.append(f"生命周期元数据清晰，成熟度层级为 `{metadata['maturity_tier']}`。")
-    return strengths[:5]
+    return strengths[:6]
 
 
 def scenario_items(description: str, usage_steps: list[str], metadata: dict) -> list[str]:
@@ -427,6 +451,14 @@ def build_report_model(skill_dir: Path) -> dict:
     prompt_quality = load_json(skill_dir / "reports" / "prompt-quality-profile.json")
     system_model = load_json(skill_dir / "reports" / "system-model.json")
     output_risk = load_json(skill_dir / "reports" / "output-risk-profile.json")
+    output_quality = load_json(skill_dir / "reports" / "output_quality_scorecard.json")
+    conformance = load_json(skill_dir / "reports" / "conformance_matrix.json")
+    trust_report = load_json(skill_dir / "reports" / "security_trust_report.json")
+    skill_atlas = load_json(skill_dir / "reports" / "skill_atlas.json")
+    skill_ir = load_json(skill_dir / "reports" / "skill-ir.json")
+    if not skill_ir:
+        example_ir = skill_dir / "skill-ir" / "examples" / f"{frontmatter.get('name', skill_dir.name)}.json"
+        skill_ir = load_json(example_ir)
     reference_synthesis = load_json(skill_dir / "reports" / "reference-synthesis.json")
     iteration = load_json(skill_dir / "reports" / "iteration-directions.json")
 
@@ -460,7 +492,16 @@ def build_report_model(skill_dir: Path) -> dict:
         "updated_at": metadata["updated_at"],
         "core_value": "把一次性经验沉淀为可复用、可评估、可迁移的 Skill 包体。",
         "audience": "Skill 作者、复用团队和后续 reviewer。",
-        "deliverables": ["SKILL.md", "agents/interface.yaml", "reports/skill-overview.html"],
+        "deliverables": [
+            "SKILL.md",
+            "agents/interface.yaml",
+            "reports/skill-ir.json",
+            "reports/output_quality_scorecard.md",
+            "reports/conformance_matrix.md",
+            "reports/security_trust_report.md",
+            "reports/skill_atlas.html",
+            "reports/skill-overview.html",
+        ],
         "flow": ["输入材料", "Skill 包体", "可复用能力"],
     }
     contract = {
@@ -523,6 +564,16 @@ def build_report_model(skill_dir: Path) -> dict:
             "如果需求仍然模糊，优先回到 intent dialogue 收紧边界，再扩展包体结构。",
         ],
         "benchmark_highlights": [],
+        "skill_ir": {
+            "schema_version": skill_ir.get("schema_version", ""),
+            "target_count": len(skill_ir.get("targets", [])),
+            "trigger_samples": len(skill_ir.get("trigger_surface", {}).get("should_trigger", [])),
+            "output_eval_cases": len(skill_ir.get("eval_plan", {}).get("output", [])),
+        },
+        "output_quality": output_quality.get("summary", {}),
+        "runtime_conformance": conformance.get("summary", {}),
+        "trust_security": trust_report.get("summary", {}),
+        "skill_atlas": skill_atlas.get("summary", {}),
         "synthesis_highlights": synthesis,
         "artifact_design": q_review["artifact_design"],
         "prompt_quality": q_review["prompt_quality"],

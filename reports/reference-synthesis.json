@@ -6,7 +6,35 @@
     "band": "low",
     "gate_passed": false
   },
-  "github_benchmarks": [],
+  "github_benchmarks": [
+    {
+      "name": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "stars": 226125,
+      "borrow": [
+        "Borrow the way it turns a messy workflow into a repeatable operating path.",
+        "Borrow the clear execution entrypoints and command structure."
+      ]
+    },
+    {
+      "name": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "stars": 214381,
+      "borrow": [
+        "Borrow the way it turns a messy workflow into a repeatable operating path.",
+        "Borrow the clear execution entrypoints and command structure."
+      ]
+    },
+    {
+      "name": "multica-ai/andrej-karpathy-skills",
+      "url": "https://github.com/multica-ai/andrej-karpathy-skills",
+      "stars": 174264,
+      "borrow": [
+        "Borrow explicit validation and quality gates that make iteration safer.",
+        "Borrow the way it separates explanation, examples, and reusable structure."
+      ]
+    }
+  ],
   "source_tracks": [
     {
       "source_type": "official",
@@ -46,12 +74,16 @@
     "borrow_now": [
       "Borrow a first-time operator flow that explains itself before it asks for more structure.",
       "Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.",
-      "Borrow the discipline of defining what the skill should not own before growing the package."
+      "Borrow the discipline of defining what the skill should not own before growing the package.",
+      "Borrow the way it turns a messy workflow into a repeatable operating path.",
+      "Borrow the clear execution entrypoints and command structure."
     ],
     "avoid_now": [
       "Do not mimic product polish that adds UI bulk without improving clarity.",
       "Do not create experimental overhead that exceeds the skill's real risk tier.",
-      "Do not expand execution assets until route boundaries stay clean."
+      "Do not expand execution assets until route boundaries stay clean.",
+      "Do not import process overhead that only exists for that project's scale.",
+      "Do not copy repo-specific commands or environment assumptions verbatim."
     ],
     "quality_risers": [
       "Use GitHub repositories for concrete package and workflow patterns.",
@@ -61,13 +93,53 @@
     ],
     "pattern_gate": {
       "threshold": 4,
-      "source_count": 3,
+      "source_count": 6,
       "accepted": [
         {
           "name": "Official workflow product ergonomics",
           "source_type": "official",
           "borrow": "Borrow a first-time operator flow that explains itself before it asks for more structure.",
           "avoid": "Do not mimic product polish that adds UI bulk without improving clarity.",
+          "gates": {
+            "recurrence": true,
+            "generativity": true,
+            "distinctiveness": true,
+            "boundary": true
+          },
+          "passed": [
+            "recurrence",
+            "generativity",
+            "distinctiveness",
+            "boundary"
+          ],
+          "missing": [],
+          "score": 4
+        },
+        {
+          "name": "obra/superpowers",
+          "source_type": "github",
+          "borrow": "Borrow the way it turns a messy workflow into a repeatable operating path.; Borrow the clear execution entrypoints and command structure.",
+          "avoid": "Do not import process overhead that only exists for that project's scale.",
+          "gates": {
+            "recurrence": true,
+            "generativity": true,
+            "distinctiveness": true,
+            "boundary": true
+          },
+          "passed": [
+            "recurrence",
+            "generativity",
+            "distinctiveness",
+            "boundary"
+          ],
+          "missing": [],
+          "score": 4
+        },
+        {
+          "name": "affaan-m/ECC",
+          "source_type": "github",
+          "borrow": "Borrow the way it turns a messy workflow into a repeatable operating path.; Borrow the clear execution entrypoints and command structure.",
+          "avoid": "Do not import process overhead that only exists for that project's scale.",
           "gates": {
             "recurrence": true,
             "generativity": true,
@@ -126,9 +198,30 @@
             "distinctiveness"
           ],
           "score": 3
+        },
+        {
+          "name": "multica-ai/andrej-karpathy-skills",
+          "source_type": "github",
+          "borrow": "Borrow explicit validation and quality gates that make iteration safer.; Borrow the way it separates explanation, examples, and reusable structure.",
+          "avoid": "Do not clone heavyweight evaluation scaffolding if a lighter gate is enough here.",
+          "gates": {
+            "recurrence": true,
+            "generativity": false,
+            "distinctiveness": true,
+            "boundary": true
+          },
+          "passed": [
+            "recurrence",
+            "distinctiveness",
+            "boundary"
+          ],
+          "missing": [
+            "generativity"
+          ],
+          "score": 3
         }
       ],
-      "summary": "1 accepted, 2 deferred using threshold 4/4."
+      "summary": "3 accepted, 3 deferred using threshold 4/4."
     },
     "conflicts": [],
     "recommendation": {
@@ -155,7 +248,7 @@
     },
     "decision_prompt": "Use the recommendation by default. Only surface the underlying benchmark tradeoffs when intent is uncertain or a real design conflict needs a deliberate call.",
     "source_mix": {
-      "github_benchmarks": 0,
+      "github_benchmarks": 3,
       "curated_tracks": 3,
       "user_references": 0
     }

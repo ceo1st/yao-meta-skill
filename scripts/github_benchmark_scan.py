@@ -231,6 +231,11 @@ def cross_repo_insights(repos: list[dict[str, Any]]) -> dict[str, list[str]]:
     avoid = []
     seen_borrow = set()
     seen_avoid = set()
+    if not repos:
+        return {
+            "borrow": [],
+            "avoid": [],
+        }
     for repo in repos:
         for item in repo.get("borrow", []):
             if item not in seen_borrow:
@@ -256,16 +261,23 @@ def repo_to_external_reference(repo: dict[str, Any]) -> dict[str, str]:
 
 
 def render_markdown(payload: dict[str, Any]) -> str:
+    repo_count = len(payload["repositories"])
+    next_step = (
+        f"Review the {repo_count} benchmark object{'s' if repo_count != 1 else ''} below, "
+        "then decide whether any of their patterns are worth borrowing into the new skill."
+        if repo_count
+        else "No benchmark repositories were collected; adjust the query or attach manual references before treating the scan as evidence."
+    )
     lines = [
         "# GitHub Benchmark Scan",
         "",
         f"- Query: `{payload['query']}`",
         f"- Source: `{payload['source']}`",
-        f"- Top repositories: `{len(payload['repositories'])}`",
+        f"- Top repositories: `{repo_count}`",
         "",
         "## Suggested Next Step",
         "",
-        "Review the three benchmark objects below, then decide whether any of their patterns are worth borrowing into the new skill.",
+        next_step,
         "",
     ]
 
@@ -282,7 +294,7 @@ def render_markdown(payload: dict[str, Any]) -> str:
         )
         return "\n".join(lines).strip() + "\n"
 
-    lines.extend(["## Top 3 Benchmark Repositories", ""])
+    lines.extend([f"## Top {repo_count} Benchmark Repositories", ""])
     for repo in payload["repositories"]:
         lines.extend(
             [
@@ -359,7 +371,13 @@ def run_github_benchmark_scan(
             "repositories": repo_summaries,
             "cross_repo": cross_repo,
             "external_references": [repo_to_external_reference(repo) for repo in repo_summaries],
-            "borrow_prompt": "I found three public GitHub projects worth studying. Do you want to borrow any of these patterns for method, structure, execution, or portability?",
+            "borrow_prompt": (
+                f"I found {len(repo_summaries)} public GitHub project"
+                f"{'s' if len(repo_summaries) != 1 else ''} worth studying. "
+                "Do you want to borrow any of these patterns for method, structure, execution, or portability?"
+                if repo_summaries
+                else "No benchmark suggestions were collected yet. You can retry with a stronger query or add manual references."
+            ),
             "warnings": warnings,
         }
     except Exception as exc:  # pragma: no cover - network failures are environment-dependent

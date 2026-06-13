@@ -22,14 +22,17 @@ TEXT_ZH = {
     "Write the `description` early and test route quality before expanding the package.": "尽早写出 `description`，先测试路由质量，再扩展包体。",
     "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.": "只在确有价值时添加 output-risk、artifact-design、prompt-quality 和 system-model 报告。",
     "Use $yao-meta-skill to turn my workflow or notes into a reusable skill with lean structure, clear triggering, and the right evals.": "当你需要把工作流或笔记沉淀成结构精简、触发清晰且带必要 eval 的可复用 Skill 时使用 $yao-meta-skill。",
+    "Turn rough requests into a compact reusable demo skill.": "把粗糙请求整理成紧凑、可复用的演示 Skill。",
     "Tighten trigger and exclusions": "收紧触发与排除边界",
     "Add the first execution asset": "补上第一个执行资产",
     "Promote from scaffold to production-ready": "从脚手架推进到生产可用",
+    "Borrow one proven pattern on purpose": "有选择地借鉴一个成熟模式",
     "Harden portability semantics": "加固跨环境语义",
     "Create an iteration evidence loop": "建立迭代证据回路",
     "The package needs clearer near-neighbor exclusions before it grows.": "在继续扩展前，需要先把相邻但不应触发的场景说清楚。",
     "The package is still mostly prose. Add one asset that removes repeated manual work.": "当前包体仍偏文本说明，应先增加一个能减少重复人工操作的资产。",
     "The first version exists; the next gain usually comes from adding the smallest useful gates.": "第一版已经存在，下一步收益通常来自补上最小但有效的质量门禁。",
+    "You already have public benchmark objects. The next gain is to choose one pattern intentionally instead of absorbing everything loosely.": "已经有公开 benchmark 对象，下一步应主动选择一个模式借鉴，而不是松散吸收所有做法。",
     "The skill already signals reuse across environments, so contract clarity matters early.": "这个 Skill 已经面向跨环境复用，因此早期就需要把契约语义说清楚。",
     "The package should show what changed and why after the first draft.": "第一版之后，包体应该能说明改了什么以及为什么改。",
     "Add 3 to 5 should-trigger and should-not-trigger examples.": "增加 3 到 5 个应触发和不应触发的例子。",
@@ -41,9 +44,18 @@ TEXT_ZH = {
     "Decide whether this skill is personal, team-reused, or library-grade.": "判断这个 Skill 是个人使用、团队复用，还是库级基础能力。",
     "Add only the gates that match that risk level.": "只添加与风险等级匹配的质量门禁。",
     "Record lifecycle metadata and review cadence once reuse becomes real.": "一旦进入真实复用，就记录生命周期元数据和评审节奏。",
+    "Decide whether to borrow method, structure, execution, or portability, but only one of them first.": "先判断要借鉴的是方法、结构、执行方式还是可迁移性，并且第一轮只借鉴其中一个。",
+    "Record what you will not borrow so the package stays light.": "记录本轮不借鉴的内容，避免包体过重。",
+    "Confirm activation mode, execution context, and trust assumptions.": "确认激活模式、执行上下文和信任假设。",
+    "Add or review degradation strategy for non-native targets.": "补充或复核非原生目标端的降级策略。",
+    "Package the skill once to verify adapter expectations.": "至少打包一次 Skill，用来验证 adapter 预期。",
+    "Generate the HTML skill report and keep it aligned with the package.": "生成 HTML Skill 报告，并保持它与包体内容一致。",
+    "Record reference scan choices and non-goals.": "记录参考扫描的取舍和非目标。",
+    "Capture the next iteration choice explicitly before adding more files.": "在继续增加文件前，明确记录下一轮迭代选择。",
     "Cleaner routing and fewer accidental activations.": "路由更清晰，误触发更少。",
     "Stronger execution quality without bloating the entrypoint.": "在不膨胀入口文件的前提下提升执行质量。",
     "A clearer path from exploratory package to maintained asset.": "更清晰地从探索性包体走向可维护资产。",
+    "A cleaner package shape with less accidental over-design.": "包体形态更清晰，也减少偶然过度设计。",
     "Safer cross-environment reuse with less target drift.": "跨环境复用更安全，目标漂移更少。",
     "A clearer path for the next author or reviewer.": "让下一位作者或评审者更容易接手。",
 }
@@ -106,6 +118,12 @@ def zh_for(text: str) -> str:
         return "当用户请求与该 Skill 的触发描述匹配时使用。"
     if value.startswith("用户说出类似需求时："):
         return "当用户提出与该 Skill 触发描述相近的请求时使用。"
+    if value.startswith("Use $") and " when you need to " in value:
+        skill, need = value.removeprefix("Use ").split(" when you need to ", 1)
+        return f"当你需要{zh_for(need).rstrip('。')}时使用 `{skill}`。"
+    if value.startswith("Read the strongest pattern from "):
+        repo = value.removeprefix("Read the strongest pattern from ").rstrip(".")
+        return f"阅读 `{repo}` 中最值得借鉴的模式。"
     if value.startswith("Primary prompt task family:"):
         return "主要提示任务类型已记录在 prompt quality profile 中。"
     if value.startswith("Complexity:"):
