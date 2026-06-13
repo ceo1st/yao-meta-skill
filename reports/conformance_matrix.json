@@ -32,6 +32,7 @@
         "Skill IR description matches frontmatter",
         "references resource resolves: references/artifact-design-doctrine.md",
         "references resource resolves: references/authoring-discipline.md",
+        "references resource resolves: references/distribution-registry-method.md",
         "references resource resolves: references/eval-playbook.md",
         "references resource resolves: references/gate-selection.md",
         "references resource resolves: references/governance.md",
@@ -40,8 +41,7 @@
         "references resource resolves: references/iteration-philosophy.md",
         "references resource resolves: references/non-skill-decision-tree.md",
         "references resource resolves: references/operating-modes.md",
-        "references resource resolves: references/output-eval-method.md",
-        "references resource resolves: references/output-quality-risk.md"
+        "references resource resolves: references/output-eval-method.md"
       ],
       "failures": [],
       "warnings": []
@@ -76,6 +76,7 @@
         "Skill IR description matches frontmatter",
         "references resource resolves: references/artifact-design-doctrine.md",
         "references resource resolves: references/authoring-discipline.md",
+        "references resource resolves: references/distribution-registry-method.md",
         "references resource resolves: references/eval-playbook.md",
         "references resource resolves: references/gate-selection.md",
         "references resource resolves: references/governance.md",
@@ -84,8 +85,7 @@
         "references resource resolves: references/iteration-philosophy.md",
         "references resource resolves: references/non-skill-decision-tree.md",
         "references resource resolves: references/operating-modes.md",
-        "references resource resolves: references/output-eval-method.md",
-        "references resource resolves: references/output-quality-risk.md"
+        "references resource resolves: references/output-eval-method.md"
       ],
       "failures": [],
       "warnings": []
@@ -120,6 +120,7 @@
         "Skill IR description matches frontmatter",
         "references resource resolves: references/artifact-design-doctrine.md",
         "references resource resolves: references/authoring-discipline.md",
+        "references resource resolves: references/distribution-registry-method.md",
         "references resource resolves: references/eval-playbook.md",
         "references resource resolves: references/gate-selection.md",
         "references resource resolves: references/governance.md",
@@ -128,12 +129,11 @@
         "references resource resolves: references/iteration-philosophy.md",
         "references resource resolves: references/non-skill-decision-tree.md",
         "references resource resolves: references/operating-modes.md",
-        "references resource resolves: references/output-eval-method.md",
-        "references resource resolves: references/output-quality-risk.md"
+        "references resource resolves: references/output-eval-method.md"
       ],
       "failures": [],
       "warnings": [
-        "agent-skills uses canonical Agent Skills metadata; runtime-specific behavior transforms are not implemented in v0."
+        "agent-skills uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
       ]
     },
     {
@@ -166,6 +166,7 @@
         "Skill IR description matches frontmatter",
         "references resource resolves: references/artifact-design-doctrine.md",
         "references resource resolves: references/authoring-discipline.md",
+        "references resource resolves: references/distribution-registry-method.md",
         "references resource resolves: references/eval-playbook.md",
         "references resource resolves: references/gate-selection.md",
         "references resource resolves: references/governance.md",
@@ -174,12 +175,11 @@
         "references resource resolves: references/iteration-philosophy.md",
         "references resource resolves: references/non-skill-decision-tree.md",
         "references resource resolves: references/operating-modes.md",
-        "references resource resolves: references/output-eval-method.md",
-        "references resource resolves: references/output-quality-risk.md"
+        "references resource resolves: references/output-eval-method.md"
       ],
       "failures": [],
       "warnings": [
-        "vscode uses canonical Agent Skills metadata; runtime-specific behavior transforms are not implemented in v0."
+        "vscode uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0."
       ]
     },
     {
@@ -212,6 +212,7 @@
         "Skill IR description matches frontmatter",
         "references resource resolves: references/artifact-design-doctrine.md",
         "references resource resolves: references/authoring-discipline.md",
+        "references resource resolves: references/distribution-registry-method.md",
         "references resource resolves: references/eval-playbook.md",
         "references resource resolves: references/gate-selection.md",
         "references resource resolves: references/governance.md",
@@ -220,8 +221,7 @@
         "references resource resolves: references/iteration-philosophy.md",
         "references resource resolves: references/non-skill-decision-tree.md",
         "references resource resolves: references/operating-modes.md",
-        "references resource resolves: references/output-eval-method.md",
-        "references resource resolves: references/output-quality-risk.md"
+        "references resource resolves: references/output-eval-method.md"
       ],
       "failures": [],
       "warnings": []

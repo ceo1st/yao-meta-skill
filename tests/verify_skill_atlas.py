@@ -94,6 +94,27 @@ def main() -> None:
         "- no_route: repeated pricing approval prompts are missed by the current library.\n",
         encoding="utf-8",
     )
+    policy_dir = tmp_root / "skill_atlas"
+    policy_dir.mkdir()
+    (policy_dir / "policy.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "scope_rules": [
+                    {
+                        "path_prefix": "beta-release-skill",
+                        "scope": "example",
+                        "actionable": False,
+                        "reason": "fixture used to verify scoped portfolio warnings",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
     output_dir = tmp_root / "atlas"
     report_html = tmp_root / "skill_atlas.html"
@@ -121,7 +142,9 @@ def main() -> None:
     payload = json.loads(proc.stdout)
     summary = payload["summary"]
     assert summary["skill_count"] == 3, summary
+    assert summary["actionable_skill_count"] == 2, summary
     assert summary["route_collision_count"] >= 1, summary
+    assert summary["actionable_route_collision_count"] <= summary["route_collision_count"], summary
     assert summary["owner_gap_count"] >= 1, summary
     assert summary["stale_count"] >= 1, summary
     assert summary["shared_resource_count"] >= 1, summary
@@ -135,9 +158,11 @@ def main() -> None:
     html = report_html.read_text(encoding="utf-8")
     assert "Skill Atlas" in html, html[:1000]
     assert "Route Collisions" in html, html[:3000]
+    assert "Actionable Issues" in html, html[:3000]
     assert "No-Route Opportunities" in html, html[:3000]
     catalog = json.loads((output_dir / "catalog.json").read_text(encoding="utf-8"))
     assert catalog["summary"]["skill_count"] == 3, catalog
+    assert payload["scope_policy"]["present"], payload["scope_policy"]
 
     print(json.dumps({"ok": True}, ensure_ascii=False, indent=2))
 

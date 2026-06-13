@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CASES = ROOT / "evals" / "output" / "cases.jsonl"
+BLIND_SEED = "yao-output-eval-blind-v1"
 
 
 def display_path(path: Path) -> str:
@@ -115,6 +117,98 @@ def grade_case(case: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def blind_variant_order(case_id: str) -> list[str]:
+    digest = hashlib.sha256(f"{BLIND_SEED}:{case_id}".encode("utf-8")).hexdigest()
+    return ["baseline", "with_skill"] if int(digest[:2], 16) % 2 == 0 else ["with_skill", "baseline"]
+
+
+def output_for_role(case: dict[str, Any], role: str) -> str:
+    return str(case.get("baseline_output" if role == "baseline" else "with_skill_output", ""))
+
+
+def expected_role(case: dict[str, Any]) -> str:
+    review = case.get("human_review", {}) if isinstance(case.get("human_review"), dict) else {}
+    winner = str(review.get("expected_winner", "with_skill"))
+    return winner if winner in {"baseline", "with_skill"} else "with_skill"
+
+
+def build_blind_review_pack(cases: list[dict[str, Any]], results: list[dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
+    result_by_id = {item["id"]: item for item in results}
+    pairs = []
+    answer_pairs = []
+    for case in cases:
+        case_id = str(case["id"])
+        order = blind_variant_order(case_id)
+        variant_a_role, variant_b_role = order
+        expected = expected_role(case)
+        expected_variant = "A" if variant_a_role == expected else "B"
+        assertions = case.get("assertions", []) if isinstance(case.get("assertions"), list) else []
+        rubric = [
+            {
+                "id": str(item.get("id", "assertion")),
+                "description": str(item.get("description", "")),
+                "weight": float(item.get("weight", 1) or 0),
+            }
+            for item in assertions
+            if isinstance(item, dict)
+        ]
+        pairs.append(
+            {
+                "case_id": case_id,
+                "prompt": str(case.get("prompt", "")),
+                "input_files": case.get("input_files", []),
+                "metadata": case.get("metadata", {}),
+                "review_instruction": "Pick A or B based only on the rubric. Do not infer which output came from the skill.",
+                "rubric": rubric,
+                "variant_a": {
+                    "blind_id": f"{case_id}:A",
+                    "output": output_for_role(case, variant_a_role),
+                },
+                "variant_b": {
+                    "blind_id": f"{case_id}:B",
+                    "output": output_for_role(case, variant_b_role),
+                },
+            }
+        )
+        scored = result_by_id.get(case_id, {})
+        answer_pairs.append(
+            {
+                "case_id": case_id,
+                "variant_a_role": variant_a_role,
+                "variant_b_role": variant_b_role,
+                "expected_winner_role": expected,
+                "expected_winner_variant": expected_variant,
+                "score_winner_role": scored.get("winner", ""),
+                "delta": scored.get("delta", 0),
+            }
+        )
+    pack = {
+        "schema_version": "1.0",
+        "seed": BLIND_SEED,
+        "summary": {
+            "pair_count": len(pairs),
+            "answer_key_separate": True,
+            "with_skill_hidden_count": sum(
+                1
+                for pair in answer_pairs
+                if pair["variant_a_role"] == "with_skill" or pair["variant_b_role"] == "with_skill"
+            ),
+        },
+        "pairs": pairs,
+    }
+    answer_key = {
+        "schema_version": "1.0",
+        "seed": BLIND_SEED,
+        "summary": {
+            "pair_count": len(answer_pairs),
+            "with_skill_expected_count": sum(1 for pair in answer_pairs if pair["expected_winner_role"] == "with_skill"),
+            "baseline_expected_count": sum(1 for pair in answer_pairs if pair["expected_winner_role"] == "baseline"),
+        },
+        "answers": answer_pairs,
+    }
+    return pack, answer_key
+
+
 def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
     case_count = len(results)
     baseline_average = sum(item["baseline"]["score"] for item in results) / case_count if case_count else 0
@@ -150,7 +244,11 @@ def render_markdown(payload: dict[str, Any]) -> str:
         f"- With-skill pass rate: `{summary['with_skill_pass_rate']}`",
         f"- Delta: `{summary['delta']}`",
         f"- Regressions: `{summary['regression_count']}`",
+        f"- Blind A/B pairs: `{summary.get('blind_pair_count', 0)}`",
         f"- Gate pass: `{summary['gate_pass']}`",
+        "",
+        "Blind review artifacts are generated separately so reviewers can inspect A/B outputs without seeing the answer key.",
+        "Run output review adjudication after reviewer decisions are recorded; pending cases should stay pending rather than being counted as human agreement.",
         "",
         "## Case Results",
         "",
@@ -181,10 +279,69 @@ def render_markdown(payload: dict[str, Any]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
-def run_output_eval(cases_path: Path, output_json: Path, output_md: Path) -> dict[str, Any]:
+def render_blind_review_markdown(pack: dict[str, Any]) -> str:
+    summary = pack["summary"]
+    lines = [
+        "# Output Blind A/B Review Pack",
+        "",
+        "This packet hides whether each variant came from the baseline or the skill-guided output. Use the separate answer key only after review.",
+        "",
+        f"- Pairs: `{summary['pair_count']}`",
+        f"- Seed: `{pack['seed']}`",
+        f"- Answer key separate: `{summary['answer_key_separate']}`",
+        "",
+    ]
+    for pair in pack["pairs"]:
+        lines.extend(
+            [
+                f"## Case: {pair['case_id']}",
+                "",
+                f"Prompt: {pair['prompt']}",
+                "",
+                "Rubric:",
+            ]
+        )
+        for item in pair["rubric"]:
+            lines.append(f"- `{item['id']}` ({item['weight']}): {item['description']}")
+        lines.extend(
+            [
+                "",
+                "### Variant A",
+                "",
+                str(pair["variant_a"]["output"]),
+                "",
+                "### Variant B",
+                "",
+                str(pair["variant_b"]["output"]),
+                "",
+            ]
+        )
+    return "\n".join(lines).strip() + "\n"
+
+
+def run_output_eval(
+    cases_path: Path,
+    output_json: Path,
+    output_md: Path,
+    blind_pack_json: Path,
+    blind_pack_md: Path,
+    blind_answer_key_json: Path,
+) -> dict[str, Any]:
     cases = load_cases(cases_path)
     validation_failures = [failure for case in cases for failure in validate_case(case, cases_path.parent)]
     if validation_failures:
+        blind_pack = {
+            "schema_version": "1.0",
+            "seed": BLIND_SEED,
+            "summary": {"pair_count": 0, "answer_key_separate": True, "with_skill_hidden_count": 0},
+            "pairs": [],
+        }
+        blind_answer_key = {
+            "schema_version": "1.0",
+            "seed": BLIND_SEED,
+            "summary": {"pair_count": 0, "with_skill_expected_count": 0, "baseline_expected_count": 0},
+            "answers": [],
+        }
         payload = {
             "ok": False,
             "cases": display_path(cases_path),
@@ -195,6 +352,7 @@ def run_output_eval(cases_path: Path, output_json: Path, output_md: Path) -> dic
                 "delta": 0,
                 "regression_count": 0,
                 "gate_pass": False,
+                "blind_pair_count": 0,
                 "failure_taxonomy": ["invalid_case"],
             },
             "results": [],
@@ -202,6 +360,7 @@ def run_output_eval(cases_path: Path, output_json: Path, output_md: Path) -> dic
         }
     else:
         results = [grade_case(case) for case in cases]
+        blind_pack, blind_answer_key = build_blind_review_pack(cases, results)
         payload = {
             "ok": True,
             "cases": display_path(cases_path),
@@ -209,11 +368,29 @@ def run_output_eval(cases_path: Path, output_json: Path, output_md: Path) -> dic
             "results": results,
             "failures": [],
         }
-    payload["artifacts"] = {"json": display_path(output_json), "markdown": display_path(output_md)}
+        payload["summary"]["blind_pair_count"] = blind_pack["summary"]["pair_count"]
+    payload["blind_review"] = {
+        "pack": display_path(blind_pack_json),
+        "answer_key": display_path(blind_answer_key_json),
+        "pair_count": blind_pack["summary"]["pair_count"],
+    }
+    payload["artifacts"] = {
+        "json": display_path(output_json),
+        "markdown": display_path(output_md),
+        "blind_review_pack_json": display_path(blind_pack_json),
+        "blind_review_pack_md": display_path(blind_pack_md),
+        "blind_answer_key_json": display_path(blind_answer_key_json),
+    }
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_md.parent.mkdir(parents=True, exist_ok=True)
+    blind_pack_json.parent.mkdir(parents=True, exist_ok=True)
+    blind_pack_md.parent.mkdir(parents=True, exist_ok=True)
+    blind_answer_key_json.parent.mkdir(parents=True, exist_ok=True)
     output_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     output_md.write_text(render_markdown(payload), encoding="utf-8")
+    blind_pack_json.write_text(json.dumps(blind_pack, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    blind_pack_md.write_text(render_blind_review_markdown(blind_pack), encoding="utf-8")
+    blind_answer_key_json.write_text(json.dumps(blind_answer_key, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload
 
 
@@ -222,12 +399,18 @@ def main() -> None:
     parser.add_argument("--cases", default=str(DEFAULT_CASES))
     parser.add_argument("--output-json", default=str(ROOT / "reports" / "output_quality_scorecard.json"))
     parser.add_argument("--output-md", default=str(ROOT / "reports" / "output_quality_scorecard.md"))
+    parser.add_argument("--blind-pack-json", default=str(ROOT / "reports" / "output_blind_review_pack.json"))
+    parser.add_argument("--blind-pack-md", default=str(ROOT / "reports" / "output_blind_review_pack.md"))
+    parser.add_argument("--blind-answer-key-json", default=str(ROOT / "reports" / "output_blind_answer_key.json"))
     args = parser.parse_args()
 
     payload = run_output_eval(
         Path(args.cases).resolve(),
         Path(args.output_json).resolve(),
         Path(args.output_md).resolve(),
+        Path(args.blind_pack_json).resolve(),
+        Path(args.blind_pack_md).resolve(),
+        Path(args.blind_answer_key_json).resolve(),
     )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     raise SystemExit(0 if payload["ok"] else 2)

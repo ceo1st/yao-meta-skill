@@ -15,6 +15,12 @@
     "ir_source",
     "ir_schema_version",
     "semantic_contract",
-    "semantic_parity"
+    "semantic_parity",
+    "compiler",
+    "compiled_contract",
+    "permission_contract",
+    "target_permission_contract",
+    "target_native_contract",
+    "target_transform"
   ]
 }

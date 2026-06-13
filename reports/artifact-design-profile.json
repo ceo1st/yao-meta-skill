@@ -1,6 +1,6 @@
 {
   "skill_name": "yao-meta-skill",
-  "design_system": "review studio",
+  "design_system": "metric editorial",
   "primary_artifact": {
     "key": "code_or_cli",
     "label": "Code, CLI, or implementation guide",
@@ -36,11 +36,21 @@
     {
       "key": "review_viewer",
       "label": "Review viewer",
-      "score": 1,
+      "score": 2,
       "matched_keywords": [
-        "review"
+        "review",
+        "viewer"
       ],
       "direction": "Side-by-side reviewer studio with explicit tradeoffs, evidence readiness, and fast paths for approving, blocking, or requesting one focused fix."
+    },
+    {
+      "key": "dashboard",
+      "label": "Dashboard or metrics page",
+      "score": 1,
+      "matched_keywords": [
+        "table"
+      ],
+      "direction": "Metric-first dashboard with stable dimensions, short labels, visible deltas, and narrative callouts only where they change interpretation."
     },
     {
       "key": "visual_capture",

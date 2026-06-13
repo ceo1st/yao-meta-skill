@@ -1,0 +1,94 @@
+{
+  "ok": true,
+  "schema_version": "2.0",
+  "generated_at": "2026-06-13",
+  "previous": {
+    "name": "yao-meta-skill",
+    "version": "1.0.0",
+    "targets": [
+      "openai",
+      "claude",
+      "generic"
+    ]
+  },
+  "current": {
+    "name": "yao-meta-skill",
+    "version": "1.1.0",
+    "targets": [
+      "openai",
+      "claude",
+      "generic",
+      "agent-skills-compatible"
+    ]
+  },
+  "summary": {
+    "declared_bump": "minor",
+    "recommended_bump": "minor",
+    "breaking_change_count": 0,
+    "added_target_count": 1,
+    "metadata_change_count": 1,
+    "checksum_change_count": 2,
+    "failure_count": 0,
+    "warning_count": 0
+  },
+  "upgrade_diff": {
+    "name_changed": false,
+    "added_targets": [
+      "agent-skills-compatible"
+    ],
+    "removed_targets": [],
+    "compatibility_changes": [
+      {
+        "target": "agent-skills",
+        "from": "missing",
+        "to": "pass",
+        "direction": "improved"
+      },
+      {
+        "target": "agent-skills-compatible",
+        "from": "missing",
+        "to": "pass",
+        "direction": "improved"
+      },
+      {
+        "target": "vscode",
+        "from": "missing",
+        "to": "pass",
+        "direction": "improved"
+      }
+    ],
+    "metadata_changes": [
+      {
+        "field": "description",
+        "from": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes.",
+        "to": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse."
+      }
+    ],
+    "checksum_changes": [
+      {
+        "field": "archive_sha256",
+        "from": "",
+        "to": "4d1227dc0996a97aa4987761d46081391fe15b36362e19765e1e7aa8e5d41c06"
+      },
+      {
+        "field": "package_sha256",
+        "from": "0000000000000000000000000000000000000000000000000000000000000000",
+        "to": "9f1d53dbaeb1c90c80d7ffbbc1d10473e50b8032acda68332fbae551bb246abe"
+      }
+    ]
+  },
+  "release_notes": [
+    "Recommended version bump: minor.",
+    "Added targets: agent-skills-compatible.",
+    "Package or archive checksum changed; reviewers should verify package artifacts before release.",
+    "Package verification evidence: reports/package_verification.md."
+  ],
+  "failures": [],
+  "warnings": [],
+  "artifacts": {
+    "previous_package": "registry/examples/yao-meta-skill-1.0.0.json",
+    "current_package": "reports/registry_audit.json",
+    "json": "reports/upgrade_check.json",
+    "markdown": "reports/upgrade_check.md"
+  }
+}

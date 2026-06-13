@@ -25,20 +25,25 @@
     <p>Portfolio-level review for route overlap, stale ownership, shared resources, and no-route opportunities.</p>
     <section class="grid">
       <div class="card"><span>Skills</span><strong>12</strong></div>
-      <div class="card"><span>Route Collisions</span><strong>5</strong></div>
-      <div class="card"><span>Owner Gaps</span><strong>9</strong></div>
-      <div class="card"><span>Stale Skills</span><strong>10</strong></div>
+      <div class="card"><span>Actionable</span><strong>1</strong></div>
+      <div class="card"><span>Route Collisions</span><strong>0</strong></div>
+      <div class="card"><span>Owner Gaps</span><strong>0</strong></div>
+      <div class="card"><span>Stale Skills</span><strong>0</strong></div>
       <div class="card"><span>No-Route Opportunities</span><strong>0</strong></div>
     </section>
     <section>
-      <h2>Top Issues</h2>
-      <ul><li><strong>frontend-review</strong> collision</li><li><strong>frontend-review</strong> collision</li><li><strong>frontend-review</strong> collision</li><li><strong>broken-yaml-skill</strong> collision</li><li><strong>frontend-review</strong> duplicate-name</li><li><strong>frontend-review</strong> owner, review_cadence, maturity</li><li><strong>frontend-review</strong> owner, review_cadence, maturity</li><li><strong>frontend-review</strong> owner, review_cadence, maturity</li><li><strong>note-cleanup</strong> owner, review_cadence, maturity</li><li><strong>frontend-review</strong> owner, review_cadence, maturity</li><li><strong>geo-ranking-article-generator</strong> owner, review_cadence, maturity</li><li><strong>invalid-governance-skill</strong> owner, review_cadence</li><li><strong>broken-yaml-skill</strong> owner, review_cadence, maturity</li><li><strong>broken-skill</strong> owner, review_cadence, maturity</li><li><strong>frontend-review</strong> missing updated_at</li><li><strong>frontend-review</strong> missing updated_at</li><li><strong>frontend-review</strong> missing updated_at</li><li><strong>incident-command-governor</strong> review overdue by cadence monthly</li><li><strong>note-cleanup</strong> missing updated_at</li><li><strong>frontend-review</strong> missing updated_at</li><li><strong>geo-ranking-article-generator</strong> missing updated_at</li><li><strong>invalid-governance-skill</strong> missing updated_at</li><li><strong>broken-yaml-skill</strong> missing updated_at</li><li><strong>broken-skill</strong> missing updated_at</li></ul>
+      <h2>Actionable Issues</h2>
+      <ul><li>No blocking portfolio issues detected.</li></ul>
+    </section>
+    <section>
+      <h2>Full Portfolio Counts</h2>
+      <p>All scanned skills remain visible: 5 total route collisions, 9 total owner gaps, and 10 total stale signals.</p>
     </section>
     <section>
       <h2>Catalog</h2>
       <table>
-        <thead><tr><th>Name</th><th>Path</th><th>Owner</th><th>Maturity</th><th>Review</th></tr></thead>
-        <tbody><tr><td>yao-meta-skill</td><td>.</td><td>Yao Team</td><td>governed</td><td>quarterly</td></tr><tr><td>release-orchestrator</td><td>examples/complex-release-orchestrator/generated-skill</td><td>Yao Team</td><td>production</td><td>quarterly</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/final</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/v0</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/v1</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>incident-command-governor</td><td>examples/governed-incident-command/generated-skill</td><td>Incident Operations Team</td><td>governed</td><td>monthly</td></tr><tr><td>note-cleanup</td><td>examples/simple-note-cleanup/generated-skill</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>frontend-review</td><td>examples/team-frontend-review/generated-skill</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>geo-ranking-article-generator</td><td>geo-ranking-article-generator</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>invalid-governance-skill</td><td>tests/fixtures/governance_invalid_manifest</td><td>missing</td><td>governed</td><td>missing</td></tr><tr><td>broken-yaml-skill</td><td>tests/fixtures/package_invalid_yaml</td><td>missing</td><td>unknown</td><td>missing</td></tr><tr><td>broken-skill</td><td>tests/fixtures/package_missing_interface_field</td><td>missing</td><td>unknown</td><td>missing</td></tr></tbody>
+        <thead><tr><th>Name</th><th>Path</th><th>Owner</th><th>Maturity</th><th>Review</th><th>Scope</th></tr></thead>
+        <tbody><tr><td>yao-meta-skill</td><td>.</td><td>Yao Team</td><td>governed</td><td>quarterly</td><td>release</td></tr><tr><td>release-orchestrator</td><td>examples/complex-release-orchestrator/generated-skill</td><td>Yao Team</td><td>production</td><td>quarterly</td><td>example</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/final</td><td>missing</td><td>unknown</td><td>missing</td><td>example</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/v0</td><td>missing</td><td>unknown</td><td>missing</td><td>example</td></tr><tr><td>frontend-review</td><td>examples/evolution-frontend-review/v1</td><td>missing</td><td>unknown</td><td>missing</td><td>example</td></tr><tr><td>incident-command-governor</td><td>examples/governed-incident-command/generated-skill</td><td>Incident Operations Team</td><td>governed</td><td>monthly</td><td>example</td></tr><tr><td>note-cleanup</td><td>examples/simple-note-cleanup/generated-skill</td><td>missing</td><td>unknown</td><td>missing</td><td>example</td></tr><tr><td>frontend-review</td><td>examples/team-frontend-review/generated-skill</td><td>missing</td><td>unknown</td><td>missing</td><td>example</td></tr><tr><td>geo-ranking-article-generator</td><td>geo-ranking-article-generator</td><td>missing</td><td>unknown</td><td>missing</td><td>embedded-generated-skill</td></tr><tr><td>invalid-governance-skill</td><td>tests/fixtures/governance_invalid_manifest</td><td>missing</td><td>governed</td><td>missing</td><td>test-fixture</td></tr><tr><td>broken-yaml-skill</td><td>tests/fixtures/package_invalid_yaml</td><td>missing</td><td>unknown</td><td>missing</td><td>test-fixture</td></tr><tr><td>broken-skill</td><td>tests/fixtures/package_missing_interface_field</td><td>missing</td><td>unknown</td><td>missing</td><td>test-fixture</td></tr></tbody>
       </table>
     </section>
   </main>

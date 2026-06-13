@@ -173,7 +173,7 @@ def check_target(skill_dir: Path, target: str, evidence: dict[str, Any]) -> dict
     if target in {"openai", "claude", "generic"}:
         add_check(checks, failures, bool(degradation.get(target)), f"{target} degradation note exists", f"Missing {target} degradation note")
     else:
-        warnings.append(f"{target} uses canonical Agent Skills metadata; runtime-specific behavior transforms are not implemented in v0.")
+        warnings.append(f"{target} uses canonical Agent Skills metadata; provider-native execution transforms are not implemented in v0.")
 
     add_check(checks, failures, ir.get("schema_version") == "2.0.0", "Skill IR schema_version is 2.0.0", "Missing or invalid Skill IR")
     add_check(checks, failures, ir.get("name") == name, "Skill IR name matches frontmatter", "Skill IR name does not match frontmatter")

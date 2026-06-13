@@ -2,7 +2,7 @@
 
 Skill: `yao-meta-skill`
 - Description: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.
-- Intent confidence: `30/100` (`low`)
+- Intent confidence: `100/100` (`high`)
 
 ## Live GitHub Benchmarks
 
@@ -26,72 +26,72 @@ Skill: `yao-meta-skill`
 
 ## Curated World-Class Pattern Tracks
 
-### Official workflow product ergonomics
+### Official skill anatomy and context discipline
 - Type: `official`
 - Evidence mode: `curated-pattern-track`
-- Why relevant: This track matches: workflow.
-- Borrow: Borrow a first-time operator flow that explains itself before it asks for more structure.
-- Avoid: Do not mimic product polish that adds UI bulk without improving clarity.
+- Why relevant: This track matches: metadata, references.
+- Borrow: Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
+- Avoid: Do not let packaging or platform concerns swallow the core job boundary.
 
-### Hypothesis-test-learn loop
+### Human-in-the-loop verification
 - Type: `research`
 - Evidence mode: `curated-pattern-track`
-- Why relevant: This track matches: general fit.
-- Borrow: Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
-- Avoid: Do not create experimental overhead that exceeds the skill's real risk tier.
+- Why relevant: This track matches: review, govern.
+- Borrow: Borrow a review checkpoint wherever trust matters more than raw speed.
+- Avoid: Do not force every skill through heavyweight review when the risk is low.
 
 ### Boundary-first design
 - Type: `principles`
 - Evidence mode: `curated-pattern-track`
-- Why relevant: This track matches: general fit.
+- Why relevant: This track matches: route.
 - Borrow: Borrow the discipline of defining what the skill should not own before growing the package.
 - Avoid: Do not expand execution assets until route boundaries stay clean.
 
 ## Borrow Now
 
-- Borrow a first-time operator flow that explains itself before it asks for more structure.
-- Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
+- Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
+- Borrow a review checkpoint wherever trust matters more than raw speed.
 - Borrow the discipline of defining what the skill should not own before growing the package.
 - Borrow the way it turns a messy workflow into a repeatable operating path.
 - Borrow the clear execution entrypoints and command structure.
 
 ## Avoid Now
 
-- Do not mimic product polish that adds UI bulk without improving clarity.
-- Do not create experimental overhead that exceeds the skill's real risk tier.
+- Do not let packaging or platform concerns swallow the core job boundary.
+- Do not force every skill through heavyweight review when the risk is low.
 - Do not expand execution assets until route boundaries stay clean.
 - Do not import process overhead that only exists for that project's scale.
 - Do not copy repo-specific commands or environment assumptions verbatim.
 
 ## Pattern Gate
 
-- Summary: 3 accepted, 3 deferred using threshold 4/4.
+- Summary: 5 accepted, 1 deferred using threshold 4/4.
 - Acceptance threshold: `4/4`
 - Accepted patterns:
-  - **Official workflow product ergonomics**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **Official skill anatomy and context discipline**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **Human-in-the-loop verification**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **Boundary-first design**: 4/4 (recurrence, generativity, distinctiveness, boundary)
   - **obra/superpowers**: 4/4 (recurrence, generativity, distinctiveness, boundary)
   - **affaan-m/ECC**: 4/4 (recurrence, generativity, distinctiveness, boundary)
 - Deferred patterns:
-  - **Hypothesis-test-learn loop**: missing distinctiveness
-  - **Boundary-first design**: missing distinctiveness
   - **multica-ai/andrej-karpathy-skills**: missing generativity
 
 ## Default Recommendation
 
-- Summary: Start by borrowing this pattern: Borrow a first-time operator flow that explains itself before it asks for more structure. Avoid this for the first pass: Do not mimic product polish that adds UI bulk without improving clarity.
-- Why: Intent still has gaps, so the system should surface the recommendation and ask for correction before deepening the package.
+- Summary: Start by borrowing this pattern: Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts. Avoid this for the first pass: Do not let packaging or platform concerns swallow the core job boundary.
+- Why: There is a real design conflict to resolve: The stated preference leans lightweight or speed-first, while the benchmark mix leans toward governance, review, or heavier evaluation structure.
 - User decision required: `True`
 
 ## Visibility Mode
 
 - Mode: `explicit`
-- Reasons: intent_uncertain
+- Reasons: design_conflict
 - User note: Surface the recommendation because intent is still settling or there is a real design conflict that needs a user call.
 - Reviewer note: Keep the full benchmark and synthesis evidence visible for authors and reviewers.
 
 ## Conflict Check
 
-- No material design conflict detected. Keep the synthesis silent for the user.
+- **lightweight_vs_governance**: The stated preference leans lightweight or speed-first, while the benchmark mix leans toward governance, review, or heavier evaluation structure.
 
 ## Quality Lift Thesis
 

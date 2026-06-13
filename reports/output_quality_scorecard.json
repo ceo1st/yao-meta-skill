@@ -11,7 +11,8 @@
     "delta": 100.0,
     "regression_count": 0,
     "gate_pass": true,
-    "failure_taxonomy": []
+    "failure_taxonomy": [],
+    "blind_pair_count": 5
   },
   "results": [
     {
@@ -800,8 +801,16 @@
     }
   ],
   "failures": [],
+  "blind_review": {
+    "pack": "reports/output_blind_review_pack.json",
+    "answer_key": "reports/output_blind_answer_key.json",
+    "pair_count": 5
+  },
   "artifacts": {
     "json": "reports/output_quality_scorecard.json",
-    "markdown": "reports/output_quality_scorecard.md"
+    "markdown": "reports/output_quality_scorecard.md",
+    "blind_review_pack_json": "reports/output_blind_review_pack.json",
+    "blind_review_pack_md": "reports/output_blind_review_pack.md",
+    "blind_answer_key_json": "reports/output_blind_answer_key.json"
   }
 }

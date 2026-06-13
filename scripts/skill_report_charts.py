@@ -3,6 +3,9 @@ import html
 import math
 
 
+SCRIPT_INTERFACE = "internal-module"
+SCRIPT_INTERFACE_REASON = "Imported by render_skill_overview.py to render inline SVG report charts."
+
 BRAND = "#1B365D"
 BORDER = "#e8e6dc"
 SOFT = "#faf9f5"

@@ -6,6 +6,8 @@ import zipfile
 from pathlib import Path
 import yaml
 
+from compile_skill import compile_target_contract
+
 
 def display_path(path: Path, root: Path) -> str:
     try:
@@ -199,10 +201,13 @@ def build_manifest(skill_dir: Path, platform: str) -> dict:
         ir=ir,
         ir_source=ir_source,
     )
+    compiled = compile_target_contract(skill_dir, platform)
+    if compiled.get("failures"):
+        raise ValueError(f"Compiler failed for {platform}: {'; '.join(compiled['failures'])}")
     return {
         "name": semantic["name"],
         "description": semantic["description"],
-        "version": frontmatter.get("version", "1.0.0"),
+        "version": manifest.get("version") or frontmatter.get("version", "1.0.0"),
         "platform": platform,
         "skill_root": skill_dir.name,
         "job_to_be_done": semantic["job_to_be_done"],
@@ -210,6 +215,14 @@ def build_manifest(skill_dir: Path, platform: str) -> dict:
         "ir_schema_version": semantic["ir_schema_version"],
         "semantic_contract": semantic["semantic_contract"],
         "semantic_parity": semantic["semantic_parity"],
+        "compiler": compiled["compiler"],
+        "compiled_contract": compiled["compiled_contract"],
+        "permission_contract": compiled["permission_contract"],
+        "target_permission_contract": compiled["target_permission_contract"],
+        "target_native_contract": compiled["target_native_contract"],
+        "target_transform": compiled["target_transform"],
+        "unsupported_features": compiled["unsupported_features"],
+        "compiler_warnings": compiled["warnings"],
         "display_name": interface.get("display_name", skill_dir.name),
         "short_description": interface.get("short_description", ""),
         "default_prompt": interface.get("default_prompt", ""),
@@ -260,6 +273,9 @@ PLATFORM_CONTRACTS = {
             "remote_inline_execution",
             "degradation_strategy",
             "portability_profile",
+            "permission_contract",
+            "target_permission_contract",
+            "target_native_contract",
         ],
         "required_files": ["targets/openai/adapter.json", "targets/openai/agents/openai.yaml"],
         "field_mapping": {
@@ -292,6 +308,9 @@ PLATFORM_CONTRACTS = {
             "remote_inline_execution",
             "degradation_strategy",
             "portability_profile",
+            "permission_contract",
+            "target_permission_contract",
+            "target_native_contract",
         ],
         "required_files": ["targets/claude/adapter.json", "targets/claude/README.md"],
         "field_mapping": {
@@ -324,6 +343,9 @@ PLATFORM_CONTRACTS = {
             "remote_inline_execution",
             "degradation_strategy",
             "portability_profile",
+            "permission_contract",
+            "target_permission_contract",
+            "target_native_contract",
         ],
         "required_files": ["targets/generic/adapter.json"],
         "field_mapping": {
@@ -335,6 +357,19 @@ PLATFORM_CONTRACTS = {
         },
     },
 }
+
+EXCLUDED_ARCHIVE_PARTS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist"}
+
+
+def should_skip_archive_path(rel_path: Path) -> bool:
+    parts = rel_path.parts
+    if any(part in EXCLUDED_ARCHIVE_PARTS for part in parts):
+        return True
+    if parts == ("reports", "telemetry_events.jsonl"):
+        return True
+    if parts and parts[0] == "tests" and any(part.startswith("tmp") for part in parts[1:]):
+        return True
+    return False
 
 
 def is_relative_to(path: Path, parent: Path) -> bool:
@@ -397,6 +432,19 @@ def write_adapter(skill_dir: Path, out_dir: Path, platform: str) -> Path:
                     "shell": payload["shell"],
                     "trust_level": payload["trust_level"],
                     "remote_inline_execution": payload["remote_inline_execution"],
+                    "permission_contract": {
+                        "review_required": payload["target_permission_contract"]["review_required"],
+                        "declared_capabilities": payload["target_permission_contract"]["declared_capabilities"],
+                        "native_enforcement": payload["target_permission_contract"]["native_enforcement"],
+                        "representation": payload["target_permission_contract"]["representation"],
+                    },
+                    "native_contract": {
+                        "native_surface": payload["target_native_contract"]["native_surface"],
+                        "activation_policy": payload["target_native_contract"]["activation"]["policy"],
+                        "resource_strategy": payload["target_native_contract"]["resources"]["strategy"],
+                        "permission_enforcement": payload["target_native_contract"]["permissions"]["enforcement"],
+                        "review_artifacts": payload["target_native_contract"]["review"]["artifacts"],
+                    },
                     "degradation_strategy": payload["degradation_strategy"],
                 },
             },
@@ -404,8 +452,14 @@ def write_adapter(skill_dir: Path, out_dir: Path, platform: str) -> Path:
         payload["install_hint"] = f"Use the packaged skill and include targets/openai/agents/openai.yaml when the client expects OpenAI-style interface metadata."
     elif platform == "claude":
         notes = target_dir / "README.md"
+        native = payload["target_native_contract"]
         notes.write_text(
-            f"# Claude-Compatible Package\n\nUse `{skill_dir.name}` with its neutral source files. This target does not require vendor metadata by default.\n",
+            f"# Claude-Compatible Package\n\nUse `{skill_dir.name}` with its neutral source files. This target does not require vendor metadata by default.\n\n"
+            f"Native surface: {native['native_surface']}.\n\n"
+            f"Activation: {native['activation']['policy']}\n\n"
+            f"Resources: {native['resources']['strategy']}\n\n"
+            f"Scripts: {native['scripts']['strategy']}\n\n"
+            f"Permission metadata is preserved in `adapter.json` under `target_permission_contract` and `target_native_contract` for reviewer visibility.\n",
             encoding="utf-8",
         )
         payload["install_hint"] = f"Use the packaged skill directly; this target relies on SKILL.md and optional neutral metadata."
@@ -429,6 +483,9 @@ def make_zip(skill_dir: Path, out_dir: Path) -> Path:
             if not is_relative_to(resolved, skill_root):
                 continue
             if is_relative_to(resolved, out_root):
+                continue
+            rel_path = path.relative_to(skill_dir)
+            if should_skip_archive_path(rel_path):
                 continue
             zf.write(path, arcname=str(path.relative_to(skill_dir.parent)))
     return zip_path

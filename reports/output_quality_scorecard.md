@@ -7,7 +7,11 @@ This v0 scorecard compares static without-skill and with-skill outputs using ass
 - With-skill pass rate: `100.0`
 - Delta: `100.0`
 - Regressions: `0`
+- Blind A/B pairs: `5`
 - Gate pass: `True`
+
+Blind review artifacts are generated separately so reviewers can inspect A/B outputs without seeing the answer key.
+Run output review adjudication after reviewer decisions are recorded; pending cases should stay pending rather than being counted as human agreement.
 
 ## Case Results
 

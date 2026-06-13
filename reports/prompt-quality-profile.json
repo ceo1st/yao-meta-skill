@@ -2,14 +2,26 @@
   "skill_name": "yao-meta-skill",
   "relevance": "prompt-heavy",
   "primary_task_family": {
-    "key": "dialogue_interaction",
-    "label": "Dialogue interaction",
+    "key": "execution_operation",
+    "label": "Execution operation",
     "matched_keywords": [
-      "dialogue",
-      "conversation"
+      "workflow",
+      "runbook"
     ]
   },
   "task_families": [
+    {
+      "key": "execution_operation",
+      "label": "Execution operation",
+      "score": 2,
+      "matched_keywords": [
+        "workflow",
+        "runbook"
+      ],
+      "role_guidance": "Use an operator role with explicit boundaries, inputs, outputs, and failure handling.",
+      "task_guidance": "Convert the job into ordered steps with validation checks and stop conditions.",
+      "format_guidance": "Return a runbook-like handoff with commands, checks, owners, and next actions when relevant."
+    },
     {
       "key": "dialogue_interaction",
       "label": "Dialogue interaction",
@@ -23,15 +35,15 @@
       "format_guidance": "Return concise prompts, decision points, and reviewer-visible assumptions."
     },
     {
-      "key": "execution_operation",
-      "label": "Execution operation",
+      "key": "creative_generation",
+      "label": "Creative generation",
       "score": 1,
       "matched_keywords": [
-        "workflow"
+        "content"
       ],
-      "role_guidance": "Use an operator role with explicit boundaries, inputs, outputs, and failure handling.",
-      "task_guidance": "Convert the job into ordered steps with validation checks and stop conditions.",
-      "format_guidance": "Return a runbook-like handoff with commands, checks, owners, and next actions when relevant."
+      "role_guidance": "Use a taste-aware creator role with clear audience, tone, and originality boundaries.",
+      "task_guidance": "Generate variants, explain selection logic, and preserve the user's distinctive constraints.",
+      "format_guidance": "Return options with rationale, selection criteria, and refinement paths."
     },
     {
       "key": "prompt_engineering",
@@ -46,27 +58,27 @@
     }
   ],
   "complexity": {
-    "band": "complex",
-    "score": 5,
-    "reason": "multiple inputs, constraints, or task families require tradeoff handling"
+    "band": "expert",
+    "score": 27,
+    "reason": "multiple task families plus governance, evaluation, or expert-level constraints"
   },
   "need_model": {
-    "explicit_need": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+    "explicit_need": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
     "implicit_need": "The reusable skill needs a stable role, task, and output contract rather than a one-off prompt.",
-    "scenario": "not yet explicit",
+    "scenario": "rough workflow notes, SOPs, runbooks, prompts, transcripts, documents, or repeated task descriptions, an existing skill directory that needs refactor, evaluation, packaging, or governance hardening, target platform requirements such as OpenAI, Claude, generic Agent Skills, or team distribution, benchmark references, local constraints, desired maturity tier, and review standards",
     "user_level": "infer from examples and standards; ask only if it changes output depth",
-    "success_standard": "usable output with clear validation cues"
+    "success_standard": "trigger boundaries must be tested with should-trigger and should-not-trigger cases, production and higher maturity work needs output eval, trust, runtime conformance, and Review Studio evidence, governed work needs owner, review cadence, permission approvals, registry metadata, package verification, and install simulation, generated reports should be bilingual or reviewer-friendly when they are user-facing, each new asset must earn its place by reducing ambiguity, risk, or repeated work"
   },
   "rtf_to_skill": {
-    "role": "Use a conversational role that asks only high-leverage questions and remembers the user's goal.",
-    "task": "Clarify intent, resolve uncertainty, and converge toward a recommendation instead of a long option list.",
-    "format": "Return concise prompts, decision points, and reviewer-visible assumptions."
+    "role": "Use an operator role with explicit boundaries, inputs, outputs, and failure handling.",
+    "task": "Convert the job into ordered steps with validation checks and stop conditions.",
+    "format": "Return a runbook-like handoff with commands, checks, owners, and next actions when relevant."
   },
   "quality_matrix": [
     {
       "key": "completeness",
       "label": "Completeness",
-      "score": 80,
+      "score": 100,
       "matched_signals": [
         "output",
         "constraint",
@@ -77,8 +89,10 @@
     {
       "key": "clarity",
       "label": "Clarity",
-      "score": 80,
-      "matched_signals": [],
+      "score": 85,
+      "matched_signals": [
+        "clear"
+      ],
       "repair": "Replace broad verbs with observable actions and define what done means."
     },
     {
@@ -104,12 +118,12 @@
     {
       "key": "specificity",
       "label": "Specificity",
-      "score": 70,
+      "score": 80,
       "matched_signals": [],
       "repair": "Anchor wording in the user's audience, domain nouns, and target outcome."
     }
   ],
-  "overall_quality_score": 82.0,
+  "overall_quality_score": 89.0,
   "self_repair_checks": [
     "Check explicit need, implicit need, scenario, user level, and success standard before deepening.",
     "Map Role, Task, and Format into skill behavior, not decorative prompt labels.",

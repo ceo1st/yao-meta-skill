@@ -21,6 +21,7 @@ tests/tmp_system_model/
 tests/tmp_security/
 tests/tmp_baseline_compare.*
 reports/release_snapshots/
+reports/telemetry_events.jsonl
 .yao/
 
 # Local business-skill experiments belong outside this meta-skill repo unless promoted intentionally.

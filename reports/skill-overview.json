@@ -12,10 +12,23 @@
       "SKILL.md",
       "agents/interface.yaml",
       "reports/skill-ir.json",
+      "reports/compiled_targets.md",
       "reports/output_quality_scorecard.md",
+      "reports/output_execution_runs.md",
+      "reports/output_blind_review_pack.md",
+      "reports/output_blind_answer_key.json",
+      "reports/output_review_adjudication.md",
       "reports/conformance_matrix.md",
       "reports/security_trust_report.md",
+      "reports/runtime_permission_probes.md",
       "reports/skill_atlas.html",
+      "reports/registry_audit.md",
+      "reports/package_verification.md",
+      "reports/install_simulation.md",
+      "reports/upgrade_check.md",
+      "reports/adoption_drift_report.md",
+      "reports/review_waivers.md",
+      "reports/review_annotations.md",
       "reports/review-studio.html",
       "reports/skill-overview.html"
     ],
@@ -52,17 +65,17 @@
       "label": "证据充分",
       "score": 100,
       "reasons": [
-        "已生成 13 / 13 类报告证据。",
+        "已生成 20 / 20 类报告证据。",
         "skill-ir.json 已存在。",
-        "intent-dialogue.json 已存在。",
-        "intent-confidence.json 已存在。"
+        "compiled_targets.json 已存在。",
+        "intent-dialogue.json 已存在。"
       ]
     },
     "maintainability_score": {
       "label": "可维护性",
       "score": 100,
       "reasons": [
-        "SKILL.md 约 346 个词/字。",
+        "SKILL.md 约 365 个词/字。",
         "入口文件保持克制，可维护性较好。",
         "references/ 已承载扩展指导。",
         "scripts/ 已承载确定性逻辑。",
@@ -83,7 +96,7 @@
       "label": "上下文成本",
       "score": 42,
       "reasons": [
-        "入口约 346 个词/字，references 约 11313 个词/字。",
+        "入口约 365 个词/字，references 约 14247 个词/字。",
         "分数越高代表上下文成本越低。",
         "上下文成本偏高，建议压缩入口或拆分 references。"
       ]
@@ -91,7 +104,7 @@
   },
   "capability_profile": {
     "archetype": "governed",
-    "task_family": "Dialogue interaction",
+    "task_family": "Execution operation",
     "maturity": "governed",
     "trigger_strength": "手动触发 + description 路由",
     "reuse_scope": "跨平台",
@@ -104,7 +117,7 @@
     "nodes": [
       {
         "title": "意图澄清",
-        "body": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse."
+        "body": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse."
       },
       {
         "title": "边界路由",
@@ -124,7 +137,7 @@
       },
       {
         "title": "杠杆升级",
-        "body": "Ask one focused question and update intent context before adding assets."
+        "body": "Name the recurring job, expected input, output, and strongest non-goal in compact language."
       }
     ],
     "layers": [
@@ -143,13 +156,13 @@
       "shell": "bash"
     },
     "inputs": [
-      "用户提供的工作流、提示词、文档、记录或散乱笔记",
-      "期望沉淀的复用场景、排除项、约束和质量标准"
+      "rough workflow notes, SOPs, runbooks, prompts, transcripts, documents, or repeated task descriptions",
+      "an existing skill directory that needs refactor, evaluation, packaging, or governance hardening",
+      "target platform requirements such as OpenAI, Claude, generic Agent Skills, or team distribution",
+      "benchmark references, local constraints, desired maturity tier, and review standards"
     ],
     "outputs": [
-      "可路由的 SKILL.md",
-      "agents/interface.yaml 元数据",
-      "必要的 references、scripts、evals、reports 证据",
+      "A working skill package with lean SKILL.md, aligned agents/interface.yaml, justified references, scripts only when useful, eval evidence, reports, packaging metadata, and clear next iteration recommendations.",
       "结构化 Skill 目录，共 8 类关键资产。"
     ],
     "should_trigger": [
@@ -181,13 +194,13 @@
     "strengths": [
       "触发面保持精简，并锚定在 frontmatter description。",
       "已生成 Skill IR，核心语义可先于平台打包被审查和迁移。",
+      "已生成目标编译报告，可审查 IR 到 OpenAI、Claude、generic 等目标契约的映射。",
       "已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。",
-      "已生成 Runtime Conformance Matrix，可审查目标端消费能力。",
-      "已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。",
-      "已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。"
+      "已生成 Output Execution Runs，可区分记录样本、命令执行和模型执行证据。",
+      "已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。"
     ],
     "gaps": [
-      "上下文成本需要补强：入口约 346 个词/字，references 约 11313 个词/字。"
+      "上下文成本需要补强：入口约 365 个词/字，references 约 14247 个词/字。"
     ],
     "recommendations": [
       "先改触发边界，再扩展工作流。",
@@ -195,7 +208,7 @@
       "每次升级后重新生成报告并检查分数原因。"
     ],
     "artifact_design": {
-      "design_system": "review studio",
+      "design_system": "metric editorial",
       "highlights": [
         "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit.",
         "Name the working directory and required inputs for commands.",
@@ -204,24 +217,24 @@
       ]
     },
     "prompt_quality": {
-      "overall_quality_score": 82.0,
+      "overall_quality_score": 89.0,
       "highlights": [
-        "Primary prompt task family: Dialogue interaction.",
-        "Complexity: complex — multiple inputs, constraints, or task families require tradeoff handling",
-        "Completeness: 80/100.",
-        "Clarity: 80/100."
+        "Primary prompt task family: Execution operation.",
+        "Complexity: expert — multiple task families plus governance, evaluation, or expert-level constraints",
+        "Completeness: 100/100.",
+        "Clarity: 85/100."
       ]
     },
     "system_model": {
       "stability": {
-        "score": 86,
-        "band": "stable-first-pass"
+        "score": 100,
+        "band": "system-ready"
       },
       "highlights": [
-        "Stability: stable-first-pass (86/100).",
-        "Owned job: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
-        "Leverage: Clarify the real job boundary — Ask one focused question and update intent context before adding assets.",
-        "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language."
+        "Stability: system-ready (100/100).",
+        "Owned job: Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
+        "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language.",
+        "Leverage: Install output self-repair checks — Add only the checks that prevent recurring output mistakes."
       ]
     }
   },
@@ -238,21 +251,21 @@
         "name": "输出漂移风险",
         "impact": 2,
         "probability": 1,
-        "signal": "已生成 13 / 13 类报告证据。",
+        "signal": "已生成 20 / 20 类报告证据。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
         "name": "证据不足风险",
         "impact": 3,
         "probability": 1,
-        "signal": "已生成 13 / 13 类报告证据。",
+        "signal": "已生成 20 / 20 类报告证据。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
         "name": "包体膨胀风险",
         "impact": 2,
         "probability": 1,
-        "signal": "SKILL.md 约 346 个词/字。",
+        "signal": "SKILL.md 约 365 个词/字。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
@@ -414,13 +427,13 @@
         "path": "references",
         "label": "Extended guidance and reusable notes",
         "kind": "folder",
-        "file_count": 29
+        "file_count": 32
       },
       {
         "path": "scripts",
         "label": "Deterministic helpers or local tooling",
         "kind": "folder",
-        "file_count": 50
+        "file_count": 62
       },
       {
         "path": "evals",
@@ -432,10 +445,10 @@
         "path": "reports",
         "label": "Generated evidence and overview artifacts",
         "kind": "folder",
-        "file_count": 144
+        "file_count": 170
       }
     ],
-    "file_count": 255,
+    "file_count": 296,
     "folder_count": 4,
     "distribution": [
       {
@@ -456,11 +469,11 @@
       },
       {
         "label": "references",
-        "value": 29
+        "value": 32
       },
       {
         "label": "scripts",
-        "value": 50
+        "value": 62
       },
       {
         "label": "evals",
@@ -468,7 +481,7 @@
       },
       {
         "label": "reports",
-        "value": 144
+        "value": 170
       }
     ]
   },
@@ -583,13 +596,13 @@
       "path": "references",
       "label": "Extended guidance and reusable notes",
       "kind": "folder",
-      "file_count": 29
+      "file_count": 32
     },
     {
       "path": "scripts",
       "label": "Deterministic helpers or local tooling",
       "kind": "folder",
-      "file_count": 50
+      "file_count": 62
     },
     {
       "path": "evals",
@@ -601,16 +614,16 @@
       "path": "reports",
       "label": "Generated evidence and overview artifacts",
       "kind": "folder",
-      "file_count": 144
+      "file_count": 170
     }
   ],
   "strengths": [
     "触发面保持精简，并锚定在 frontmatter description。",
     "已生成 Skill IR，核心语义可先于平台打包被审查和迁移。",
+    "已生成目标编译报告，可审查 IR 到 OpenAI、Claude、generic 等目标契约的映射。",
     "已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。",
-    "已生成 Runtime Conformance Matrix，可审查目标端消费能力。",
-    "已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。",
-    "已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。"
+    "已生成 Output Execution Runs，可区分记录样本、命令执行和模型执行证据。",
+    "已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。"
   ],
   "scenarios": [
     "把重复流程沉淀为可复用的 agent skill。",
@@ -626,20 +639,20 @@
   },
   "io_contract": {
     "inputs": [
-      "用户提供的工作流、提示词、文档、记录或散乱笔记",
-      "期望沉淀的复用场景、排除项、约束和质量标准"
+      "rough workflow notes, SOPs, runbooks, prompts, transcripts, documents, or repeated task descriptions",
+      "an existing skill directory that needs refactor, evaluation, packaging, or governance hardening",
+      "target platform requirements such as OpenAI, Claude, generic Agent Skills, or team distribution",
+      "benchmark references, local constraints, desired maturity tier, and review standards"
     ],
     "outputs": [
-      "可路由的 SKILL.md",
-      "agents/interface.yaml 元数据",
-      "必要的 references、scripts、evals、reports 证据",
+      "A working skill package with lean SKILL.md, aligned agents/interface.yaml, justified references, scripts only when useful, eval evidence, reports, packaging metadata, and clear next iteration recommendations.",
       "结构化 Skill 目录，共 8 类关键资产。"
     ]
   },
   "principles": [
     {
       "title": "意图澄清",
-      "body": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse."
+      "body": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse."
     },
     {
       "title": "边界路由",
@@ -659,7 +672,7 @@
     },
     {
       "title": "杠杆升级",
-      "body": "Ask one focused question and update intent context before adding assets."
+      "body": "Name the recurring job, expected input, output, and strongest non-goal in compact language."
     }
   ],
   "roadmap": [
@@ -707,6 +720,81 @@
     "trigger_samples": 8,
     "output_eval_cases": 3
   },
+  "compiled_targets": {
+    "ok": true,
+    "schema_version": "1.0",
+    "summary": {
+      "target_count": 4,
+      "pass_count": 4,
+      "warn_count": 0,
+      "block_count": 0,
+      "failure_count": 0,
+      "warning_count": 0
+    },
+    "targets": [
+      {
+        "target": "openai",
+        "status": "pass",
+        "adapter_mode": "metadata-adapter",
+        "degradation_strategy": "metadata-adapter",
+        "native_surface": "OpenAI-style interface metadata plus neutral Agent Skills source",
+        "permission_enforcement": "metadata-only",
+        "generated_files": [
+          "targets/openai/adapter.json",
+          "targets/openai/agents/openai.yaml"
+        ],
+        "unsupported_features": [
+          "client-native script permission prompts are represented as permission contract metadata"
+        ],
+        "warnings": []
+      },
+      {
+        "target": "claude",
+        "status": "pass",
+        "adapter_mode": "neutral-source-plus-adapter",
+        "degradation_strategy": "neutral-source-plus-adapter",
+        "native_surface": "Claude-compatible neutral source folder with adapter notes",
+        "permission_enforcement": "metadata-fallback",
+        "generated_files": [
+          "targets/claude/adapter.json",
+          "targets/claude/README.md"
+        ],
+        "unsupported_features": [
+          "vendor-native metadata fields are carried as adapter JSON and README notes"
+        ],
+        "warnings": []
+      },
+      {
+        "target": "generic",
+        "status": "pass",
+        "adapter_mode": "agent-skills-compatible",
+        "degradation_strategy": "neutral-source",
+        "native_surface": "Agent Skills compatible neutral package",
+        "permission_enforcement": "consumer-enforced-or-metadata-only",
+        "generated_files": [
+          "targets/generic/adapter.json"
+        ],
+        "unsupported_features": [],
+        "warnings": []
+      },
+      {
+        "target": "agent-skills-compatible",
+        "status": "pass",
+        "adapter_mode": "neutral-agent-skills-source",
+        "degradation_strategy": "neutral-source",
+        "native_surface": "Agent Skills standard source tree",
+        "permission_enforcement": "consumer-enforced-or-metadata-only",
+        "generated_files": [
+          "SKILL.md",
+          "agents/interface.yaml"
+        ],
+        "unsupported_features": [],
+        "warnings": []
+      }
+    ],
+    "failures": [],
+    "warnings": []
+  },
   "output_quality": {
     "case_count": 5,
     "file_backed_case_count": 1,
@@ -717,39 +805,417 @@
     "delta": 100.0,
     "regression_count": 0,
     "gate_pass": true,
-    "failure_taxonomy": []
+    "failure_taxonomy": [],
+    "blind_pair_count": 5
+  },
+  "output_execution": {
+    "ok": true,
+    "summary": {
+      "case_count": 5,
+      "variant_run_count": 10,
+      "command_executed_count": 10,
+      "model_executed_count": 0,
+      "recorded_fixture_count": 0,
+      "timing_observed_count": 10,
+      "token_observed_count": 0,
+      "token_estimated_count": 10,
+      "baseline_pass_rate": 0.0,
+      "with_skill_pass_rate": 100.0,
+      "delta": 100.0,
+      "regression_count": 0,
+      "failure_count": 0,
+      "gate_pass": true
+    },
+    "runner": {
+      "mode": "command",
+      "command": [
+        "python3",
+        "scripts/local_output_eval_runner.py"
+      ],
+      "timeout_seconds": 30.0
+    },
+    "failures": []
+  },
+  "output_blind_review": {
+    "summary": {
+      "pair_count": 5,
+      "answer_key_separate": true,
+      "with_skill_hidden_count": 5
+    },
+    "seed": "yao-output-eval-blind-v1",
+    "pair_count": 5,
+    "answer_key_separate": true
+  },
+  "output_review_adjudication": {
+    "ok": true,
+    "summary": {
+      "pair_count": 5,
+      "judgment_count": 0,
+      "pending_count": 5,
+      "agreement_count": 0,
+      "disagreement_count": 0,
+      "invalid_decision_count": 0,
+      "agreement_rate": null,
+      "needs_review": true,
+      "failure_count": 0
+    },
+    "reviewer": "",
+    "reviewed_at": "",
+    "failures": []
   },
   "runtime_conformance": {
     "target_count": 5,
     "pass_count": 5,
     "fail_count": 0
   },
+  "runtime_permissions": {
+    "ok": true,
+    "summary": {
+      "target_count": 3,
+      "pass_count": 3,
+      "fail_count": 0,
+      "native_enforcement_count": 0,
+      "metadata_fallback_count": 3,
+      "residual_risk_count": 3,
+      "required_capability_count": 3,
+      "failure_count": 0
+    },
+    "expected_capabilities": [
+      "file_write",
+      "network",
+      "subprocess"
+    ],
+    "targets": [
+      {
+        "target": "openai",
+        "status": "pass",
+        "assurance": "metadata-fallback-explicit",
+        "native_enforcement": false,
+        "metadata_fallback_explicit": true,
+        "residual_risks": [
+          "Client-native permission enforcement is not provided by this target; installer or operator must honor metadata."
+        ]
+      },
+      {
+        "target": "claude",
+        "status": "pass",
+        "assurance": "metadata-fallback-explicit",
+        "native_enforcement": false,
+        "metadata_fallback_explicit": true,
+        "residual_risks": [
+          "Client-native permission enforcement is not provided by this target; installer or operator must honor metadata."
+        ]
+      },
+      {
+        "target": "generic",
+        "status": "pass",
+        "assurance": "metadata-fallback-explicit",
+        "native_enforcement": false,
+        "metadata_fallback_explicit": true,
+        "residual_risks": [
+          "Client-native permission enforcement is not provided by this target; installer or operator must honor metadata."
+        ]
+      }
+    ],
+    "failures": []
+  },
   "trust_security": {
-    "scanned_files": 127,
-    "script_count": 50,
+    "scanned_files": 146,
+    "script_count": 62,
+    "internal_module_count": 3,
     "secret_findings": 0,
     "dependency_files": [
       "requirements-ci.txt"
     ],
     "network_script_count": 2,
+    "network_policy_covered_count": 2,
+    "network_policy_missing_count": 0,
+    "file_write_script_count": 47,
+    "permission_required_count": 3,
+    "permission_approved_count": 3,
+    "permission_missing_count": 0,
+    "permission_invalid_count": 0,
+    "permission_expired_count": 0,
+    "help_smoke_checked_count": 59,
+    "help_smoke_failed_count": 0,
     "interactive_script_count": 0,
-    "package_sha256": "18618ecee3683f7488ae4a65a9800c428ee15c6539bbcd367910c57d84ac77ad"
+    "package_hash_scope": "source-contract-without-generated-reports",
+    "package_hash_file_count": 146,
+    "package_sha256": "9f1d53dbaeb1c90c80d7ffbbc1d10473e50b8032acda68332fbae551bb246abe"
   },
   "skill_atlas": {
     "skill_count": 12,
+    "actionable_skill_count": 1,
     "route_collision_count": 5,
+    "actionable_route_collision_count": 0,
     "owner_gap_count": 9,
+    "actionable_owner_gap_count": 0,
     "stale_count": 10,
+    "actionable_stale_count": 0,
     "shared_resource_count": 0,
-    "no_route_opportunity_count": 0
+    "no_route_opportunity_count": 0,
+    "non_actionable_issue_count": 24
+  },
+  "registry_distribution": {
+    "ok": true,
+    "package": {
+      "schema_version": "2.0",
+      "name": "yao-meta-skill",
+      "version": "1.1.0",
+      "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+      "targets": [
+        "openai",
+        "claude",
+        "generic",
+        "agent-skills-compatible"
+      ],
+      "maturity": "governed",
+      "owner": "Yao Team",
+      "review_cadence": "quarterly",
+      "trust_level": "local",
+      "license": "MIT",
+      "checksums": {
+        "package_sha256": "9f1d53dbaeb1c90c80d7ffbbc1d10473e50b8032acda68332fbae551bb246abe",
+        "archive_sha256": "4d1227dc0996a97aa4987761d46081391fe15b36362e19765e1e7aa8e5d41c06"
+      },
+      "compatibility": {
+        "openai": "pass",
+        "claude": "pass",
+        "agent-skills": "pass",
+        "vscode": "pass",
+        "generic": "pass",
+        "agent-skills-compatible": "pass"
+      },
+      "source": {
+        "skill_dir": ".",
+        "skill_ir": "skill-ir/examples/yao-meta-skill.json",
+        "ir_schema_version": "2.0.0",
+        "canonical_metadata": "agents/interface.yaml"
+      },
+      "artifacts": {
+        "overview_html": "reports/skill-overview.html",
+        "review_studio_html": "reports/review-studio.html",
+        "trust_report": "reports/security_trust_report.md",
+        "conformance_matrix": "reports/conformance_matrix.md",
+        "compiled_targets": "reports/compiled_targets.md",
+        "package_verification": "reports/package_verification.md",
+        "install_simulation": "reports/install_simulation.md",
+        "adoption_drift": "reports/adoption_drift_report.md",
+        "review_waivers": "reports/review_waivers.md",
+        "review_annotations": "reports/review_annotations.md",
+        "package_metadata": "registry/packages/yao-meta-skill.json"
+      },
+      "distribution": {
+        "archive_verified": true,
+        "archive_sha256": "4d1227dc0996a97aa4987761d46081391fe15b36362e19765e1e7aa8e5d41c06",
+        "package_verification": "reports/package_verification.json",
+        "install_simulated": true,
+        "install_simulation": "reports/install_simulation.json"
+      },
+      "generated_at": "2026-06-13"
+    },
+    "failures": [],
+    "warnings": []
+  },
+  "package_verification": {
+    "ok": true,
+    "summary": {
+      "target_count": 3,
+      "adapter_count": 3,
+      "archive_present": true,
+      "archive_sha256": "4d1227dc0996a97aa4987761d46081391fe15b36362e19765e1e7aa8e5d41c06",
+      "archive_entry_count": 483,
+      "failure_count": 0,
+      "warning_count": 0
+    },
+    "failures": [],
+    "warnings": []
+  },
+  "install_simulation": {
+    "ok": true,
+    "summary": {
+      "archive_present": true,
+      "archive_entry_count": 483,
+      "archive_extracted": true,
+      "entrypoint_loaded": true,
+      "manifest_loaded": true,
+      "interface_loaded": true,
+      "adapter_count": 3,
+      "install_root_is_temp": false,
+      "failure_count": 0,
+      "warning_count": 0
+    },
+    "failures": [],
+    "warnings": []
+  },
+  "upgrade_check": {
+    "ok": true,
+    "summary": {
+      "declared_bump": "minor",
+      "recommended_bump": "minor",
+      "breaking_change_count": 0,
+      "added_target_count": 1,
+      "metadata_change_count": 1,
+      "checksum_change_count": 2,
+      "failure_count": 0,
+      "warning_count": 0
+    },
+    "upgrade_diff": {
+      "name_changed": false,
+      "added_targets": [
+        "agent-skills-compatible"
+      ],
+      "removed_targets": [],
+      "compatibility_changes": [
+        {
+          "target": "agent-skills",
+          "from": "missing",
+          "to": "pass",
+          "direction": "improved"
+        },
+        {
+          "target": "agent-skills-compatible",
+          "from": "missing",
+          "to": "pass",
+          "direction": "improved"
+        },
+        {
+          "target": "vscode",
+          "from": "missing",
+          "to": "pass",
+          "direction": "improved"
+        }
+      ],
+      "metadata_changes": [
+        {
+          "field": "description",
+          "from": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes.",
+          "to": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse."
+        }
+      ],
+      "checksum_changes": [
+        {
+          "field": "archive_sha256",
+          "from": "",
+          "to": "4d1227dc0996a97aa4987761d46081391fe15b36362e19765e1e7aa8e5d41c06"
+        },
+        {
+          "field": "package_sha256",
+          "from": "0000000000000000000000000000000000000000000000000000000000000000",
+          "to": "9f1d53dbaeb1c90c80d7ffbbc1d10473e50b8032acda68332fbae551bb246abe"
+        }
+      ]
+    },
+    "release_notes": [
+      "Recommended version bump: minor.",
+      "Added targets: agent-skills-compatible.",
+      "Package or archive checksum changed; reviewers should verify package artifacts before release.",
+      "Package verification evidence: reports/package_verification.md."
+    ],
+    "failures": [],
+    "warnings": []
+  },
+  "adoption_drift": {
+    "ok": true,
+    "summary": {
+      "event_count": 1,
+      "activation_count": 1,
+      "accepted_count": 1,
+      "edited_count": 0,
+      "rejected_count": 0,
+      "missed_count": 0,
+      "failed_count": 0,
+      "adoption_rate": 100.0,
+      "missed_trigger_count": 0,
+      "wrong_trigger_count": 0,
+      "bad_output_count": 0,
+      "script_error_count": 0,
+      "missing_resource_count": 0,
+      "review_overdue_count": 0,
+      "risk_band": "low",
+      "event_types": {
+        "skill_activation": 1
+      },
+      "failure_types": {}
+    },
+    "next_iteration_candidates": [],
+    "privacy_contract": {
+      "storage": "local-first",
+      "event_scope": "metadata-only",
+      "raw_content_allowed": false,
+      "raw_event_log_packaged": false,
+      "blocked_fields": [
+        "content",
+        "input",
+        "inputs",
+        "message",
+        "messages",
+        "note",
+        "output",
+        "outputs",
+        "prompt",
+        "raw",
+        "text",
+        "transcript"
+      ]
+    },
+    "failures": []
+  },
+  "review_waivers": {
+    "ok": true,
+    "summary": {
+      "waiver_count": 0,
+      "active_count": 0,
+      "expired_count": 0,
+      "invalid_count": 0,
+      "covered_gate_count": 0,
+      "covered_gate_keys": []
+    },
+    "policy": {
+      "blocker_waivers_allowed": false,
+      "minimum_reason_chars": 20,
+      "expires_required": true,
+      "known_gate_keys": [
+        "context-budget",
+        "intent-canvas",
+        "operations-loop",
+        "output-lab",
+        "permission-gates",
+        "permission-runtime",
+        "registry-audit",
+        "release-notes",
+        "runtime-matrix",
+        "skill-atlas",
+        "trigger-lab",
+        "trust-report"
+      ]
+    },
+    "failures": [],
+    "warnings": []
+  },
+  "review_annotations": {
+    "ok": true,
+    "summary": {
+      "annotation_count": 0,
+      "open_count": 0,
+      "resolved_count": 0,
+      "deferred_count": 0,
+      "open_blocker_count": 0,
+      "open_warning_count": 0,
+      "linked_gate_count": 0,
+      "target_missing_count": 0,
+      "failure_count": 0
+    },
+    "annotations": [],
+    "failures": []
   },
   "synthesis_highlights": [
-    "Borrow a first-time operator flow that explains itself before it asks for more structure.",
-    "Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.",
+    "Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.",
+    "Borrow a review checkpoint wherever trust matters more than raw speed.",
     "Borrow the discipline of defining what the skill should not own before growing the package."
   ],
   "artifact_design": {
-    "design_system": "review studio",
+    "design_system": "metric editorial",
     "highlights": [
       "Execution-focused technical artifact with environment assumptions, copyable commands, expected outputs, and side effects made explicit.",
       "Name the working directory and required inputs for commands.",
@@ -758,24 +1224,24 @@
     ]
   },
   "prompt_quality": {
-    "overall_quality_score": 82.0,
+    "overall_quality_score": 89.0,
     "highlights": [
-      "Primary prompt task family: Dialogue interaction.",
-      "Complexity: complex — multiple inputs, constraints, or task families require tradeoff handling",
-      "Completeness: 80/100.",
-      "Clarity: 80/100."
+      "Primary prompt task family: Execution operation.",
+      "Complexity: expert — multiple task families plus governance, evaluation, or expert-level constraints",
+      "Completeness: 100/100.",
+      "Clarity: 85/100."
     ]
   },
   "system_model": {
     "stability": {
-      "score": 86,
-      "band": "stable-first-pass"
+      "score": 100,
+      "band": "system-ready"
     },
     "highlights": [
-      "Stability: stable-first-pass (86/100).",
-      "Owned job: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
-      "Leverage: Clarify the real job boundary — Ask one focused question and update intent context before adding assets.",
-      "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language."
+      "Stability: system-ready (100/100).",
+      "Owned job: Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
+      "Leverage: Tune the frontmatter description — Name the recurring job, expected input, output, and strongest non-goal in compact language.",
+      "Leverage: Install output self-repair checks — Add only the checks that prevent recurring output mistakes."
     ]
   },
   "metadata": {

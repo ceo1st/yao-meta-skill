@@ -2,20 +2,37 @@
 
 Skill: `yao-meta-skill`
 
-- Stability score: `86/100`
-- Stability band: `stable-first-pass`
+- Stability score: `100/100`
+- Stability band: `system-ready`
 - Doctrine: Structure drives behavior: improve the boundary, feedback loops, drift watch, and leverage points before adding weight.
 
 ## System Boundary Map
 
-- Owned job: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.
-- Output boundary: a reusable skill output
+- Owned job: Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.
+- Output boundary: A working skill package with lean SKILL.md, aligned agents/interface.yaml, justified references, scripts only when useful, eval evidence, reports, packaging metadata, and clear next iteration recommendations.
 - Maturity assumption: `governed`
 - Input boundary:
-  - user-provided workflow notes, prompts, docs, or examples
+  - rough workflow notes, SOPs, runbooks, prompts, transcripts, documents, or repeated task descriptions
+  - an existing skill directory that needs refactor, evaluation, packaging, or governance hardening
+  - target platform requirements such as OpenAI, Claude, generic Agent Skills, or team distribution
+  - benchmark references, local constraints, desired maturity tier, and review standards
 - Non-goals:
-  - one-off adjacent requests that do not match the recurring job
-  - private local material that was not intentionally included
+  - one-off writing, translation, explanation, or brainstorming requests that do not need a reusable skill
+  - general code review or debugging unless the user is packaging that workflow as a skill
+  - raw private material that was not intentionally supplied as skill evidence
+  - platform-specific plugin creation when the request is not about an agent skill package
+- Constraints:
+  - keep SKILL.md lean and route primarily through frontmatter description
+  - put durable guidance in references, executable logic in scripts, and evidence in reports
+  - default to the lightest reliable mode before adding governance weight
+  - preserve portability across OpenAI, Claude, generic, and Agent Skills compatible targets
+  - avoid raw prompt, output, transcript, or private content in telemetry
+- Standards:
+  - trigger boundaries must be tested with should-trigger and should-not-trigger cases
+  - production and higher maturity work needs output eval, trust, runtime conformance, and Review Studio evidence
+  - governed work needs owner, review cadence, permission approvals, registry metadata, package verification, and install simulation
+  - generated reports should be bilingual or reviewer-friendly when they are user-facing
+  - each new asset must earn its place by reducing ambiguity, risk, or repeated work
 - Human judgment boundary:
   - Ask one focused clarification when the real job, output, or exclusion boundary is unclear.
   - Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.
@@ -25,7 +42,7 @@ Skill: `yao-meta-skill`
 
 ### Intent boundary loop
 
-- Signal: Intent confidence score is 30/100.
+- Signal: Intent confidence score is 100/100.
 - Response: Ask only the highest-leverage clarification before adding package weight.
 - Evidence: reports/intent-confidence.md and reports/intent-dialogue.md
 
@@ -35,8 +52,8 @@ Skill: `yao-meta-skill`
 - Response: Borrow one pattern at a time and keep the rest as reviewer-visible evidence.
 - Evidence: reports/reference-synthesis.md
 - Current patterns:
-  - Borrow a first-time operator flow that explains itself before it asks for more structure.
-  - Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
+  - Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
+  - Borrow a review checkpoint wherever trust matters more than raw speed.
   - Borrow the discipline of defining what the skill should not own before growing the package.
   - Borrow the way it turns a messy workflow into a repeatable operating path.
   - Borrow the clear execution entrypoints and command structure.
@@ -124,15 +141,8 @@ Skill: `yao-meta-skill`
 
 - Symptom: The role, task, and format are copied from a prompt instead of becoming stable skill behavior.
 - Repair: Convert reusable role/task/format assumptions into workflow, reports, or references.
-- Watch Axes:
-  - Specificity
 
 ## Highest Leverage Moves
-
-### 1. Clarify the real job boundary
-
-- Why: Intent uncertainty creates downstream trigger, output, and governance errors.
-- Move: Ask one focused question and update intent context before adding assets.
 
 ### 2. Tune the frontmatter description
 
@@ -147,7 +157,7 @@ Skill: `yao-meta-skill`
 ### 4. Borrow one pattern, not a whole product
 
 - Why: External references improve quality when reduced to structure, not copied as surface style.
-- Move: Start from: Borrow a first-time operator flow that explains itself before it asks for more structure.
+- Move: Start from: Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
 
 ### 5. Close the lifecycle loop
 

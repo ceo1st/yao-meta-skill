@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -7,12 +8,203 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "scripts" / "render_review_studio.py"
+sys.path.insert(0, str(ROOT / "scripts"))
+import render_review_studio as review_studio  # noqa: E402
 
 
 def main() -> None:
     tmp_root = ROOT / "tests" / "tmp_review_studio"
+    if tmp_root.exists():
+        shutil.rmtree(tmp_root)
     tmp_root.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, str(ROOT / "scripts" / "run_output_eval.py")], cwd=ROOT, check=True, capture_output=True, text=True)
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "run_output_execution.py"),
+            "--runner-command",
+            json.dumps(["python3", "scripts/local_output_eval_runner.py"]),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "adjudicate_output_review.py")],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "compile_skill.py"), str(ROOT), "--generated-at", "2026-06-13"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    package_dir = tmp_root / "dist"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "cross_packager.py"),
+            str(ROOT),
+            "--platform",
+            "openai",
+            "--platform",
+            "claude",
+            "--platform",
+            "generic",
+            "--expectations",
+            str(ROOT / "evals" / "packaging_expectations.json"),
+            "--output-dir",
+            str(package_dir),
+            "--zip",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "simulate_install.py"),
+            str(ROOT),
+            "--package-dir",
+            str(package_dir),
+            "--install-root",
+            str(tmp_root / "install-root"),
+            "--output-json",
+            str(ROOT / "reports" / "install_simulation.json"),
+            "--output-md",
+            str(ROOT / "reports" / "install_simulation.md"),
+            "--generated-at",
+            "2026-06-13",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "registry_audit.py"), str(ROOT), "--generated-at", "2026-06-13"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "render_intent_confidence.py"), str(ROOT)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "build_skill_atlas.py"),
+            "--workspace-root",
+            str(ROOT),
+            "--output-dir",
+            str(ROOT / "skill_atlas"),
+            "--report-html",
+            str(ROOT / "reports" / "skill_atlas.html"),
+            "--report-json",
+            str(ROOT / "reports" / "skill_atlas.json"),
+            "--today",
+            "2026-06-13",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "upgrade_check.py"),
+            str(ROOT),
+            "--previous-package-json",
+            str(ROOT / "registry" / "examples" / "yao-meta-skill-1.0.0.json"),
+            "--current-package-json",
+            str(ROOT / "reports" / "registry_audit.json"),
+            "--output-json",
+            str(tmp_root / "upgrade_check.json"),
+            "--output-md",
+            str(tmp_root / "upgrade_check.md"),
+            "--generated-at",
+            "2026-06-13",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    (ROOT / "reports" / "upgrade_check.json").write_text(
+        (tmp_root / "upgrade_check.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    (ROOT / "reports" / "upgrade_check.md").write_text(
+        (tmp_root / "upgrade_check.md").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "render_adoption_drift_report.py"),
+            str(ROOT),
+            "--events-jsonl",
+            str(tmp_root / "telemetry_events.jsonl"),
+            "--record-event",
+            "skill_activation",
+            "--activation-type",
+            "explicit",
+            "--outcome",
+            "accepted",
+            "--timestamp",
+            "2026-06-13T10:00:00Z",
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "render_review_waivers.py"), str(ROOT), "--generated-at", "2026-06-13"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "render_review_annotations.py"),
+            str(ROOT),
+            "--annotations-json",
+            str(tmp_root / "empty_review_annotations_input.json"),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "probe_runtime_permissions.py"),
+            str(ROOT),
+            "--package-dir",
+            str(package_dir),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
     output_html = tmp_root / "review-studio.html"
     output_json = tmp_root / "review-studio.json"
@@ -34,20 +226,135 @@ def main() -> None:
     payload = json.loads(proc.stdout)
     assert payload["ok"], payload
     assert payload["schema_version"] == "2.0", payload
-    assert payload["summary"]["gate_count"] == 8, payload
-    assert payload["summary"]["world_class_score"] > 0, payload
+    assert payload["summary"]["decision"] == "ready", payload
+    assert payload["summary"]["gate_count"] == 13, payload
+    assert payload["summary"]["world_class_score"] == 100, payload
+    assert payload["summary"]["warning_count"] == 0, payload
+    assert payload["summary"]["blocker_count"] == 0, payload
+    assert payload["summary"]["action_count"] == 0, payload
+    assert payload["summary"]["annotation_count"] == 0, payload
+    assert payload["summary"]["open_annotation_blocker_count"] == 0, payload
+    assert payload["summary"]["action_count"] == payload["summary"]["warning_count"] + payload["summary"]["blocker_count"], payload
+    assert payload["review_actions"] == [], payload
     gate_keys = {item["key"] for item in payload["gates"]}
-    assert {"intent-canvas", "trigger-lab", "output-lab", "runtime-matrix", "trust-report", "skill-atlas", "release-notes"} <= gate_keys, payload
+    assert {"intent-canvas", "trigger-lab", "output-lab", "runtime-matrix", "trust-report", "permission-gates", "permission-runtime", "skill-atlas", "operations-loop", "review-waivers", "registry-audit", "release-notes"} <= gate_keys, payload
     output_gate = next(item for item in payload["gates"] if item["key"] == "output-lab")
     assert output_gate["status"] == "pass", output_gate
     assert "5/5 cases" in output_gate["detail"], output_gate
     assert "file-backed 1" in output_gate["detail"], output_gate
+    assert "blind A/B 5" in output_gate["detail"], output_gate
+    assert "exec 10" in output_gate["detail"], output_gate
+    assert "model 0" in output_gate["detail"], output_gate
+    assert "reviewed 0/5" in output_gate["detail"], output_gate
+    release_gate = next(item for item in payload["gates"] if item["key"] == "release-notes")
+    assert "upgrade minor declared / minor recommended" in release_gate["detail"], release_gate
+    assert "reports/upgrade_check.json" in release_gate["evidence"], release_gate
+    registry_gate = next(item for item in payload["gates"] if item["key"] == "registry-audit")
+    assert "install pass" in registry_gate["detail"], registry_gate
+    assert "reports/install_simulation.json" in registry_gate["evidence"], registry_gate
+    trust_gate = next(item for item in payload["gates"] if item["key"] == "trust-report")
+    assert trust_gate["status"] == "pass", trust_gate
+    assert "2 network-capable scripts" in trust_gate["detail"], trust_gate
+    assert "0 help smoke failures" in trust_gate["detail"], trust_gate
+    permission_gate = next(item for item in payload["gates"] if item["key"] == "permission-gates")
+    assert permission_gate["status"] == "pass", permission_gate
+    assert "permissions approved" in permission_gate["detail"], permission_gate
+    assert "gaps 0" in permission_gate["detail"], permission_gate
+    permission_runtime_gate = next(item for item in payload["gates"] if item["key"] == "permission-runtime")
+    assert permission_runtime_gate["status"] == "pass", permission_runtime_gate
+    assert "metadata fallback 3" in permission_runtime_gate["detail"], permission_runtime_gate
+    assert "native 0" in permission_runtime_gate["detail"], permission_runtime_gate
+    intent_gate = next(item for item in payload["gates"] if item["key"] == "intent-canvas")
+    assert intent_gate["status"] == "pass", intent_gate
+    assert "intent confidence 100/100" in intent_gate["detail"], intent_gate
+    atlas_gate = next(item for item in payload["gates"] if item["key"] == "skill-atlas")
+    assert atlas_gate["status"] == "pass", atlas_gate
+    assert "actionable route collisions" in atlas_gate["detail"], atlas_gate
+    operations_gate = next(item for item in payload["gates"] if item["key"] == "operations-loop")
+    assert operations_gate["status"] == "pass", operations_gate
+    assert "metadata events" in operations_gate["detail"], operations_gate
+    assert "risk low" in operations_gate["detail"], operations_gate
+    assert "reports/adoption_drift_report.json" in operations_gate["evidence"], operations_gate
+    waivers_gate = next(item for item in payload["gates"] if item["key"] == "review-waivers")
+    assert waivers_gate["status"] == "pass", waivers_gate
+    assert "cover current warnings" in waivers_gate["detail"], waivers_gate
+    assert "reports/review_waivers.json" in waivers_gate["evidence"], waivers_gate
     assert output_html.exists(), output_html
     assert output_json.exists(), output_json
+    full_payload = json.loads(output_json.read_text(encoding="utf-8"))
+    assert full_payload["evidence_paths"]["compiled_targets"] == "reports/compiled_targets.md", full_payload["evidence_paths"]
+    assert full_payload["evidence_paths"]["output_execution"] == "reports/output_execution_runs.md", full_payload["evidence_paths"]
+    assert full_payload["evidence_paths"]["output_blind_review"] == "reports/output_blind_review_pack.md", full_payload["evidence_paths"]
+    assert full_payload["evidence_paths"]["output_review_adjudication"] == "reports/output_review_adjudication.md", full_payload["evidence_paths"]
+    assert full_payload["evidence_paths"]["review_annotations"] == "reports/review_annotations.md", full_payload["evidence_paths"]
+    assert full_payload["data"]["output_blind_review"]["summary"]["pair_count"] == 5, full_payload["data"]["output_blind_review"]
+    assert full_payload["data"]["output_execution"]["summary"]["command_executed_count"] == 10, full_payload["data"]["output_execution"]
+    assert full_payload["data"]["output_execution"]["summary"]["recorded_fixture_count"] == 0, full_payload["data"]["output_execution"]
+    assert full_payload["data"]["output_execution"]["summary"]["model_executed_count"] == 0, full_payload["data"]["output_execution"]
+    assert full_payload["data"]["output_review_adjudication"]["summary"]["pending_count"] == 5, full_payload["data"]["output_review_adjudication"]
+    assert full_payload["data"]["review_annotations"]["summary"]["annotation_count"] == 0, full_payload["data"]["review_annotations"]
+    assert full_payload["data"]["compiled_targets"]["summary"]["target_count"] >= 4, full_payload["data"]["compiled_targets"]
+    assert full_payload["data"]["compiled_targets"]["summary"]["block_count"] == 0, full_payload["data"]["compiled_targets"]
+    assert full_payload["data"]["runtime_permissions"]["summary"]["metadata_fallback_count"] == 3, full_payload["data"]["runtime_permissions"]
+    assert full_payload["evidence_paths"]["runtime_permissions"] == "reports/runtime_permission_probes.md", full_payload["evidence_paths"]
+    action_keys = {item["gate_key"] for item in full_payload["review_actions"]}
+    assert action_keys == set(), full_payload["review_actions"]
+    assert full_payload["data"]["atlas"]["summary"]["actionable_route_collision_count"] == 0, full_payload["data"]["atlas"]
+    assert full_payload["data"]["atlas"]["summary"]["non_actionable_issue_count"] >= 1, full_payload["data"]["atlas"]
+    synthetic_actions = review_studio.build_review_actions(
+        [
+            {
+                "key": "output-lab",
+                "label": "输出实验",
+                "status": "warn",
+                "detail": "synthetic missing output coverage",
+                "evidence": "reports/output_quality_scorecard.json",
+                "link": "reports/output_quality_scorecard.md",
+            }
+        ],
+        ROOT,
+        output_html,
+    )
+    assert len(synthetic_actions) == 1, synthetic_actions
+    assert synthetic_actions[0]["source_refs"], synthetic_actions
+    assert {item["path"] for item in synthetic_actions[0]["source_refs"]} >= {
+        "evals/output/cases.jsonl",
+        "reports/output_quality_scorecard.md",
+        "reports/output_execution_runs.md",
+        "reports/output_blind_review_pack.md",
+        "reports/output_review_adjudication.md",
+    }, synthetic_actions
+    assert all(item["exists"] for item in synthetic_actions[0]["source_refs"]), synthetic_actions
+    assert all(isinstance(item["line"], int) and item["line"] >= 1 for item in synthetic_actions[0]["source_refs"]), synthetic_actions
+    synthetic_json = json.dumps(synthetic_actions, ensure_ascii=False)
+    assert str(ROOT) not in synthetic_json, synthetic_json
+    synthetic_html = review_studio.render_review_actions(synthetic_actions)
+    assert "source-ref-list" in synthetic_html, synthetic_html
+    assert "evals/output/cases.jsonl" in synthetic_html, synthetic_html
     html = output_html.read_text(encoding="utf-8")
     assert "Review Studio 2.0" in html, html[:400]
     assert "审查闸门" in html, html[:1200]
+    assert "修复动作" in html, html[:3000]
+    assert "当前没有 blocker 或 warning" in html, html[:9000]
+    assert "审查批注" in html, html[:9000]
+    assert "当前没有 reviewer 批注" in html, html[:9000]
     assert "输出实验" in html, html[:2000]
+    assert "执行证据" in html, html
+    assert "盲评包" in html, html[:5000]
+    assert "审定报告" in html, html
+    assert "注册审计" in html, html[:3000]
+    assert "包体验证" in html, html[:5000]
+    assert "Upgrade" in html, html[:6000]
+    assert "Compiler" in html, html[:6000]
+    assert "目标编译" in html, html[:9000]
+    assert "reports/compiled_targets.md" in output_json.read_text(encoding="utf-8"), output_json
+    assert "Install" in html, html[:6500]
+    assert "运营回路" in html, html[:7600]
+    assert "人工批准" in html, html[:8200]
+    assert "权限批准" in html, html[:9000]
+    assert "权限探针" in html, html[:9500]
+    assert "reports/review_waivers.md" in output_json.read_text(encoding="utf-8"), output_json
+    assert "upgrade minor declared / minor recommended" in html, html[:8000]
     assert str(ROOT) not in output_json.read_text(encoding="utf-8"), output_json
     print(json.dumps({"ok": True}, ensure_ascii=False, indent=2))
 

@@ -1,7 +1,7 @@
 # Artifact Design Profile
 
 Skill: `yao-meta-skill`
-Design system: `review studio`
+Design system: `metric editorial`
 
 ## Primary Artifact Direction
 
@@ -22,9 +22,14 @@ Execution-focused technical artifact with environment assumptions, copyable comm
 - Direction: High-trust editorial report with a clear first-screen thesis, compact evidence blocks, and decisions separated from supporting detail.
 
 ### Review viewer
-- Matched keywords: review
-- Score: `1`
+- Matched keywords: review, viewer
+- Score: `2`
 - Direction: Side-by-side reviewer studio with explicit tradeoffs, evidence readiness, and fast paths for approving, blocking, or requesting one focused fix.
+
+### Dashboard or metrics page
+- Matched keywords: table
+- Score: `1`
+- Direction: Metric-first dashboard with stable dimensions, short labels, visible deltas, and narrative callouts only where they change interpretation.
 
 ### Screenshot or visual evidence
 - Matched keywords: screenshot

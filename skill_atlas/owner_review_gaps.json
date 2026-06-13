@@ -6,7 +6,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "example"
   },
   {
     "name": "frontend-review",
@@ -15,7 +17,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "example"
   },
   {
     "name": "frontend-review",
@@ -24,7 +28,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "example"
   },
   {
     "name": "note-cleanup",
@@ -33,7 +39,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "example"
   },
   {
     "name": "frontend-review",
@@ -42,7 +50,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "example"
   },
   {
     "name": "geo-ranking-article-generator",
@@ -51,7 +61,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "embedded-generated-skill"
   },
   {
     "name": "invalid-governance-skill",
@@ -59,7 +71,9 @@
     "missing": [
       "owner",
       "review_cadence"
-    ]
+    ],
+    "actionable": false,
+    "scope": "test-fixture"
   },
   {
     "name": "broken-yaml-skill",
@@ -68,7 +82,9 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "test-fixture"
   },
   {
     "name": "broken-skill",
@@ -77,6 +93,8 @@
       "owner",
       "review_cadence",
       "maturity"
-    ]
+    ],
+    "actionable": false,
+    "scope": "test-fixture"
   }
 ]

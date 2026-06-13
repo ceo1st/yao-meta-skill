@@ -2,41 +2,41 @@
 
 Skill: `yao-meta-skill`
 Relevance: `prompt-heavy`
-Overall quality score: `82.0/100`
+Overall quality score: `89.0/100`
 
 ## Primary Task Family
 
-**Dialogue interaction**
-- Matched keywords: dialogue, conversation
+**Execution operation**
+- Matched keywords: workflow, runbook
 
 ## Complexity
 
-- Band: `complex`
-- Score: `5`
-- Reason: multiple inputs, constraints, or task families require tradeoff handling
+- Band: `expert`
+- Score: `27`
+- Reason: multiple task families plus governance, evaluation, or expert-level constraints
 
 ## Need Model
 
-- Explicit Need: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.
+- Explicit Need: Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.
 - Implicit Need: The reusable skill needs a stable role, task, and output contract rather than a one-off prompt.
-- Scenario: not yet explicit
+- Scenario: rough workflow notes, SOPs, runbooks, prompts, transcripts, documents, or repeated task descriptions, an existing skill directory that needs refactor, evaluation, packaging, or governance hardening, target platform requirements such as OpenAI, Claude, generic Agent Skills, or team distribution, benchmark references, local constraints, desired maturity tier, and review standards
 - User Level: infer from examples and standards; ask only if it changes output depth
-- Success Standard: usable output with clear validation cues
+- Success Standard: trigger boundaries must be tested with should-trigger and should-not-trigger cases, production and higher maturity work needs output eval, trust, runtime conformance, and Review Studio evidence, governed work needs owner, review cadence, permission approvals, registry metadata, package verification, and install simulation, generated reports should be bilingual or reviewer-friendly when they are user-facing, each new asset must earn its place by reducing ambiguity, risk, or repeated work
 
 ## RTF To Skill Mapping
 
-- Role: Use a conversational role that asks only high-leverage questions and remembers the user's goal.
-- Task: Clarify intent, resolve uncertainty, and converge toward a recommendation instead of a long option list.
-- Format: Return concise prompts, decision points, and reviewer-visible assumptions.
+- Role: Use an operator role with explicit boundaries, inputs, outputs, and failure handling.
+- Task: Convert the job into ordered steps with validation checks and stop conditions.
+- Format: Return a runbook-like handoff with commands, checks, owners, and next actions when relevant.
 
 ## Quality Matrix
 
-### Completeness — 80/100
+### Completeness — 100/100
 - Matched signals: output, constraint, standard
 - Repair: Name missing inputs, outputs, constraints, or success standards before deepening the package.
 
-### Clarity — 80/100
-- Matched signals: none
+### Clarity — 85/100
+- Matched signals: clear
 - Repair: Replace broad verbs with observable actions and define what done means.
 
 ### Consistency — 90/100
@@ -47,11 +47,18 @@ Overall quality score: `82.0/100`
 - Matched signals: use, workflow
 - Repair: Add runnable steps, examples, or verification cues instead of abstract advice.
 
-### Specificity — 70/100
+### Specificity — 80/100
 - Matched signals: none
 - Repair: Anchor wording in the user's audience, domain nouns, and target outcome.
 
 ## Matched Task Families
+
+### Execution operation
+- Score: `2`
+- Keywords: workflow, runbook
+- Role: Use an operator role with explicit boundaries, inputs, outputs, and failure handling.
+- Task: Convert the job into ordered steps with validation checks and stop conditions.
+- Format: Return a runbook-like handoff with commands, checks, owners, and next actions when relevant.
 
 ### Dialogue interaction
 - Score: `2`
@@ -60,12 +67,12 @@ Overall quality score: `82.0/100`
 - Task: Clarify intent, resolve uncertainty, and converge toward a recommendation instead of a long option list.
 - Format: Return concise prompts, decision points, and reviewer-visible assumptions.
 
-### Execution operation
+### Creative generation
 - Score: `1`
-- Keywords: workflow
-- Role: Use an operator role with explicit boundaries, inputs, outputs, and failure handling.
-- Task: Convert the job into ordered steps with validation checks and stop conditions.
-- Format: Return a runbook-like handoff with commands, checks, owners, and next actions when relevant.
+- Keywords: content
+- Role: Use a taste-aware creator role with clear audience, tone, and originality boundaries.
+- Task: Generate variants, explain selection logic, and preserve the user's distinctive constraints.
+- Format: Return options with rationale, selection criteria, and refinement paths.
 
 ### Prompt engineering
 - Score: `1`

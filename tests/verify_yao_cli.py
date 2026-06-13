@@ -55,7 +55,15 @@ def main() -> None:
     assert (created / "reports" / "prompt-quality-profile.md").exists(), created
     assert (created / "reports" / "system-model.md").exists(), created
     assert (created / "reports" / "skill-ir.json").exists(), created
+    assert (created / "reports" / "compiled_targets.md").exists(), created
+    assert (created / "reports" / "compiled_targets.json").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
+    assert (created / "reports" / "adoption_drift_report.md").exists(), created
+    assert (created / "reports" / "adoption_drift_report.json").exists(), created
+    assert (created / "reports" / "review_waivers.md").exists(), created
+    assert (created / "reports" / "review_waivers.json").exists(), created
+    assert (created / "reports" / "review_annotations.md").exists(), created
+    assert (created / "reports" / "review_annotations.json").exists(), created
     assert "Honest Boundaries" in (created / "SKILL.md").read_text(encoding="utf-8"), created
     init_report_view = init_result["payload"]["report_view"]
     assert init_report_view["html_report"].endswith("reports/skill-overview.html"), init_report_view
@@ -64,7 +72,9 @@ def main() -> None:
     assert Path(init_report_view["review_studio"]).exists(), init_report_view
     assert "Skill 已创建完成" in init_report_view["message"], init_report_view
     assert "Review Studio 2.0" in init_report_view["message"], init_report_view
-    assert "概述、指标、原理、触发边界、输入输出、质量评估、风险治理、包体资产和升级路线" in init_report_view["message"], init_report_view
+    assert "目标编译" in init_report_view["message"], init_report_view
+    assert "reports/compiled_targets.md" in init_report_view["message"], init_report_view
+    assert "概述、指标、原理、触发边界、输入输出、目标编译、质量评估、风险治理、包体资产和升级路线" in init_report_view["message"], init_report_view
     assert "默认使用中文简体" in init_report_view["message"], init_report_view
     assert "切换英文版" in init_report_view["message"], init_report_view
     init_skill_ir = init_result["payload"]["skill_ir"]
@@ -102,6 +112,11 @@ def main() -> None:
     assert (quickstart_root / "reports" / "artifact-design-profile.md").exists(), quickstart_root
     assert (quickstart_root / "reports" / "prompt-quality-profile.md").exists(), quickstart_root
     assert (quickstart_root / "reports" / "system-model.md").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "compiled_targets.md").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "compiled_targets.json").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "adoption_drift_report.md").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "review_waivers.md").exists(), quickstart_root
+    assert (quickstart_root / "reports" / "review_annotations.md").exists(), quickstart_root
     assert quickstart_result["payload"]["archetype"] == "production", quickstart_result
     assert quickstart_result["payload"]["guidance"]["experience_note"], quickstart_result
     assert quickstart_result["payload"]["guidance"]["problem_diagnosis"]["candidates"], quickstart_result
@@ -176,7 +191,67 @@ def main() -> None:
     review_studio_result = run("review-studio", str(created))
     assert review_studio_result["ok"], review_studio_result
     assert review_studio_result["payload"]["artifacts"]["html"].endswith("reports/review-studio.html"), review_studio_result
-    assert review_studio_result["payload"]["summary"]["gate_count"] == 8, review_studio_result
+    assert review_studio_result["payload"]["summary"]["gate_count"] == 13, review_studio_result
+
+    review_waivers_result = run(
+        "review-waivers",
+        str(created),
+        "--add-waiver",
+        "--gate-key",
+        "trust-report",
+        "--reviewer",
+        "Yao Team",
+        "--reason",
+        "Trust warning accepted for this CLI demo with bounded release follow-up.",
+        "--expires-at",
+        "2026-09-30",
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert review_waivers_result["ok"], review_waivers_result
+    assert review_waivers_result["payload"]["summary"]["active_count"] == 1, review_waivers_result
+    assert "trust-report" in review_waivers_result["payload"]["summary"]["covered_gate_keys"], review_waivers_result
+
+    review_annotations_result = run(
+        "review-annotations",
+        str(created),
+        "--add-annotation",
+        "--annotation-id",
+        "ann-cli-trigger",
+        "--gate-key",
+        "trigger-lab",
+        "--target-path",
+        "SKILL.md",
+        "--line",
+        "1",
+        "--severity",
+        "note",
+        "--reviewer",
+        "Yao QA",
+        "--created-at",
+        "2026-06-13",
+        "--body",
+        "Check trigger wording before reuse.",
+    )
+    assert review_annotations_result["ok"], review_annotations_result
+    assert review_annotations_result["payload"]["summary"]["annotation_count"] == 1, review_annotations_result
+    assert (created / "reports" / "review_annotations.md").exists(), review_annotations_result
+
+    registry_result = run(
+        "registry-audit",
+        str(ROOT),
+        "--registry-dir",
+        str(tmp_root / "registry"),
+        "--output-json",
+        str(tmp_root / "registry_audit.json"),
+        "--output-md",
+        str(tmp_root / "registry_audit.md"),
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert registry_result["ok"], registry_result
+    assert registry_result["payload"]["package"]["name"] == "yao-meta-skill", registry_result
+    assert registry_result["payload"]["package"]["checksums"]["package_sha256"], registry_result
 
     reference_scan_result = run(
         "reference-scan",
@@ -246,6 +321,12 @@ def main() -> None:
     assert created_skill_ir["schema_version"] == "2.0.0", created_skill_ir
     assert created_skill_ir["trigger_surface"]["description"], created_skill_ir
 
+    compile_result = run("compile-skill", str(created), "--target", "openai", "--target", "claude", "--target", "generic")
+    assert compile_result["ok"], compile_result
+    assert compile_result["payload"]["summary"]["target_count"] == 3, compile_result
+    assert compile_result["payload"]["summary"]["block_count"] == 0, compile_result
+    assert compile_result["payload"]["artifacts"]["markdown"].endswith("reports/compiled_targets.md"), compile_result
+
     output_eval_result = run(
         "output-eval",
         "--cases",
@@ -254,9 +335,50 @@ def main() -> None:
         str(created / "reports" / "output_quality_scorecard.json"),
         "--output-md",
         str(created / "reports" / "output_quality_scorecard.md"),
+        "--blind-pack-json",
+        str(created / "reports" / "output_blind_review_pack.json"),
+        "--blind-pack-md",
+        str(created / "reports" / "output_blind_review_pack.md"),
+        "--blind-answer-key-json",
+        str(created / "reports" / "output_blind_answer_key.json"),
     )
     assert output_eval_result["ok"], output_eval_result
     assert output_eval_result["payload"]["summary"]["with_skill_pass_rate"] > output_eval_result["payload"]["summary"]["baseline_pass_rate"], output_eval_result
+    assert output_eval_result["payload"]["summary"]["blind_pair_count"] == 5, output_eval_result
+    assert (created / "reports" / "output_blind_review_pack.md").exists(), output_eval_result
+    assert (created / "reports" / "output_blind_answer_key.json").exists(), output_eval_result
+
+    output_exec_result = run(
+        "output-exec",
+        "--cases",
+        str(ROOT / "evals" / "output" / "cases.jsonl"),
+        "--output-json",
+        str(created / "reports" / "output_execution_runs.json"),
+        "--output-md",
+        str(created / "reports" / "output_execution_runs.md"),
+    )
+    assert output_exec_result["ok"], output_exec_result
+    assert output_exec_result["payload"]["summary"]["variant_run_count"] == 10, output_exec_result
+    assert output_exec_result["payload"]["summary"]["recorded_fixture_count"] == 10, output_exec_result
+    assert (created / "reports" / "output_execution_runs.md").exists(), output_exec_result
+
+    output_review_result = run(
+        "output-review",
+        "--blind-pack",
+        str(created / "reports" / "output_blind_review_pack.json"),
+        "--answer-key",
+        str(created / "reports" / "output_blind_answer_key.json"),
+        "--decisions",
+        str(created / "reports" / "output_review_decisions.json"),
+        "--output-json",
+        str(created / "reports" / "output_review_adjudication.json"),
+        "--output-md",
+        str(created / "reports" / "output_review_adjudication.md"),
+    )
+    assert output_review_result["ok"], output_review_result
+    assert output_review_result["payload"]["summary"]["judgment_count"] == 0, output_review_result
+    assert output_review_result["payload"]["summary"]["pending_count"] == 5, output_review_result
+    assert (created / "reports" / "output_review_adjudication.md").exists(), output_review_result
 
     conformance_result = run("conformance", str(created))
     assert conformance_result["ok"], conformance_result
@@ -300,6 +422,24 @@ def main() -> None:
     assert feedback_result["ok"], feedback_result
     assert feedback_result["payload"]["feedback"]["summary"]["count"] == 1, feedback_result
 
+    adoption_drift_result = run(
+        "adoption-drift",
+        str(created),
+        "--record-event",
+        "skill_activation",
+        "--activation-type",
+        "explicit",
+        "--outcome",
+        "accepted",
+        "--timestamp",
+        "2026-06-13T10:00:00Z",
+    )
+    assert adoption_drift_result["ok"], adoption_drift_result
+    assert adoption_drift_result["payload"]["summary"]["event_count"] == 1, adoption_drift_result
+    assert adoption_drift_result["payload"]["artifacts"]["markdown"].endswith(
+        "reports/adoption_drift_report.md"
+    ), adoption_drift_result
+
     optimize_result = run("optimize-description", "--target", "root")
     assert optimize_result["ok"], optimize_result
     assert optimize_result["payload"]["winner"]["label"] == "Current", optimize_result
@@ -330,11 +470,110 @@ def main() -> None:
     assert "portability_score" in report_result["payload"]["artifacts"], report_result
     assert "artifact_design_profile" in report_result["payload"]["artifacts"], report_result
     assert "prompt_quality_profile" in report_result["payload"]["artifacts"], report_result
+    assert "compiled_targets" in report_result["payload"]["artifacts"], report_result
+    assert "output_execution" in report_result["payload"]["artifacts"], report_result
+    assert "output_review_adjudication" in report_result["payload"]["artifacts"], report_result
+    assert "adoption_drift" in report_result["payload"]["artifacts"], report_result
+    assert "review_annotations" in report_result["payload"]["artifacts"], report_result
+    report_output_execution = json.loads((ROOT / "reports" / "output_execution_runs.json").read_text(encoding="utf-8"))
+    assert report_output_execution["summary"]["command_executed_count"] == 10, report_output_execution
+    assert report_output_execution["summary"]["recorded_fixture_count"] == 0, report_output_execution
+    assert report_output_execution["summary"]["model_executed_count"] == 0, report_output_execution
 
     package_dir = tmp_root / "dist"
     package_result = run("package", ".", "--platform", "generic", "--output-dir", str(package_dir))
     assert package_result["ok"], package_result
     assert (package_dir / "targets" / "generic" / "adapter.json").exists(), package_dir
+    generic_adapter = json.loads((package_dir / "targets" / "generic" / "adapter.json").read_text(encoding="utf-8"))
+    assert generic_adapter["compiler"]["name"] == "yao-skill-ir-compiler", generic_adapter
+    assert generic_adapter["compiled_contract"]["target"] == "generic", generic_adapter
+
+    package_zip_dir = tmp_root / "dist-zip"
+    package_zip_result = run(
+        "package",
+        ".",
+        "--platform",
+        "openai",
+        "--platform",
+        "claude",
+        "--platform",
+        "generic",
+        "--expectations",
+        str(ROOT / "evals" / "packaging_expectations.json"),
+        "--output-dir",
+        str(package_zip_dir),
+        "--zip",
+    )
+    assert package_zip_result["ok"], package_zip_result
+    package_verify_result = run(
+        "package-verify",
+        ".",
+        "--package-dir",
+        str(package_zip_dir),
+        "--expectations",
+        str(ROOT / "evals" / "packaging_expectations.json"),
+        "--registry-json",
+        str(ROOT / "reports" / "registry_audit.json"),
+        "--output-json",
+        str(tmp_root / "package_verification.json"),
+        "--output-md",
+        str(tmp_root / "package_verification.md"),
+        "--require-zip",
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert package_verify_result["ok"], package_verify_result
+    assert package_verify_result["payload"]["summary"]["adapter_count"] == 3, package_verify_result
+    assert package_verify_result["payload"]["summary"]["archive_sha256"], package_verify_result
+
+    runtime_permissions_result = run(
+        "runtime-permissions",
+        ".",
+        "--package-dir",
+        str(package_zip_dir),
+        "--output-json",
+        str(tmp_root / "runtime_permission_probes.json"),
+        "--output-md",
+        str(tmp_root / "runtime_permission_probes.md"),
+    )
+    assert runtime_permissions_result["ok"], runtime_permissions_result
+    assert runtime_permissions_result["payload"]["summary"]["metadata_fallback_count"] == 3, runtime_permissions_result
+    assert runtime_permissions_result["payload"]["summary"]["native_enforcement_count"] == 0, runtime_permissions_result
+
+    install_simulate_result = run(
+        "install-simulate",
+        ".",
+        "--package-dir",
+        str(package_zip_dir),
+        "--install-root",
+        str(tmp_root / "install-root"),
+        "--output-json",
+        str(tmp_root / "install_simulation.json"),
+        "--output-md",
+        str(tmp_root / "install_simulation.md"),
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert install_simulate_result["ok"], install_simulate_result
+    assert install_simulate_result["payload"]["summary"]["archive_extracted"], install_simulate_result
+    assert install_simulate_result["payload"]["summary"]["adapter_count"] == 3, install_simulate_result
+
+    upgrade_result = run(
+        "upgrade-check",
+        ".",
+        "--previous-package-json",
+        str(ROOT / "registry" / "examples" / "yao-meta-skill-1.0.0.json"),
+        "--current-package-json",
+        str(ROOT / "reports" / "registry_audit.json"),
+        "--output-json",
+        str(tmp_root / "upgrade_check.json"),
+        "--output-md",
+        str(tmp_root / "upgrade_check.md"),
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert upgrade_result["ok"], upgrade_result
+    assert upgrade_result["payload"]["summary"]["recommended_bump"] == "minor", upgrade_result
 
     update_result = run(
         "check-update",

@@ -8,80 +8,114 @@ Scope: Yao Meta Skill against the user-provided Skill OS 2.0 upgrade plan.
 Yao Meta Skill is no longer only a Meta Skill factory. The current working tree now has the first verifiable Skill OS foundation:
 
 - Skill IR v0 for platform-neutral contract capture.
-- Output Eval Lab v0 for with-skill vs baseline assertion grading.
+- Output Eval Lab v0 for with-skill vs baseline assertion grading plus local command-runner execution evidence, blind A/B review pack, separate answer key evidence, and reviewer adjudication reporting.
 - Runtime Conformance v0 for target-consumption checks.
-- Trust/Security v0 for secret, dependency, script, trust metadata, and package-integrity checks.
+- Trust/Security v0 for secret, dependency, script, bounded network host policy, execution-level CLI help smoke checks, trust metadata, and stable source-contract integrity checks.
 - Skill Atlas v0 for portfolio catalog, route overlap, stale ownership, dependency signals, and no-route opportunities.
 - Bilingual Skill Overview v2 that includes these evidence surfaces.
-- Review Studio 2.0 v0 for one-page blocker, warning, evidence-path, and release-gate review.
-- IR-first packaging v0 so adapters carry the platform-neutral semantic contract, parity checks, and IR provenance.
+- Review Studio 2.0 v0 for one-page blocker, warning, evidence-path, review-action, and release-gate review.
+- Review Studio Source Refs v0 so every non-pass review action can expose structured relative source/report links with best-effort line numbers.
+- Target Compiler v0 so Skill IR compiles into OpenAI, Claude, generic, and Agent Skills compatible target contracts before packaging, including target-specific permission contracts and native behavior contracts.
+- IR-first packaging v0 so adapters carry the platform-neutral semantic contract, compiler contract, parity checks, and IR provenance.
+- Registry & Distribution v0 for package metadata, checksum, owner, license, compatibility matrix, and audit reporting.
+- Package Verification v0 for generated manifest, target adapters, zip archive safety, archive checksum, and registry parity.
+- Install Simulation v0 for local extraction, entrypoint loading, interface loading, report presence, and adapter readability.
+- Upgrade Check v0 for registry package diffs, semver bump recommendations, breaking-change notes, and release evidence.
+- Adoption Drift v0 for local-first metadata-only telemetry, privacy-field blocking, usage-signal aggregation, and iteration candidate generation.
+- Review Waivers v0 for human warning acceptance with reviewer, reason, scope, expiry, and blocker-safe policy.
+- Governed Permission Gates v0 for reviewer-approved network, file-write, and subprocess capabilities with scope, reason, expiry, evidence, and target-enforcement mapping.
+- Runtime Permission Probes v0 for packaged target adapter checks, explicit native-enforcement flags, metadata fallback evidence, and residual permission risks.
+- Atlas Scope Policy v0 so examples, evolution snapshots, embedded generated skills, and validator fixtures remain visible in the full portfolio report without polluting release-actionable gates.
+- Review Annotations v0 for reviewer comments tied to Review Studio gates, source/report paths, and optional line numbers; open blocker annotations now block the Review Studio decision.
+- Review Studio now reaches a clean `ready` decision for the root Meta Skill: `13 / 13` gates pass, world-class score `100`, no blockers, no warnings, and no review actions required.
 
-This is still not the final world-class state. Registry, full target-specific compiler transforms, telemetry, and stricter governed trust gates remain open.
+This is still not the final world-class state. Target-native behavior contracts are now explicit and local output-eval command execution is wired, but deeper provider-native execution transforms, real client telemetry capture, installer integration, provider-backed model-executed output eval, real human adjudication decisions, and native runtime permission enforcement remain open.
 
 ## Coverage Matrix
 
 | 2.0 Area | Current Evidence | Status |
 | --- | --- | --- |
 | Skill IR | `skill-ir/schema.json`, `skill-ir/examples/yao-meta-skill.json`, `scripts/export_skill_ir.py` | v0 landed |
-| Output Eval Lab | `evals/output/cases.jsonl`, `scripts/run_output_eval.py`, `reports/output_quality_scorecard.md` | v0 landed |
+| Target Compiler | `scripts/compile_skill.py`, `reports/compiled_targets.md`, `tests/verify_compile_skill.py` | v0 landed |
+| Output Eval Lab | `evals/output/cases.jsonl`, `scripts/run_output_eval.py`, `scripts/run_output_execution.py`, `scripts/local_output_eval_runner.py`, `scripts/adjudicate_output_review.py`, `reports/output_quality_scorecard.md`, `reports/output_execution_runs.md`, `reports/output_blind_review_pack.md`, `reports/output_blind_answer_key.json`, `reports/output_review_adjudication.md` | v0 landed |
 | Benchmark methodology | `reports/benchmark_methodology.md` | v0 landed |
 | Runtime Conformance | `scripts/run_conformance_suite.py`, `reports/conformance_matrix.md` | v0 landed |
 | Trust & Security | `scripts/trust_check.py`, `reports/security_trust_report.md`, `security/*.md` | v0 landed |
-| Review Studio 2.0 | `scripts/render_review_studio.py`, `reports/review-studio.html`, `reports/review-studio.json` | v0 landed |
+| Review Studio 2.0 | `scripts/render_review_studio.py`, `reports/review-studio.html`, `reports/review-studio.json` with per-warning `review_actions` | v0 landed |
+| Review Studio Source Refs | `scripts/render_review_studio.py`, `tests/verify_review_studio.py`, `references/review-studio-method.md` | v0 landed |
+| Review Annotations | `scripts/render_review_annotations.py`, `reports/review_annotations.md`, `tests/verify_review_annotations.py`, Review Studio annotation panel and blocker decision hook | v0 landed |
 | Skill Atlas | `scripts/build_skill_atlas.py`, `skill_atlas/catalog.json`, `skill_atlas/route_overlap_matrix.csv`, `reports/skill_atlas.html` | v0 landed |
-| Registry & Distribution | IR-sourced packager, no registry audit/package schema yet | partial |
-| Telemetry & Drift | Regression history exists, no adoption or activation telemetry yet | partial |
-| Compiler from IR | Packager consumes Skill IR for core semantic adapter fields and keeps frontmatter/interface parity checks | v0 landed |
+| Registry & Distribution | `registry/*.schema.json`, `scripts/registry_audit.py`, `reports/registry_audit.md`, `registry/packages/yao-meta-skill.json` | v0 landed |
+| Package Verification | `scripts/verify_package.py`, `reports/package_verification.md`, `tests/verify_package_verification.py` | v0 landed |
+| Install Simulation | `scripts/simulate_install.py`, `reports/install_simulation.md`, `tests/verify_install_simulation.py` | v0 landed |
+| Upgrade Check | `scripts/upgrade_check.py`, `reports/upgrade_check.md`, `tests/verify_upgrade_check.py` | v0 landed |
+| Telemetry & Drift | `scripts/render_adoption_drift_report.py`, `reports/adoption_drift_report.md`, `tests/verify_adoption_drift.py`, `references/telemetry-drift-method.md` | v0 landed |
+| Review Waivers | `scripts/render_review_waivers.py`, `reports/review_waivers.md`, `tests/verify_review_waivers.py`, `references/review-waiver-method.md` | v0 landed |
+| Governed Permission Gates | `security/permission_policy.json`, `scripts/trust_check.py`, `scripts/render_review_studio.py`, `tests/verify_trust_check.py`, `tests/verify_review_studio.py` | v0 landed |
+| Runtime Permission Probes | `scripts/probe_runtime_permissions.py`, `reports/runtime_permission_probes.md`, `tests/verify_runtime_permission_probes.py`, `tests/verify_review_studio.py` | v0 landed |
+| Atlas Scope Policy | `skill_atlas/policy.json`, `scripts/build_skill_atlas.py`, `tests/verify_skill_atlas.py` | v0 landed |
+| Compiler from IR | Packager consumes compiled target contracts for compiler provenance, generated files, adapter modes, permissions, preserved semantics, warnings, and unsupported features | v0 landed |
+| Target Native Contracts | `scripts/compile_skill.py`, `scripts/cross_packager.py`, `reports/compiled_targets.md`, adapter snapshots, and generated target outputs carry native surface, activation policy, resource/script strategy, permission enforcement, install scope, review artifacts, fallback behavior, and unsupported native features | v0 landed |
 
 ## Top Findings
 
-### 1. Compiler path is IR-first v0, but transforms are still shallow
+### 1. Target-native behavior contracts are landed, but provider execution is still shallow
 
-The packager now reads Skill IR for core semantic fields and emits provenance, schema version, job-to-be-done, semantic contract counts, governance, risk, targets, and semantic parity in each adapter.
+`scripts/compile_skill.py` now reads Skill IR and emits target-specific contracts for OpenAI, Claude, generic, and Agent Skills compatible outputs. The packager embeds `compiler`, `compiled_contract`, `permission_contract`, `target_permission_contract`, `target_native_contract`, `target_transform`, warnings, and unsupported-feature notes in each adapter. The native contract makes the target surface, activation policy, resource strategy, script strategy, permission enforcement mode, install scope, review artifacts, fallback behavior, and unsupported native features reviewable instead of implicit.
 
-Next move: add `scripts/compile_skill.py` or split the packager into target-specific transforms so OpenAI, Claude, Agent Skills, VS Code/Copilot, and generic packages can preserve runtime semantics beyond metadata.
+Next move: deepen provider-native execution transforms so OpenAI, Claude, VS Code/Copilot, and generic packages can express and verify behavior through real client or installer capabilities, not only auditable contracts and fallback notes.
 
-### 2. Output eval now meets the governed v0 minimum, but is still static
+### 2. Output eval now has command-runner evidence, but provider model execution is still open
 
-The v0 cases now cover five scenarios, including near-neighbor and file-backed governed package cases. The next gap is that they are still static text comparisons rather than model-executed holdout runs with timing, tokens, and reviewer adjudication.
+The v0 cases now cover five scenarios, including near-neighbor and file-backed governed package cases. Each run emits assertion grading, execution provenance, a blind A/B review pack that hides baseline vs with-skill labels, a separate answer key, and an adjudication report from reviewer choices. The current root execution report now runs all `10` variants through `scripts/local_output_eval_runner.py`, so timing and command-runner behavior are observed instead of relying only on static recorded fixtures. It still intentionally reports `0` provider-backed model-executed runs and `10` estimated token counts, because the local runner verifies the harness contract without pretending to be a model provider. The current root adjudication report intentionally records `0 / 5` human judgments pending instead of pretending human review happened. The next gap is provider-backed model-executed holdout runs with real provider timing/tokens and real reviewer decision records.
 
-Next move: add model-executed output eval runs, blind A/B comparison, and one real multi-file fixture.
+Next move: add provider-backed model execution for holdout cases and one real multi-file fixture with actual reviewer decisions.
 
-### 3. Review Studio is unified, but needs reviewer actions
+### 3. Review Studio is unified and now has reviewer actions plus annotations
 
-The new Review Studio page aggregates intent, trigger, output, context, runtime, trust, atlas, and release gates. It now exposes current warnings directly: low generic intent-confidence context, trust-script warnings, and portfolio-level Atlas gaps.
+The Review Studio page aggregates intent, trigger, output, context, runtime, trust, permission approvals, runtime permission probes, atlas, operations-loop, reviewer waiver, reviewer annotations, registry, and release gates. It exposes current warnings directly and emits `review_actions` for each non-pass gate with a source-fix location, structured `source_refs`, reason, evidence path, and verification command. It now also loads `reports/review_annotations.json`, renders reviewer comments tied to gates and source/report paths, and blocks the page decision when any open blocker annotation exists. After adding root intent context, Atlas scope policy, metadata-only telemetry evidence, runtime permission probe evidence, action source refs, and an empty annotation ledger, the current root report is clean: decision `ready`, score `100`, `13` gates, `0` gate blockers, `0` gate warnings, `0` actions, and `0` open annotation blockers.
 
-Next move: add reviewer annotations, waived-risk records, and links from each warning to the exact source fix.
+Next move: add richer source-line anchors inside generated reports and record real reviewer annotations during the next human review pass.
 
-### 4. Multi-skill operation now has v0 coverage, but no telemetry
+### 4. Multi-skill operation now has v0 coverage, but needs real telemetry
 
-The new Skill Atlas can scan a workspace and report catalog, route overlap, dependency graph, stale skill, missing owner/review metadata, and no-route opportunities. It is still static analysis and does not yet include adoption or activation telemetry.
+The new Skill Atlas can scan a workspace and report catalog, route overlap, dependency graph, stale skill, missing owner/review metadata, and no-route opportunities. It now also supports `skill_atlas/policy.json` so release gates distinguish actionable library skills from examples and fixtures while keeping full visibility. Adoption Drift v0 can record metadata-only local events, block raw prompt/output fields, summarize missed-trigger, bad-output, script-error, and review-overdue signals, and feed next iteration candidates into Review Studio. It still needs real client-side capture instead of manual CLI event recording.
 
-Next move: connect telemetry and failure history so Atlas can rank stale or conflicting skills by real usage impact.
+Next move: connect client activations and failure history so Atlas can rank stale or conflicting skills by real usage impact.
 
 ### 5. Trust report is structural, not full security review
 
-Trust v0 blocks obvious secrets and remote inline execution, but it does not yet execute script `--help`, inspect package archive hashes, or enforce per-target permissions.
+Trust v0 blocks obvious secrets and remote inline execution, and now makes checksum scope explicit: `package_sha256` is a stable source-contract digest that excludes generated reports, packages, and raw local telemetry; archive integrity is carried by Package Verification and Registry as `archive_sha256`. Registry v0 carries both checksums into distributable metadata. Package Verification v0 now checks generated manifests, target adapters, archive path safety, required source entries, and registry parity. Install Simulation v0 now extracts the generated archive into a temporary local skill root and verifies entrypoint, manifest, interface, reports, and adapters. Upgrade Check v0 now compares package baselines, recommends semver bumps, and blocks breaking changes without an adequate declared version. Trust Report now distinguishes CLI scripts from declared internal modules, so help-surface warnings focus on executable entrypoints. Network-capable scripts are now covered by `security/network_policy.json`, with `allowed_hosts` checked against HTTPS URL literals. Trust Report also executes `python3 scripts/name.py --help` for CLI scripts with `argparse`, recording pass/fail smoke evidence without executing scripts that lack a help surface. Target adapters now carry `permission_contract` and `target_permission_contract` fields, including network, file-write, subprocess, and interactive capability counts. Governed permission gates now require reviewer-approved scope, reason, expiry, evidence, and target-enforcement mapping in `security/permission_policy.json`. Runtime Permission Probes now verify that packaged adapters expose the target permission contract and explicitly report native-enforcement limits. The remaining trust gap is native runtime permission enforcement in real clients/installers.
 
-Next move: add stricter governed-mode gates and package hash verification after registry format lands.
+Next move: add real client or installer permission enforcement integration.
 
 ## Current Gate Evidence
 
 | Gate | Current Result |
 | --- | --- |
-| Output Eval | `5` cases, with-skill pass rate `100`, baseline pass rate `0`, with file-backed, near-neighbor, and boundary coverage |
+| Output Eval | `5` cases, with-skill pass rate `100`, baseline pass rate `0`, with file-backed, near-neighbor, boundary coverage, `10` local command-runner execution runs, `0` recorded fixture runs, `0` provider model-executed runs, `10` estimated token counts, `5` blind A/B review pairs, and `0 / 5` reviewer decisions pending |
 | Runtime Conformance | `5 / 5` targets passing |
-| Trust | `0` secret findings, `1` pinned dependency file, `2` network-capable scripts flagged as warnings |
-| Skill Atlas | local workspace scan generated catalog, route-overlap matrix, dependency graph, stale report, owner gaps, and HTML overview |
-| Review Studio | `8` gates, `0` blockers, `3` warnings, world-class score `87/100` |
-| IR-first Packaging | `openai`, `claude`, and `generic` adapters include IR provenance and semantic parity checks |
-| Context Budget | initial load `910/1000`, under the production budget |
-| CI | `make ci-test` passed after adding v0 gates |
+| Target Compiler | compiled target contracts generated for OpenAI, Claude, generic, and Agent Skills compatible outputs, including target permission contracts and target-native behavior contracts |
+| Trust | `0` secret findings, `1` pinned dependency file, `3` declared internal modules, `2 / 2` network-capable scripts covered by bounded host policy, `59 / 59` CLI help smoke checks passing across `62` scripts, source-contract hash scope explicit |
+| Permission Governance | `3 / 3` required high-permission capabilities approved, `0` missing, `0` invalid, `0` expired |
+| Runtime Permission Probes | `3 / 3` target adapters probed, `0` native-enforcement adapters, `3` explicit metadata fallbacks, `3` residual risks retained for reviewer visibility |
+| Skill Atlas | `12` scanned skills, `1` actionable root skill, `0` actionable route collisions, `0` actionable owner gaps, `0` actionable stale skills, `24` scoped non-actionable issue signals retained for visibility |
+| Registry Audit | package metadata generated with version, owner, license, source checksum, archive checksum, Skill IR provenance, and compatibility matrix |
+| Package Verification | `3 / 3` target adapters present, archive verified, `483` zip entries, `0` failures, `0` warnings |
+| Install Simulation | archive with `483` entries extracted into a local verification root, entrypoint/manifest/interface loaded, reports present, `3` adapters readable, `0` failures, `0` warnings |
+| Upgrade Check | current package declares `minor` over the 1.0.0 baseline, recommended bump is `minor`, and release notes include added targets plus checksum changes |
+| Adoption Drift | `1` metadata-only activation event, adoption `100`, risk band `low`; raw `reports/telemetry_events.jsonl` is gitignored and blocked from zip packages |
+| Review Waivers | ledger generated; current release has no warning gates to waive, blockers remain non-waivable in v0 |
+| Review Annotations | ledger generated; current release has `0` reviewer annotations and `0` open annotation blockers |
+| Review Studio | decision `ready`, world-class score `100`, `13` gates, `0` blockers, `0` warnings, `0` review actions, `0` open annotation blockers |
+| IR-first Packaging | `openai`, `claude`, and `generic` adapters include compiler contracts, permission contracts, target-native behavior contracts, IR provenance, and semantic parity checks |
+| Context Budget | initial load `987/1000`, under the production budget |
+| CI | `make ci-test` target count is now `56` after adding Review Annotations |
 
 ## Next Highest-Leverage Moves
 
-1. Split IR-first packaging into target-specific compiler transforms.
-2. Add reviewer annotation and waived-risk records to Review Studio.
-3. Expand Output Eval Lab from static cases to model-executed holdout and blind A/B cases.
-4. Add registry package schema, package hash, and upgrade audit.
-5. Connect Skill Atlas with telemetry and drift history.
+1. Deepen target-native behavior contracts into provider-native execution and installer integrations.
+2. Add native client or installer enforcement for approved high-permission capabilities.
+3. Expand Output Eval Lab from local command-runner evidence to provider-backed model holdout and real reviewer-adjudicated cases.
+4. Add real reviewer annotation records during the next human review pass.
+5. Connect Skill Atlas with real client telemetry and drift history.

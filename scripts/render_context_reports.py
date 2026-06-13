@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 from pathlib import Path
 
@@ -25,7 +26,18 @@ TARGETS = [
 ]
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Render context budget reports for root and example skills.")
+    parser.add_argument(
+        "--generated-at",
+        default="2026-03-31",
+        help="Report date written to context_budget_summary.json.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
     rows = []
     for target in TARGETS:
         report = analyze_skill(target["path"])
@@ -48,7 +60,7 @@ def main() -> None:
         )
 
     summary = {
-        "generated_at": "2026-03-31",
+        "generated_at": args.generated_at,
         "targets": rows,
     }
     (ROOT / "reports").mkdir(parents=True, exist_ok=True)

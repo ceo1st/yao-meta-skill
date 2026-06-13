@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "cases": "evals/output/cases.jsonl",
+  "runner": {
+    "mode": "command",
+    "command": [
+      "python3",
+      "scripts/local_output_eval_runner.py"
+    ],
+    "timeout_seconds": 30.0
+  },
+  "summary": {
+    "case_count": 5,
+    "variant_run_count": 10,
+    "command_executed_count": 10,
+    "model_executed_count": 0,
+    "recorded_fixture_count": 0,
+    "timing_observed_count": 10,
+    "token_observed_count": 0,
+    "token_estimated_count": 10,
+    "baseline_pass_rate": 0.0,
+    "with_skill_pass_rate": 100.0,
+    "delta": 100.0,
+    "regression_count": 0,
+    "failure_count": 0,
+    "gate_pass": true
+  },
+  "runs": [
+    {
+      "case_id": "skill-package-contract",
+      "variant": "baseline",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.22,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 17,
+        "total_tokens": 33,
+        "estimated": true
+      },
+      "score": 0.0,
+      "passed_count": 0,
+      "failed_count": 4,
+      "failed_assertions": [
+        "has-entrypoint",
+        "has-interface",
+        "has-report",
+        "has-resource-boundary"
+      ],
+      "output_sha256": "ece26a6edbbbea86a93faaf9f0eadf88efbae12f1c3ad81da9376cf2a889d101",
+      "failure": ""
+    },
+    {
+      "case_id": "skill-package-contract",
+      "variant": "with_skill",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.12,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 16,
+        "output_tokens": 57,
+        "total_tokens": 73,
+        "estimated": true
+      },
+      "score": 100.0,
+      "passed_count": 4,
+      "failed_count": 0,
+      "failed_assertions": [],
+      "output_sha256": "8bee0131e17fdbe87e48457130ac6aeaa55ea30c919a45e77109852609f33eba",
+      "failure": ""
+    },
+    {
+      "case_id": "output-eval-expectation",
+      "variant": "baseline",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.12,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 24,
+        "output_tokens": 12,
+        "total_tokens": 36,
+        "estimated": true
+      },
+      "score": 0.0,
+      "passed_count": 0,
+      "failed_count": 4,
+      "failed_assertions": [
+        "has-baseline-comparison",
+        "has-assertion-grading",
+        "has-scorecard",
+        "has-failure-taxonomy"
+      ],
+      "output_sha256": "98fa332fb493b5dc14656a9d65a6c0a9c25ff61a14b71b647aad89cbdbd3ab35",
+      "failure": ""
+    },
+    {
+      "case_id": "output-eval-expectation",
+      "variant": "with_skill",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 30.03,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 24,
+        "output_tokens": 56,
+        "total_tokens": 80,
+        "estimated": true
+      },
+      "score": 100.0,
+      "passed_count": 4,
+      "failed_count": 0,
+      "failed_assertions": [],
+      "output_sha256": "8efdbfefa6a36603682b7063b1753f9f939b3810c082d29686e297906d9f51c8",
+      "failure": ""
+    },
+    {
+      "case_id": "ir-before-packaging",
+      "variant": "baseline",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.11,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 18,
+        "output_tokens": 15,
+        "total_tokens": 33,
+        "estimated": true
+      },
+      "score": 0.0,
+      "passed_count": 0,
+      "failed_count": 4,
+      "failed_assertions": [
+        "has-ir-first",
+        "has-core-ir-fields",
+        "has-targets",
+        "has-semantic-preservation"
+      ],
+      "output_sha256": "07a4aa9ee9e48341d4b84d5cb9b6414901aa2c8841340d67447e187240c6c4c2",
+      "failure": ""
+    },
+    {
+      "case_id": "ir-before-packaging",
+      "variant": "with_skill",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 26.68,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 18,
+        "output_tokens": 62,
+        "total_tokens": 80,
+        "estimated": true
+      },
+      "score": 100.0,
+      "passed_count": 4,
+      "failed_count": 0,
+      "failed_assertions": [],
+      "output_sha256": "707fde419b3d61e921561b1c4a8523e1f7b53b1acd5758a47ce21d9ed711fde0",
+      "failure": ""
+    },
+    {
+      "case_id": "near-neighbor-boundary",
+      "variant": "baseline",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.07,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 19,
+        "total_tokens": 36,
+        "estimated": true
+      },
+      "score": 0.0,
+      "passed_count": 0,
+      "failed_count": 3,
+      "failed_assertions": [
+        "declines-skill",
+        "names-near-neighbor",
+        "requires-reuse-signal"
+      ],
+      "output_sha256": "648ebaa6e09486d05f33fa6639dc973b029d115158588fd192efbe15ccaaeac4",
+      "failure": ""
+    },
+    {
+      "case_id": "near-neighbor-boundary",
+      "variant": "with_skill",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 27.57,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 48,
+        "total_tokens": 65,
+        "estimated": true
+      },
+      "score": 100.0,
+      "passed_count": 3,
+      "failed_count": 0,
+      "failed_assertions": [],
+      "output_sha256": "17a3a5286ad573dea86e51f82c04b596babaecb92cde8879f09e7c519205e2e1",
+      "failure": ""
+    },
+    {
+      "case_id": "file-backed-governed-package",
+      "variant": "baseline",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 29.2,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 20,
+        "total_tokens": 37,
+        "estimated": true
+      },
+      "score": 0.0,
+      "passed_count": 0,
+      "failed_count": 5,
+      "failed_assertions": [
+        "uses-file-backed-evidence",
+        "has-governance",
+        "has-output-contract",
+        "has-trust-and-scorecard",
+        "does-not-invent-evidence"
+      ],
+      "output_sha256": "6e5827219459dee34143e4f11663415db80c3111291f75fb6c2115c7bda4cf30",
+      "failure": ""
+    },
+    {
+      "case_id": "file-backed-governed-package",
+      "variant": "with_skill",
+      "status": "pass",
+      "execution_mode": "command",
+      "model_executed": false,
+      "command_executed": true,
+      "duration_ms": 26.94,
+      "provider": "local-output-eval-runner",
+      "model": "",
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 81,
+        "total_tokens": 98,
+        "estimated": true
+      },
+      "score": 100.0,
+      "passed_count": 5,
+      "failed_count": 0,
+      "failed_assertions": [],
+      "output_sha256": "bcfdf036666d406abbc945fc42b93eb74d7074118893e540253c7d8715baad73",
+      "failure": ""
+    }
+  ],
+  "failures": [],
+  "artifacts": {
+    "json": "reports/output_execution_runs.json",
+    "markdown": "reports/output_execution_runs.md"
+  }
+}

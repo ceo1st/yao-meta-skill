@@ -22,16 +22,20 @@ It turns rough workflows, transcripts, prompts, notes, and runbooks into reusabl
 - a front-loaded intent dialogue with an intent confidence gate, so the system keeps clarifying when the true job, outputs, exclusions, or standards are still fuzzy
 - a silent-by-default GitHub benchmark scan plus reference synthesis that studies top public repositories and world-class pattern tracks, then surfaces only real conflicts or uncertainty to the user
 - a generated visual HTML overview for each newly initialized skill
-- a Review Studio 2.0 HTML gate page that combines intent, trigger, output eval, context, runtime, trust, atlas, and release evidence
+- a Review Studio 2.0 HTML gate page that combines intent, trigger, output eval, context, runtime, trust, atlas, adoption drift, reviewer waivers, reviewer annotations, release evidence, and per-warning fix actions
+- Output Eval Lab evidence with assertion grading, execution/timing/token evidence, a blind A/B review pack, a separate answer key, and reviewer adjudication reports
+- a runtime permission probe report that checks packaged target adapters for explicit permission metadata, native-enforcement flags, metadata fallback notes, and residual risks
 - a side-by-side HTML review studio for first-pass human review
 - an artifact design profile that defines visual direction, layout patterns, and quality gates for reports, tutorials, dashboards, screenshots, and review pages
 - a prompt quality profile that abstracts need modeling, RTF mapping, complexity, and quality checks into reviewer-visible evidence instead of bloating `SKILL.md`
 - a systems-thinking model that maps boundaries, feedback loops, drift risks, recurring failure patterns, and highest-leverage quality moves
 - three high-value next iteration directions after the first package is created
 - a lightweight feedback log that does not require a full promotion cycle
+- a local-first metadata-only adoption and drift report that turns real usage signals into next iteration candidates
 - a baseline compare report for with-skill vs baseline review
 - a conversation-style, archetype-aware quickstart that steers new packages toward scaffold, production, library, or governed fits
-- Skill IR as the platform-neutral semantic contract plus client-specific adapters
+- Skill IR as the platform-neutral semantic contract, plus compiler reports and client-specific adapters
+- Registry audit metadata with package version, owner, license, checksum, and compatibility matrix
 - governance, promotion, and portability checks built into the default flow
 
 ## Architecture
@@ -85,7 +89,7 @@ Weighted score formula: `sum(score / 10 * weight)`.
 2. Start with a short, human intent dialogue so the real job, outputs, exclusions, constraints, and standards are explicit.
 3. Let `quickstart` clarify intent first, then run silent benchmark scan and reference synthesis; it only surfaces explicit questions when intent is still unclear or when there is a real design conflict.
 4. Use the archetype-aware `quickstart` or the full authoring flow to generate or improve the package in scaffold, production, library, or governed mode.
-5. Review the generated `reports/skill-overview.html` first for the bilingual HTML skill report. It defaults to Simplified Chinese and provides an English switch in the top right. Then open `reports/review-studio.html` to inspect release blockers and evidence paths in one page before adding more structure.
+5. Review the generated `reports/skill-overview.html` first for the bilingual HTML skill report. It defaults to Simplified Chinese and provides an English switch in the top right. Then open `reports/review-studio.html` to inspect release blockers, permission approvals, and evidence paths in one page before adding more structure.
 
 Or use the unified authoring CLI:
 
@@ -102,14 +106,26 @@ python3 scripts/yao.py artifact-design-profile my-skill
 python3 scripts/yao.py prompt-quality-profile my-skill
 python3 scripts/yao.py system-model my-skill
 python3 scripts/yao.py feedback my-skill --note "Tighten exclusions before adding scripts." --rating 4 --category boundary
+python3 scripts/yao.py adoption-drift my-skill --record-event skill_activation --activation-type explicit --outcome accepted
+python3 scripts/yao.py review-waivers my-skill --add-waiver --gate-key trust-report --reviewer "Yao Team" --reason "Known warning accepted for this release with bounded follow-up." --expires-at 2026-09-30
+python3 scripts/yao.py review-waivers my-skill --add-waiver --gate-key permission-gates --reviewer "Yao Team" --reason "Permission warning accepted only for this non-governed release window." --expires-at 2026-09-30
+python3 scripts/yao.py review-annotations my-skill --add-annotation --gate-key output-lab --target-path reports/output_quality_scorecard.md --line 1 --body "Clarify recorded fixture vs model-executed evidence before release."
 python3 scripts/yao.py baseline-compare
 python3 scripts/yao.py check-update
-python3 scripts/yao.py package . --platform generic --output-dir dist
 python3 scripts/yao.py skill-ir . --output-json skill-ir/examples/yao-meta-skill.json
+python3 scripts/yao.py compile-skill . --target openai --target claude --target generic
+python3 scripts/yao.py package . --platform generic --output-dir dist
 python3 scripts/yao.py output-eval
+python3 scripts/yao.py output-exec
+python3 scripts/yao.py output-review
 python3 scripts/yao.py conformance .
 python3 scripts/yao.py trust .
+python3 scripts/yao.py runtime-permissions . --package-dir dist
 python3 scripts/yao.py skill-atlas --workspace-root .
+python3 scripts/yao.py registry-audit .
+python3 scripts/yao.py package-verify . --package-dir dist --require-zip
+python3 scripts/yao.py install-simulate . --package-dir dist
+python3 scripts/yao.py upgrade-check . --previous-package-json registry/examples/yao-meta-skill-1.0.0.json
 ```
 
 ## Local Development Source
@@ -160,7 +176,9 @@ python3 scripts/judge_blind_eval.py --description-file SKILL.md --cases evals/bl
 python3 scripts/context_sizer.py .
 python3 scripts/resource_boundary_check.py .
 python3 scripts/governance_check.py . --require-manifest
+python3 scripts/compile_skill.py .
 python3 scripts/cross_packager.py . --platform openai --platform claude --platform generic --expectations evals/packaging_expectations.json --zip
+python3 scripts/probe_runtime_permissions.py . --package-dir dist
 python3 tests/verify_packager_failures.py
 ```
 
@@ -179,7 +197,11 @@ python3 scripts/yao.py workspace-flow --target root --label first-pass
 python3 scripts/yao.py review-viewer my-skill
 python3 scripts/yao.py review --target root
 python3 scripts/yao.py release-snapshot --target root --label release-candidate
+python3 scripts/yao.py skill-ir . --output-json skill-ir/examples/yao-meta-skill.json
+python3 scripts/yao.py compile-skill .
 python3 scripts/yao.py package . --platform openai --platform claude --platform generic --output-dir dist --zip
+python3 scripts/yao.py runtime-permissions . --package-dir dist
+python3 scripts/yao.py package-verify . --package-dir dist --require-zip
 python3 scripts/yao.py test
 ```
 
@@ -225,7 +247,9 @@ The homepage panel below is generated from the current eval suite so the family-
 Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/family_summary.md](reports/family_summary.md)
 <!-- END:EVAL_RESULTS -->
 
-- packaging validation: `openai`, `claude`, and `generic` targets pass contract checks and carry IR provenance plus semantic parity metadata
+- packaging validation: `openai`, `claude`, and `generic` targets pass contract checks and carry IR provenance, semantic parity metadata, and target-native behavior contracts
+- target compiler validation: `openai`, `claude`, `generic`, and Agent Skills compatible contracts are compiled from Skill IR with generated-file mappings, adapter modes, native surfaces, permission enforcement notes, and unsupported-feature notes
+- runtime permission probes: `openai`, `claude`, and `generic` adapters expose explicit permission contracts; current targets report `0` native-enforcement adapters and `3` metadata fallbacks with residual risks visible to reviewers
 - portability score: `100/100` with neutral activation, execution, trust, and degradation metadata preserved across all exported targets
 - description optimization suite: root, team frontend review, and governed incident command pass blind and adversarial holdout gates; governed incident command still carries one visible holdout miss, and adversarial calibration plus family drift are now tracked separately
 - judge-backed blind eval: root, team frontend review, and governed incident command now pass an independent rubric judge on blind holdout prompts
@@ -234,8 +258,8 @@ Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/fa
 - governance and resource-boundary checks are part of the default test path
 - root governance maturity score: `90/100`; governed benchmark example: `95/100`
 - CJK-aware trigger matching is now covered by explicit Chinese build, packaging, eval, and near-neighbor cases
-- context budgets: root `994/1000`, complex benchmark `790/1000`, governed benchmark `760/1000`
-- quality density: root `130.8`, complex benchmark `164.6`, governed benchmark `171.1`
+- context budgets: root `987/1000`, complex benchmark `790/1000`, governed benchmark `760/1000`
+- quality density: root `131.7`, complex benchmark `164.6`, governed benchmark `171.1`
 - regression milestones are tracked in [reports/regression_history.md](reports/regression_history.md)
 - description drift history is tracked in [reports/description_drift_history.md](reports/description_drift_history.md)
 - route confusion is tracked in [reports/route_scorecard.md](reports/route_scorecard.md)
@@ -244,6 +268,14 @@ Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/fa
 - candidate lifecycle states are published in [reports/candidate_registry.md](reports/candidate_registry.md)
 - lightweight with-skill vs baseline comparison is published in [reports/baseline-compare.md](reports/baseline-compare.md)
 - Review Studio 2.0 gate evidence is published in [reports/review-studio.html](reports/review-studio.html)
+- Review Studio fix actions are embedded in [reports/review-studio.json](reports/review-studio.json)
+- reviewer waiver evidence is published in [reports/review_waivers.md](reports/review_waivers.md)
+- target compiler evidence is published in [reports/compiled_targets.md](reports/compiled_targets.md)
+- registry package metadata and audit status are published in [reports/registry_audit.md](reports/registry_audit.md)
+- package archive verification is published in [reports/package_verification.md](reports/package_verification.md)
+- temporary local install simulation is published in [reports/install_simulation.md](reports/install_simulation.md)
+- upgrade diff, version-bump recommendation, and release-note evidence are published in [reports/upgrade_check.md](reports/upgrade_check.md)
+- local-first adoption and drift telemetry is summarized in [reports/adoption_drift_report.md](reports/adoption_drift_report.md)
 - context budget summaries are tracked in [reports/context_budget.md](reports/context_budget.md)
 - portability status is tracked in [reports/portability_score.md](reports/portability_score.md)
 
@@ -353,7 +385,7 @@ Utility scripts that make the meta-skill operational:
 - `run_description_optimization_suite.py`: runs description optimization across the root skill and governed examples, then writes reusable reports and optional drift snapshots with calibration and family summaries
 - `promotion_checker.py`: applies promotion policy to current description candidates, writes promotion decisions, builds candidate registries, and emits iteration bundles with review stubs
 - `create_iteration_snapshot.py`: freezes the current promotion decision into a versioned release snapshot with review, route, and context evidence
-- `yao.py`: unified authoring CLI that exposes init, validate, optimize-description, promote-check, review, release-snapshot, workspace-flow, report, package, and test as one entrypoint
+- `yao.py`: unified authoring CLI that exposes init, validate, optimize-description, promote-check, review, release-snapshot, workspace-flow, report, skill-ir, compile-skill, output-exec, output-review, package, registry-audit, package-verify, install-simulate, upgrade-check, review-waivers, and test as one entrypoint
 - `render_description_drift_history.py`: turns description-optimization snapshots into a readable drift-history report
 - `build_confusion_matrix.py`: scores route confusion across tracked sibling skills and `no_route` cases, then writes a route scorecard and optional milestone snapshot
 - `render_iteration_ledger.py`: compresses regression milestones, description optimization drift, and route scorecards into one iteration-facing ledger
@@ -366,10 +398,21 @@ Utility scripts that make the meta-skill operational:
 - `render_portability_report.py`: scores cross-environment portability from neutral metadata, degradation rules, and consumer validation coverage
 - `render_skill_overview.py`: generates the white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, top-right language switch, v2 scorecard, inline SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
 - `export_skill_ir.py`: exports the 2.0 platform-neutral Skill IR contract from `SKILL.md`, manifest, interface metadata, evals, resources, and reports
-- `run_output_eval.py`: runs the Output Eval Lab v0 with static with-skill vs baseline assertion grading and writes `reports/output_quality_scorecard.*`
+- `compile_skill.py`: compiles Skill IR into target-specific semantic contracts, generated-file maps, adapter modes, target-native behavior contracts, preserved semantics, warnings, and unsupported-feature notes
+- `run_output_eval.py`: runs the Output Eval Lab v0 with static with-skill vs baseline assertion grading, blind A/B review pack generation, and separate answer key artifacts
+- `run_output_execution.py`: records output-eval execution evidence, distinguishing recorded fixtures, command runners, and provider-backed model runs with timing and token metadata
+- `local_output_eval_runner.py`: deterministic local runner for command-executed output-eval smoke evidence without claiming provider-backed model generation
+- `adjudicate_output_review.py`: records reviewer choices for blind A/B output evals, compares them with the answer key, and renders pending, match, disagreement, and invalid-decision audit reports
+- `render_review_annotations.py`: records reviewer annotations tied to Review Studio gates, source/report paths, and optional line numbers, with open blocker annotations reflected in Review Studio decisions
 - `run_conformance_suite.py`: verifies runtime conformance for OpenAI, Claude, Agent Skills, VS Code/Copilot-style, and generic targets
-- `trust_check.py`: generates the trust/security report for scripts, dependencies, secret risk, trust metadata, and package integrity
+- `trust_check.py`: generates the trust/security report for scripts, dependencies, secret risk, bounded network host policy, execution-level `--help` smoke checks, permission inputs, trust metadata, and stable source-contract integrity
 - `build_skill_atlas.py`: builds the Skill Atlas catalog, route-overlap matrix, dependency graph, stale report, owner gaps, and HTML overview for a multi-skill workspace
+- `registry_audit.py`: builds registry package metadata and audits version, owner, license, checksum, Skill IR source, and compatibility matrix
+- `verify_package.py`: verifies generated package manifests, target adapters, zip archive safety, archive checksum, and registry parity
+- `simulate_install.py`: extracts a generated zip into a temporary skill root and verifies entrypoint, manifest, interface, reports, and adapters can be loaded
+- `upgrade_check.py`: compares current and previous registry package metadata, recommends a version bump, and blocks incompatible upgrade claims
+- `render_adoption_drift_report.py`: records metadata-only local telemetry and renders adoption, missed-trigger, bad-output, script-error, and review-drift signals without packaging raw event logs
+- `render_review_waivers.py`: validates human reviewer risk approvals with gate keys, reasons, expiry dates, and blocker-safe waiver policy
 - `init_skill.py`, `lint_skill.py`, `validate_skill.py`, `diff_eval.py`: minimal authoring toolchain
 - `check_update.py`: checks GitHub for a newer `VERSION` or remote manifest version and reports a reinstall hint without modifying local files
 - `render_output_risk_profile.py`: predicts output-specific failure modes such as generic headings, citation clutter, screenshot mistakes, weak Markdown tables, and missing execution assumptions
@@ -444,6 +487,8 @@ The typical flow is:
 Examples:
 
 ```bash
+python3 scripts/export_skill_ir.py ./yao-meta-skill --output-json ./yao-meta-skill/reports/skill-ir.json
+python3 scripts/compile_skill.py ./yao-meta-skill --target openai --target claude --target generic
 python3 scripts/cross_packager.py ./yao-meta-skill --platform openai --platform claude --expectations evals/packaging_expectations.json --zip
 python3 scripts/context_sizer.py ./yao-meta-skill
 python3 scripts/resource_boundary_check.py ./yao-meta-skill

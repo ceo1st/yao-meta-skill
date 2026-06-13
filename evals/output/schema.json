@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yao.example/output-eval-case.schema.json",
   "title": "Yao Output Eval Case",
-  "description": "Static v0 output-eval case for comparing without-skill and with-skill outputs.",
+  "description": "Output-eval case for comparing without-skill and with-skill outputs, with optional execution metadata.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "prompt", "baseline_output", "with_skill_output", "assertions"],
@@ -56,6 +56,26 @@
     "human_review": {
       "type": "object",
       "additionalProperties": true
+    },
+    "execution": {
+      "type": "object",
+      "description": "Optional case-level execution metadata for fixture, command, or provider-backed output runs.",
+      "additionalProperties": true,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["recorded_fixture", "command", "model"]
+        },
+        "provider": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "holdout": {
+          "type": "boolean"
+        }
+      }
     },
     "metadata": {
       "type": "object",

@@ -1,31 +1,26 @@
 # Intent Confidence
 
-- Confidence score: `30/100`
-- Confidence band: `low`
-- Gate passed: `False`
-- Recommended action: Pause before deep authoring and close the highest-leverage gaps first.
+- Confidence score: `100/100`
+- Confidence band: `high`
+- Gate passed: `True`
+- Recommended action: Intent is clear enough to package the first routeable version.
 
 ## Current Reading
 
-Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.
+Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse. Primary output: A working skill package with lean SKILL.md, aligned agents/interface.yaml, justified references, scripts only when useful, eval evidence, reports, packaging metadata, and clear next iteration recommendations.. Exclusions: one-off writing, translation, explanation, or brainstorming requests that do not need a reusable skill, general code review or debugging unless the user is packaging that workflow as a skill, raw private material that was not intentionally supplied as skill evidence, platform-specific plugin creation when the request is not about an agent skill package.
 
 ## Strong Signals
 
 - The recurring job is concrete enough to anchor the package.
+- Real input shape is explicit.
+- The hand-back output is concrete.
+- Boundary exclusions are already explicit.
+- Operational constraints are visible.
 
 ## Gaps To Close
 
-- **Real inputs are missing** (`high`): Without real inputs, it is hard to choose assets, scripts, or examples.
-- **Primary output is missing** (`high`): The package does not yet know what it must hand back.
-- **Near-neighbor exclusions are missing** (`high`): The route may blur into nearby requests without an exclusion list.
-- **Constraints are missing** (`high`): The package does not yet know which tradeoffs matter most.
-- **Quality bar is implied, not explicit** (`medium`): The first evaluation target is still underspecified.
+- No major intent gaps detected.
 
 ## Follow-Up Questions
 
-- **What material will people actually hand to this skill in practice?**
-  - Why: Real input shape decides whether references, scripts, or examples are needed.
-- **What finished hand-back should this skill return so the next person can keep moving?**
-  - Why: The output is the anchor for package design and review.
-- **What nearby requests should this skill clearly leave out so the boundary stays clean?**
-  - Why: Exclusions are the fastest route to better trigger quality.
+- No extra follow-up questions required before the first package.

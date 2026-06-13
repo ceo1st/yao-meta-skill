@@ -2,7 +2,7 @@ PYTHON ?= python3
 LOCAL_SKILL_INSTALL_DIR ?= $(HOME)/.agents/skills.disabled/yao-meta-skill
 ACTIVE_SKILL_INSTALL_DIR ?= $(HOME)/.agents/skills/yao-meta-skill
 
-.PHONY: eval eval-suite route-scorecard route-confusion-check description-optimization judge-blind-eval description-optimization-check promotion-check yao-cli-check skill-overview-check skill-report-metrics-check skill-report-charts-check skill-ir-check output-eval-check runtime-conformance-check trust-check skill-atlas-check review-viewer-check review-studio-check feedback-check baseline-compare-check reference-scan-check github-benchmark-scan-check intent-confidence-check reference-synthesis-check output-risk-profile-check artifact-design-profile-check prompt-quality-profile-check system-model-check iteration-directions-check description-drift-history iteration-ledger results-panel regression-history context-reports portability-report portability-check failure-regression-check package-check package-failure-check security-boundary-check local-install-sync-check snapshot-check validate lint governance-check resource-boundary-check quality-check sync-local-install sync-active-install test ci-test clean
+.PHONY: eval eval-suite route-scorecard route-confusion-check description-optimization judge-blind-eval description-optimization-check promotion-check yao-cli-check skill-overview-check skill-report-metrics-check skill-report-charts-check skill-ir-check compiler-check output-eval-check output-execution-check output-review-adjudication-check runtime-conformance-check runtime-permission-check trust-check skill-atlas-check registry-audit-check package-verify-check install-simulation-check upgrade-check review-viewer-check review-studio-check feedback-check adoption-drift-check review-waivers-check review-annotations-check baseline-compare-check reference-scan-check github-benchmark-scan-check intent-confidence-check reference-synthesis-check output-risk-profile-check artifact-design-profile-check prompt-quality-profile-check system-model-check iteration-directions-check description-drift-history iteration-ledger results-panel regression-history context-reports portability-report portability-check failure-regression-check package-check package-failure-check security-boundary-check local-install-sync-check snapshot-check validate lint governance-check resource-boundary-check quality-check sync-local-install sync-active-install test ci-test clean
 
 eval:
 	$(PYTHON) scripts/trigger_eval.py --description-file evals/improved_description.txt --cases evals/trigger_cases.json --baseline-description-file evals/baseline_description.txt
@@ -43,17 +43,41 @@ skill-report-charts-check:
 skill-ir-check:
 	$(PYTHON) tests/verify_skill_ir.py
 
+compiler-check:
+	$(PYTHON) tests/verify_compile_skill.py
+
 output-eval-check:
 	$(PYTHON) tests/verify_output_eval_lab.py
 
+output-execution-check:
+	$(PYTHON) tests/verify_output_execution_runs.py
+
+output-review-adjudication-check:
+	$(PYTHON) tests/verify_output_review_adjudication.py
+
 runtime-conformance-check:
 	$(PYTHON) tests/verify_conformance_suite.py
+
+runtime-permission-check:
+	$(PYTHON) tests/verify_runtime_permission_probes.py
 
 trust-check:
 	$(PYTHON) tests/verify_trust_check.py
 
 skill-atlas-check:
 	$(PYTHON) tests/verify_skill_atlas.py
+
+registry-audit-check:
+	$(PYTHON) tests/verify_registry_audit.py
+
+package-verify-check:
+	$(PYTHON) tests/verify_package_verification.py
+
+install-simulation-check:
+	$(PYTHON) tests/verify_install_simulation.py
+
+upgrade-check:
+	$(PYTHON) tests/verify_upgrade_check.py
 
 review-viewer-check:
 	$(PYTHON) tests/verify_review_viewer.py
@@ -63,6 +87,15 @@ review-studio-check:
 
 feedback-check:
 	$(PYTHON) tests/verify_feedback.py
+
+adoption-drift-check:
+	$(PYTHON) tests/verify_adoption_drift.py
+
+review-waivers-check:
+	$(PYTHON) tests/verify_review_waivers.py
+
+review-annotations-check:
+	$(PYTHON) tests/verify_review_annotations.py
 
 baseline-compare-check:
 	$(PYTHON) tests/verify_baseline_compare.py
@@ -154,11 +187,11 @@ sync-local-install:
 sync-active-install:
 	$(PYTHON) scripts/sync_local_install.py --install-dir "$(ACTIVE_SKILL_INSTALL_DIR)"
 
-test: eval eval-suite route-scorecard route-confusion-check description-optimization description-optimization-check promotion-check yao-cli-check skill-overview-check skill-report-metrics-check skill-report-charts-check skill-ir-check output-eval-check runtime-conformance-check trust-check skill-atlas-check review-viewer-check review-studio-check feedback-check baseline-compare-check reference-scan-check github-benchmark-scan-check intent-confidence-check reference-synthesis-check output-risk-profile-check artifact-design-profile-check prompt-quality-profile-check system-model-check iteration-directions-check description-drift-history iteration-ledger regression-history context-reports portability-report portability-check failure-regression-check package-check package-failure-check security-boundary-check local-install-sync-check snapshot-check validate lint governance-check resource-boundary-check quality-check
+test: eval eval-suite route-scorecard route-confusion-check description-optimization description-optimization-check promotion-check yao-cli-check skill-overview-check skill-report-metrics-check skill-report-charts-check skill-ir-check compiler-check output-eval-check output-execution-check output-review-adjudication-check runtime-conformance-check runtime-permission-check trust-check skill-atlas-check registry-audit-check package-verify-check install-simulation-check upgrade-check review-viewer-check review-studio-check feedback-check adoption-drift-check review-waivers-check review-annotations-check baseline-compare-check reference-scan-check github-benchmark-scan-check intent-confidence-check reference-synthesis-check output-risk-profile-check artifact-design-profile-check prompt-quality-profile-check system-model-check iteration-directions-check description-drift-history iteration-ledger regression-history context-reports portability-report portability-check failure-regression-check package-check package-failure-check security-boundary-check local-install-sync-check snapshot-check validate lint governance-check resource-boundary-check quality-check
 
 ci-test:
 	$(PYTHON) scripts/ci_test.py
 
 clean:
-	rm -rf dist tests/tmp tests/tmp_snapshot tests/tmp_cli tests/tmp_skill_overview tests/tmp_skill_report_metrics tests/tmp_skill_report_charts tests/tmp_skill_ir tests/tmp_output_eval tests/tmp_conformance tests/tmp_trust tests/tmp_skill_atlas tests/tmp_reference_scan tests/tmp_iteration_directions tests/tmp_review_viewer tests/tmp_review_studio tests/tmp_feedback tests/tmp_github_benchmark_scan tests/tmp_intent_confidence tests/tmp_reference_synthesis tests/tmp_output_risk_profile tests/tmp_artifact_design_profile tests/tmp_prompt_quality_profile tests/tmp_system_model tests/tmp_security tests/tmp_baseline_compare.json tests/tmp_baseline_compare.md
+	rm -rf dist tests/tmp tests/tmp_snapshot tests/tmp_cli tests/tmp_skill_overview tests/tmp_skill_report_metrics tests/tmp_skill_report_charts tests/tmp_skill_ir tests/tmp_compile_skill tests/tmp_output_eval tests/tmp_output_execution tests/tmp_output_review_adjudication tests/tmp_conformance tests/tmp_runtime_permission tests/tmp_trust tests/tmp_skill_atlas tests/tmp_registry tests/tmp_package_verification tests/tmp_install_simulation tests/tmp_upgrade_check tests/tmp_reference_scan tests/tmp_iteration_directions tests/tmp_review_viewer tests/tmp_review_studio tests/tmp_feedback tests/tmp_adoption_drift tests/tmp_review_waivers tests/tmp_review_annotations tests/tmp_github_benchmark_scan tests/tmp_intent_confidence tests/tmp_reference_synthesis tests/tmp_output_risk_profile tests/tmp_artifact_design_profile tests/tmp_prompt_quality_profile tests/tmp_system_model tests/tmp_security tests/tmp_baseline_compare.json tests/tmp_baseline_compare.md
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +

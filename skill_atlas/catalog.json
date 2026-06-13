@@ -19,11 +19,13 @@
         "agent-skills-compatible"
       ],
       "resources": [
+        "scripts/adjudicate_output_review.py",
         "scripts/build_confusion_matrix.py",
         "scripts/build_skill_atlas.py",
         "scripts/check_update.py",
         "scripts/ci_test.py",
         "scripts/collect_feedback.py",
+        "scripts/compile_skill.py",
         "scripts/context_sizer.py",
         "scripts/create_iteration_snapshot.py",
         "scripts/cross_packager.py",
@@ -34,8 +36,12 @@
         "scripts/init_skill.py",
         "scripts/judge_blind_eval.py",
         "scripts/lint_skill.py",
+        "scripts/local_output_eval_runner.py",
         "scripts/optimize_description.py",
+        "scripts/probe_runtime_permissions.py",
         "scripts/promotion_checker.py",
+        "scripts/registry_audit.py",
+        "scripts/render_adoption_drift_report.py",
         "scripts/render_artifact_design_profile.py",
         "scripts/render_baseline_compare.py",
         "scripts/render_context_reports.py",
@@ -51,8 +57,10 @@
         "scripts/render_reference_scan.py",
         "scripts/render_reference_synthesis.py",
         "scripts/render_regression_history.py",
+        "scripts/render_review_annotations.py",
         "scripts/render_review_studio.py",
         "scripts/render_review_viewer.py",
+        "scripts/render_review_waivers.py",
         "scripts/render_skill_overview.py",
         "scripts/render_social_preview.py",
         "scripts/render_system_model.py",
@@ -61,16 +69,21 @@
         "scripts/run_description_optimization_suite.py",
         "scripts/run_eval_suite.py",
         "scripts/run_output_eval.py",
+        "scripts/run_output_execution.py",
+        "scripts/simulate_install.py",
         "scripts/skill_report_charts.py",
         "scripts/skill_report_metrics.py",
         "scripts/skill_report_model.py",
         "scripts/sync_local_install.py",
         "scripts/trigger_eval.py",
         "scripts/trust_check.py",
+        "scripts/upgrade_check.py",
         "scripts/validate_skill.py",
+        "scripts/verify_package.py",
         "scripts/yao.py",
         "references/artifact-design-doctrine.md",
         "references/authoring-discipline.md",
+        "references/distribution-registry-method.md",
         "references/eval-playbook.md",
         "references/gate-selection.md",
         "references/governance.md",
@@ -91,12 +104,14 @@
         "references/regression-cause-taxonomy.md",
         "references/resource-boundaries.md",
         "references/review-studio-method.md",
+        "references/review-waiver-method.md",
         "references/runtime-conformance-method.md",
         "references/skill-archetypes.md",
         "references/skill-atlas-method.md",
         "references/skill-engineering-method.md",
         "references/skill-ir-method.md",
         "references/systems-thinking-doctrine.md",
+        "references/telemetry-drift-method.md",
         "references/trust-security-method.md",
         "templates/basic_skill.md.j2",
         "templates/complex_skill.md.j2"
@@ -120,7 +135,10 @@
         "team",
         "transcripts",
         "workflows"
-      ]
+      ],
+      "atlas_scope": "release",
+      "actionable": true,
+      "scope_reason": "default release-actionable skill"
     },
     {
       "name": "release-orchestrator",
@@ -175,7 +193,10 @@
         "stakeholder",
         "theory",
         "workflow"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "frontend-review",
@@ -211,7 +232,10 @@
         "states",
         "ui",
         "ux"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "frontend-review",
@@ -231,7 +255,10 @@
         "frontend",
         "merge",
         "review"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "frontend-review",
@@ -266,7 +293,10 @@
         "security",
         "states",
         "ui"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "incident-command-governor",
@@ -304,7 +334,10 @@
         "run",
         "severity",
         "standardize"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "note-cleanup",
@@ -338,7 +371,10 @@
         "separate",
         "structured",
         "summaries"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "frontend-review",
@@ -375,7 +411,10 @@
         "ui",
         "unsafe",
         "ux"
-      ]
+      ],
+      "atlas_scope": "example",
+      "actionable": false,
+      "scope_reason": "Generated examples and evolution snapshots are portfolio evidence, not release-actionable library skills for the root package."
     },
     {
       "name": "geo-ranking-article-generator",
@@ -432,7 +471,10 @@
         "write",
         "writing",
         "生成式引擎优化"
-      ]
+      ],
+      "atlas_scope": "embedded-generated-skill",
+      "actionable": false,
+      "scope_reason": "This nested generated skill is retained as local evidence and should not gate the root Meta Skill release."
     },
     {
       "name": "invalid-governance-skill",
@@ -451,7 +493,10 @@
         "governance",
         "test",
         "validation"
-      ]
+      ],
+      "atlas_scope": "test-fixture",
+      "actionable": false,
+      "scope_reason": "Fixtures intentionally include invalid or broken skills to verify validators and packagers."
     },
     {
       "name": "broken-yaml-skill",
@@ -472,7 +517,10 @@
         "packager",
         "testing",
         "yaml"
-      ]
+      ],
+      "atlas_scope": "test-fixture",
+      "actionable": false,
+      "scope_reason": "Fixtures intentionally include invalid or broken skills to verify validators and packagers."
     },
     {
       "name": "broken-skill",
@@ -492,15 +540,23 @@
         "fixture",
         "packager",
         "testing"
-      ]
+      ],
+      "atlas_scope": "test-fixture",
+      "actionable": false,
+      "scope_reason": "Fixtures intentionally include invalid or broken skills to verify validators and packagers."
     }
   ],
   "summary": {
     "skill_count": 12,
+    "actionable_skill_count": 1,
     "route_collision_count": 5,
+    "actionable_route_collision_count": 0,
     "owner_gap_count": 9,
+    "actionable_owner_gap_count": 0,
     "stale_count": 10,
+    "actionable_stale_count": 0,
     "shared_resource_count": 0,
-    "no_route_opportunity_count": 0
+    "no_route_opportunity_count": 0,
+    "non_actionable_issue_count": 24
   }
 }

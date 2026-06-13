@@ -69,6 +69,14 @@ TEXT_EN = {
     "这份报告用于快速理解新生成 Skill 的定位、原理、触发边界和交付内容。": "Use this report to quickly understand the generated skill's role, principles, trigger boundary, and deliverables.",
     "先确认重复任务、真实输入形态和可交付输出，再决定是否继续加 references、scripts 或 evals。": "Clarify the recurring job, real input shape, and deliverable output before adding references, scripts, or evals.",
     "如果需求仍然模糊，优先回到 intent dialogue 收紧边界，再扩展包体结构。": "If the request is still fuzzy, tighten the boundary through intent dialogue before expanding the package.",
+    "已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。": "Output Review Adjudication is generated to record blind-review decisions, agreement rate, and pending cases.",
+    "已生成 Output Execution Runs，可区分记录样本、命令执行和模型执行证据。": "Output Execution Runs is generated to distinguish recorded fixtures, command runs, and model-run evidence.",
+    "尚未生成盲评审定报告。": "The blind review adjudication report has not been generated yet.",
+    "尚未生成输出执行证据报告。": "The output execution evidence report has not been generated yet.",
+    "先记录 reviewer 对 A/B 的选择，再打开答案 key 计算一致率。": "Record the reviewer's A/B choice before opening the answer key and calculating agreement.",
+    "缺少真实 reviewer 决策时只显示待评审，不伪造人工结论。": "When real reviewer decisions are missing, show pending status instead of fabricating human conclusions.",
+    "recorded fixture 只能证明可复现样本，不等同于模型执行。": "A recorded fixture proves reproducible samples only; it is not model execution.",
+    "只有 provider runner 返回 model metadata 时才计入 model-executed。": "Only provider runners that return model metadata count as model-executed.",
 }
 
 MODE_ZH = {
@@ -289,6 +297,10 @@ def render_html(summary: dict) -> str:
     risk = summary.get("risk_governance", {})
     assets = summary.get("package_assets", {})
     roadmap = summary.get("iteration_roadmap", {})
+    output_execution = summary.get("output_execution", {})
+    output_execution_summary = output_execution.get("summary", {})
+    output_review = summary.get("output_review_adjudication", {})
+    output_review_summary = output_review.get("summary", {})
     hero_meta = [
         (f"技能名称：{summary['name']}", f"Skill name: {summary['name']}"),
         (f"成熟度：{mode_zh(metadata.get('maturity_tier', 'scaffold'))}", f"Maturity: {metadata.get('maturity_tier', 'scaffold')}"),
@@ -312,6 +324,25 @@ def render_html(summary: dict) -> str:
         [{"name": "强项", "signal": item, "response": "保留并复用"} for item in quality.get("strengths", [])[:3]]
         + [{"name": "缺口", "signal": item, "response": "纳入下一轮修复"} for item in quality.get("gaps", [])[:3]]
     )
+    if output_review_summary:
+        agreement = output_review_summary.get("agreement_rate")
+        review_items = [
+            f"评审进度：{output_review_summary.get('judgment_count', 0)} / {output_review_summary.get('pair_count', 0)}",
+            f"待评审：{output_review_summary.get('pending_count', 0)}",
+            f"一致率：{agreement if agreement is not None else '暂无'}",
+            f"非法决策：{output_review_summary.get('invalid_decision_count', 0)}",
+        ]
+    else:
+        review_items = ["尚未生成盲评审定报告。"]
+    if output_execution_summary:
+        execution_items = [
+            f"变体运行：{output_execution_summary.get('variant_run_count', 0)}",
+            f"模型执行：{output_execution_summary.get('model_executed_count', 0)}",
+            f"记录样本：{output_execution_summary.get('recorded_fixture_count', 0)}",
+            f"Token 估算：{output_execution_summary.get('token_estimated_count', 0)}",
+        ]
+    else:
+        execution_items = ["尚未生成输出执行证据报告。"]
     capability_items = [
         f"能力类型：{profile.get('task_family', 'Skill workflow')}",
         f"成熟度：{profile.get('maturity', 'scaffold')}",
@@ -664,6 +695,9 @@ def render_html(summary: dict) -> str:
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
       align-items: stretch;
+    }}
+    .quality-panels {{
+      margin-top: 16px;
     }}
     .metrics-stack {{
       display: grid;
@@ -1042,6 +1076,26 @@ def render_html(summary: dict) -> str:
             <thead><tr><th>{bi_span("类型", "Type")}</th><th>{bi_span("证据", "Evidence")}</th><th>{bi_span("建议", "Action")}</th></tr></thead>
             <tbody>{quality_rows}</tbody>
           </table>
+          <div class="two-col quality-panels">
+            <article class="panel">
+              <h3>{bi_span("执行证据", "Execution Evidence")}</h3>
+              {render_list(execution_items)}
+            </article>
+            <article class="panel">
+              <h3>{bi_span("盲评审定", "Blind Adjudication")}</h3>
+              {render_list(review_items)}
+            </article>
+          </div>
+          <div class="two-col quality-panels">
+            <article class="panel">
+              <h3>{bi_span("评审原则", "Review Rule")}</h3>
+              {render_list(["先记录 reviewer 对 A/B 的选择，再打开答案 key 计算一致率。", "缺少真实 reviewer 决策时只显示待评审，不伪造人工结论。"])}
+            </article>
+            <article class="panel">
+              <h3>{bi_span("运行原则", "Run Rule")}</h3>
+              {render_list(["recorded fixture 只能证明可复现样本，不等同于模型执行。", "只有 provider runner 返回 model metadata 时才计入 model-executed。"])}
+            </article>
+          </div>
         </div>
       </div>
     </section>

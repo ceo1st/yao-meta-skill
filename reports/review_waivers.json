@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "skill_dir": ".",
+  "generated_at": "2026-06-13",
+  "summary": {
+    "waiver_count": 0,
+    "active_count": 0,
+    "expired_count": 0,
+    "invalid_count": 0,
+    "covered_gate_count": 0,
+    "covered_gate_keys": []
+  },
+  "policy": {
+    "blocker_waivers_allowed": false,
+    "minimum_reason_chars": 20,
+    "expires_required": true,
+    "known_gate_keys": [
+      "context-budget",
+      "intent-canvas",
+      "operations-loop",
+      "output-lab",
+      "permission-gates",
+      "permission-runtime",
+      "registry-audit",
+      "release-notes",
+      "runtime-matrix",
+      "skill-atlas",
+      "trigger-lab",
+      "trust-report"
+    ]
+  },
+  "waivers": [],
+  "failures": [],
+  "warnings": [],
+  "artifacts": {
+    "json": "reports/review_waivers.json",
+    "markdown": "reports/review_waivers.md"
+  }
+}

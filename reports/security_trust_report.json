@@ -2,422 +2,913 @@
   "ok": true,
   "skill_dir": ".",
   "summary": {
-    "scanned_files": 127,
-    "script_count": 50,
+    "scanned_files": 146,
+    "script_count": 62,
+    "internal_module_count": 3,
     "secret_findings": 0,
     "dependency_files": [
       "requirements-ci.txt"
     ],
     "network_script_count": 2,
+    "network_policy_covered_count": 2,
+    "network_policy_missing_count": 0,
+    "file_write_script_count": 47,
+    "permission_required_count": 3,
+    "permission_approved_count": 3,
+    "permission_missing_count": 0,
+    "permission_invalid_count": 0,
+    "permission_expired_count": 0,
+    "help_smoke_checked_count": 59,
+    "help_smoke_failed_count": 0,
     "interactive_script_count": 0,
-    "package_sha256": "18618ecee3683f7488ae4a65a9800c428ee15c6539bbcd367910c57d84ac77ad"
+    "package_hash_scope": "source-contract-without-generated-reports",
+    "package_hash_file_count": 146,
+    "package_sha256": "9f1d53dbaeb1c90c80d7ffbbc1d10473e50b8032acda68332fbae551bb246abe"
   },
   "failures": [],
-  "warnings": [
-    "Scripts without argparse/help surface: scripts/render_context_reports.py, scripts/render_social_preview.py, scripts/skill_report_charts.py, scripts/skill_report_metrics.py, scripts/skill_report_model.py",
-    "Network-capable scripts require bounded host policy: scripts/check_update.py, scripts/github_benchmark_scan.py"
-  ],
+  "warnings": [],
   "secrets": [],
   "scripts": [
     {
-      "path": "scripts/build_confusion_matrix.py",
+      "path": "scripts/adjudicate_output_review.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/build_confusion_matrix.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/build_skill_atlas.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/check_update.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": true,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [
+        "https://raw.githubusercontent.com/yaojingang/yao-meta-skill/main/VERSION",
+        "https://raw.githubusercontent.com/yaojingang/yao-meta-skill/main/manifest.json"
+      ],
+      "network_hosts": [
+        "raw.githubusercontent.com"
+      ]
     },
     {
       "path": "scripts/ci_test.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": true
+      "uses_file_write": true,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/collect_feedback.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/compile_skill.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/context_sizer.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/create_iteration_snapshot.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/cross_packager.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/diff_eval.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/export_skill_ir.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/github_benchmark_scan.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": true,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [
+        "https://api.github.com"
+      ],
+      "network_hosts": [
+        "api.github.com"
+      ]
     },
     {
       "path": "scripts/governance_check.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/init_skill.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/judge_blind_eval.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/lint_skill.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/local_output_eval_runner.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/optimize_description.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/probe_runtime_permissions.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/promotion_checker.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/registry_audit.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/render_adoption_drift_report.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_artifact_design_profile.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_baseline_compare.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_context_reports.py",
-      "has_argparse": false,
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_description_drift_history.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_eval_dashboard.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": true
+      "uses_file_write": true,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_intent_confidence.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_intent_dialogue.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_iteration_directions.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_iteration_ledger.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_output_risk_profile.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_portability_report.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_prompt_quality_profile.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_reference_scan.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_reference_synthesis.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_regression_history.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/render_review_annotations.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_review_studio.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_review_viewer.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/render_review_waivers.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_skill_overview.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/render_social_preview.py",
-      "has_argparse": false,
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [
+        "http://www.w3.org/2000/svg"
+      ],
+      "network_hosts": [
+        "www.w3.org"
+      ]
     },
     {
       "path": "scripts/render_system_model.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/resource_boundary_check.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/run_conformance_suite.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/run_description_optimization_suite.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/run_eval_suite.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": true
+      "uses_file_write": false,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/run_output_eval.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/run_output_execution.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/simulate_install.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/skill_report_charts.py",
+      "interface": "internal-module",
+      "interface_declared": true,
+      "interface_reason": "Imported by render_skill_overview.py to render inline SVG report charts.",
       "has_argparse": false,
       "has_main_guard": false,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/skill_report_metrics.py",
+      "interface": "internal-module",
+      "interface_declared": true,
+      "interface_reason": "Imported by skill_report_model.py to calculate overview report metrics.",
       "has_argparse": false,
       "has_main_guard": false,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/skill_report_model.py",
+      "interface": "internal-module",
+      "interface_declared": true,
+      "interface_reason": "Imported by render_skill_overview.py to build the v2 report data model.",
       "has_argparse": false,
       "has_main_guard": false,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/sync_local_install.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": true
+      "uses_file_write": true,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/trigger_eval.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/trust_check.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": true,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/upgrade_check.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/validate_skill.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": false
+      "uses_file_write": false,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
+    },
+    {
+      "path": "scripts/verify_package.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
+      "has_argparse": true,
+      "has_main_guard": true,
+      "uses_input": false,
+      "uses_network": false,
+      "uses_file_write": true,
+      "uses_subprocess": false,
+      "network_urls": [],
+      "network_hosts": []
     },
     {
       "path": "scripts/yao.py",
+      "interface": "cli",
+      "interface_declared": false,
+      "interface_reason": "Default CLI classification; add SCRIPT_INTERFACE for internal modules.",
       "has_argparse": true,
       "has_main_guard": true,
       "uses_input": false,
       "uses_network": false,
-      "uses_subprocess": true
+      "uses_file_write": false,
+      "uses_subprocess": true,
+      "network_urls": [],
+      "network_hosts": []
     }
   ],
   "dependencies": {
@@ -428,6 +919,782 @@
       "PyYAML==6.0.3"
     ],
     "unpinned": []
+  },
+  "network_policy": {
+    "present": true,
+    "path": "security/network_policy.json",
+    "schema_version": "1.0",
+    "network_script_count": 2,
+    "covered_scripts": [
+      "scripts/check_update.py",
+      "scripts/github_benchmark_scan.py"
+    ],
+    "missing_scripts": [],
+    "mismatches": [],
+    "default_policy": {
+      "require_https": true,
+      "custom_hosts": "deny-by-default",
+      "review_rule": "Network-capable scripts must declare allowed_hosts and justify any explicit custom-host override."
+    }
+  },
+  "help_smoke": {
+    "enabled": true,
+    "timeout_seconds": 5.0,
+    "candidate_count": 59,
+    "checked_count": 59,
+    "passed_count": 59,
+    "failed_count": 0,
+    "skipped_count": 3,
+    "failed_scripts": [],
+    "results": [
+      {
+        "path": "scripts/adjudicate_output_review.py",
+        "command": "python3 scripts/adjudicate_output_review.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: adjudicate_output_review.py [-h] [--blind-pack BLIND_PACK]\n                                   [--answer-key ANSWER_KEY]\n                                   [--decisions DECISIONS]\n                                   [--output-json OUTP",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/build_confusion_matrix.py",
+        "command": "python3 scripts/build_confusion_matrix.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: build_confusion_matrix.py [-h] [--cases CASES]\n                                 [--output-json OUTPUT_JSON]\n                                 [--output-md OUTPUT_MD]\n                                 [--history-snapshot-output HISTORY_",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/build_skill_atlas.py",
+        "command": "python3 scripts/build_skill_atlas.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: build_skill_atlas.py [-h] [--workspace-root WORKSPACE_ROOT]\n                            [--output-dir OUTPUT_DIR]\n                            [--report-html REPORT_HTML]\n                            [--report-json REPORT_JSON]\n       ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/check_update.py",
+        "command": "python3 scripts/check_update.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: check_update.py [-h] [--root ROOT] [--cache-path CACHE_PATH]\n                       [--version-url VERSION_URL]\n                       [--manifest-url MANIFEST_URL] [--timeout TIMEOUT]\n                       [--max-age-days MAX_AGE_D",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/ci_test.py",
+        "command": "python3 scripts/ci_test.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: ci_test.py [-h] [--tail-lines TAIL_LINES] [targets ...]\n\nRun CI test targets with compact logging.\n\npositional arguments:\n  targets               Optional target override.\n\noptions:\n  -h, --help            show this help message and ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/collect_feedback.py",
+        "command": "python3 scripts/collect_feedback.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: collect_feedback.py [-h] [--note NOTE] [--rating RATING]\n                           [--category CATEGORY]\n                           [--recommended-action RECOMMENDED_ACTION]\n                           [--output-json OUTPUT_JSON] [--",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/compile_skill.py",
+        "command": "python3 scripts/compile_skill.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: compile_skill.py [-h] [--target TARGET] [--output-json OUTPUT_JSON]\n                        [--output-md OUTPUT_MD] [--generated-at GENERATED_AT]\n                        [skill_dir]\n\nCompile Skill IR into target-specific semantic con",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/context_sizer.py",
+        "command": "python3 scripts/context_sizer.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: context_sizer.py [-h] [--json] skill_dir\n\nEstimate context size for a skill package.\n\npositional arguments:\n  skill_dir   Path to the skill directory\n\noptions:\n  -h, --help  show this help message and exit\n  --json      Emit machine-",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/create_iteration_snapshot.py",
+        "command": "python3 scripts/create_iteration_snapshot.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: create_iteration_snapshot.py [-h] --target TARGET [--label LABEL]\n                                    [--promotion-decisions PROMOTION_DECISIONS]\n                                    [--route-scorecard ROUTE_SCORECARD]\n               ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/cross_packager.py",
+        "command": "python3 scripts/cross_packager.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: cross_packager.py [-h] [--platform PLATFORM] [--output-dir OUTPUT_DIR]\n                         [--expectations EXPECTATIONS] [--zip]\n                         skill_dir\n\nGenerate lightweight cross-platform packaging artifacts.\n\nposit",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/diff_eval.py",
+        "command": "python3 scripts/diff_eval.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: diff_eval.py [-h] before after\n\nDiff two eval reports.\n\npositional arguments:\n  before\n  after\n\noptions:\n  -h, --help  show this help message and exit",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/export_skill_ir.py",
+        "command": "python3 scripts/export_skill_ir.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: export_skill_ir.py [-h] [--output-json OUTPUT_JSON] [--validate-only]\n                          [skill_dir]\n\nExport a platform-neutral Skill IR document from a skill package.\n\npositional arguments:\n  skill_dir\n\noptions:\n  -h, --help ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/github_benchmark_scan.py",
+        "command": "python3 scripts/github_benchmark_scan.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: github_benchmark_scan.py [-h] --query QUERY [--top-n TOP_N]\n                                [--fixture-dir FIXTURE_DIR]\n                                [--output-md OUTPUT_MD]\n                                [--output-json OUTPUT_JSO",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/governance_check.py",
+        "command": "python3 scripts/governance_check.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: governance_check.py [-h] [--require-manifest] skill_dir\n\nCheck skill governance metadata and lifecycle readiness.\n\npositional arguments:\n  skill_dir\n\noptions:\n  -h, --help          show this help message and exit\n  --require-manifest",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/init_skill.py",
+        "command": "python3 scripts/init_skill.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: init_skill.py [-h] [--description DESCRIPTION] [--title TITLE]\n                     [--output-dir OUTPUT_DIR]\n                     [--mode {governed,library,production,scaffold}]\n                     [--archetype {governed,library,pr",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/judge_blind_eval.py",
+        "command": "python3 scripts/judge_blind_eval.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: judge_blind_eval.py [-h] [--description DESCRIPTION]\n                           [--description-file DESCRIPTION_FILE] --cases CASES\n                           [--semantic-config SEMANTIC_CONFIG]\n\nRun a rubric-based blind trigger judg",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/lint_skill.py",
+        "command": "python3 scripts/lint_skill.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: lint_skill.py [-h] skill_dir\n\nLint a skill package for basic structure issues.\n\npositional arguments:\n  skill_dir\n\noptions:\n  -h, --help  show this help message and exit",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/local_output_eval_runner.py",
+        "command": "python3 scripts/local_output_eval_runner.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: local_output_eval_runner.py [-h] [--execution-kind {command,model}]\n                                   [--provider PROVIDER] [--model MODEL]\n\nLocal deterministic output-eval runner. It executes the runner contract\nwithout claiming pr",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/optimize_description.py",
+        "command": "python3 scripts/optimize_description.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: optimize_description.py [-h] --description-file DESCRIPTION_FILE\n                               [--baseline-description-file BASELINE_DESCRIPTION_FILE]\n                               --dev-cases DEV_CASES\n                            ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/probe_runtime_permissions.py",
+        "command": "python3 scripts/probe_runtime_permissions.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: probe_runtime_permissions.py [-h] [--package-dir PACKAGE_DIR]\n                                    [--target {openai,claude,generic}]\n                                    [--output-json OUTPUT_JSON]\n                                    ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/promotion_checker.py",
+        "command": "python3 scripts/promotion_checker.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: promotion_checker.py [-h] [--optimization-suite OPTIMIZATION_SUITE]\n                            [--route-scorecard ROUTE_SCORECARD]\n                            [--output-json OUTPUT_JSON]\n                            [--output-md OUTP",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/registry_audit.py",
+        "command": "python3 scripts/registry_audit.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: registry_audit.py [-h] [--registry-dir REGISTRY_DIR]\n                         [--output-json OUTPUT_JSON] [--output-md OUTPUT_MD]\n                         [--generated-at GENERATED_AT]\n                         [skill_dir]\n\nBuild and ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_adoption_drift_report.py",
+        "command": "python3 scripts/render_adoption_drift_report.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_adoption_drift_report.py [-h] [--events-jsonl EVENTS_JSONL]\n                                       [--output-json OUTPUT_JSON]\n                                       [--output-md OUTPUT_MD]\n                                    ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_artifact_design_profile.py",
+        "command": "python3 scripts/render_artifact_design_profile.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_artifact_design_profile.py [-h] [--output-md OUTPUT_MD]\n                                         [--output-json OUTPUT_JSON]\n                                         [skill_dir]\n\nRender artifact design direction and visual qua",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_baseline_compare.py",
+        "command": "python3 scripts/render_baseline_compare.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_baseline_compare.py [-h] --entry ENTRY\n                                  [--output-json OUTPUT_JSON]\n                                  [--output-md OUTPUT_MD]\n\nRender a baseline comparison report from description optimization ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_context_reports.py",
+        "command": "python3 scripts/render_context_reports.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_context_reports.py [-h] [--generated-at GENERATED_AT]\n\nRender context budget reports for root and example skills.\n\noptions:\n  -h, --help            show this help message and exit\n  --generated-at GENERATED_AT\n                ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_description_drift_history.py",
+        "command": "python3 scripts/render_description_drift_history.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_description_drift_history.py [-h] [--history-dir HISTORY_DIR]\n                                           [--output OUTPUT]\n\nRender description optimization drift history.\n\noptions:\n  -h, --help            show this help messag",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_eval_dashboard.py",
+        "command": "python3 scripts/render_eval_dashboard.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_eval_dashboard.py [-h] [--eval-dir EVAL_DIR]\n                                [--description-file DESCRIPTION_FILE]\n                                [--baseline-description-file BASELINE_DESCRIPTION_FILE]\n                       ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_intent_confidence.py",
+        "command": "python3 scripts/render_intent_confidence.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_intent_confidence.py [-h] [--context-json CONTEXT_JSON]\n                                   [--output-md OUTPUT_MD]\n                                   [--output-json OUTPUT_JSON]\n                                   [skill_dir]\n\n",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_intent_dialogue.py",
+        "command": "python3 scripts/render_intent_dialogue.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_intent_dialogue.py [-h] [--output-md OUTPUT_MD]\n                                 [--output-json OUTPUT_JSON]\n                                 [skill_dir]\n\nRender an intent dialogue guide for a skill package.\n\npositional argume",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_iteration_directions.py",
+        "command": "python3 scripts/render_iteration_directions.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_iteration_directions.py [-h] [--output-md OUTPUT_MD]\n                                      [--output-json OUTPUT_JSON]\n                                      [skill_dir]\n\nRender the top three next iteration directions for a ski",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_iteration_ledger.py",
+        "command": "python3 scripts/render_iteration_ledger.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_iteration_ledger.py [-h] [--history-dir HISTORY_DIR]\n                                  [--description-history-dir DESCRIPTION_HISTORY_DIR]\n                                  [--route-scorecard ROUTE_SCORECARD]\n                 ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_output_risk_profile.py",
+        "command": "python3 scripts/render_output_risk_profile.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_output_risk_profile.py [-h] [--output-md OUTPUT_MD]\n                                     [--output-json OUTPUT_JSON]\n                                     [skill_dir]\n\nRender predicted output failure modes and quality constrain",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_portability_report.py",
+        "command": "python3 scripts/render_portability_report.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_portability_report.py [-h] [--output-json OUTPUT_JSON]\n                                    [--output-md OUTPUT_MD]\n\nRender a portability score from neutral metadata, contracts, and snapshots.\n\noptions:\n  -h, --help            ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_prompt_quality_profile.py",
+        "command": "python3 scripts/render_prompt_quality_profile.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_prompt_quality_profile.py [-h] [--output-md OUTPUT_MD]\n                                        [--output-json OUTPUT_JSON]\n                                        [skill_dir]\n\nRender prompt behavior quality, RTF mapping, and n",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_reference_scan.py",
+        "command": "python3 scripts/render_reference_scan.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_reference_scan.py [-h] [--external-reference EXTERNAL_REFERENCE]\n                                [--user-reference USER_REFERENCE]\n                                [--local-constraint LOCAL_CONSTRAINT]\n                         ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_reference_synthesis.py",
+        "command": "python3 scripts/render_reference_synthesis.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_reference_synthesis.py [-h] [--output-md OUTPUT_MD]\n                                     [--output-json OUTPUT_JSON]\n                                     [skill_dir]\n\nRender a multi-source reference synthesis report for a skil",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_regression_history.py",
+        "command": "python3 scripts/render_regression_history.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_regression_history.py [-h] [--history-dir HISTORY_DIR]\n                                    [--output OUTPUT]\n\nRender regression history from milestone snapshots.\n\noptions:\n  -h, --help            show this help message and exi",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_review_annotations.py",
+        "command": "python3 scripts/render_review_annotations.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_review_annotations.py [-h] [--annotations-json ANNOTATIONS_JSON]\n                                    [--output-json OUTPUT_JSON]\n                                    [--output-md OUTPUT_MD] [--write-template]\n                  ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_review_studio.py",
+        "command": "python3 scripts/render_review_studio.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_review_studio.py [-h] [--output-html OUTPUT_HTML]\n                               [--output-json OUTPUT_JSON]\n                               [skill_dir]\n\nRender Review Studio 2.0 for a skill package.\n\npositional arguments:\n  sk",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_review_viewer.py",
+        "command": "python3 scripts/render_review_viewer.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_review_viewer.py [-h] [--output-html OUTPUT_HTML]\n                               [--output-json OUTPUT_JSON]\n                               [skill_dir]\n\nRender a compact HTML review viewer for a skill package.\n\npositional argu",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_review_waivers.py",
+        "command": "python3 scripts/render_review_waivers.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_review_waivers.py [-h] [--waivers-json WAIVERS_JSON]\n                                [--output-json OUTPUT_JSON]\n                                [--output-md OUTPUT_MD]\n                                [--generated-at GENERATED",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_skill_overview.py",
+        "command": "python3 scripts/render_skill_overview.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_skill_overview.py [-h] [--output-html OUTPUT_HTML]\n                                [--output-json OUTPUT_JSON]\n                                [skill_dir]\n\nRender the HTML skill report for a skill package.\n\npositional argument",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_social_preview.py",
+        "command": "python3 scripts/render_social_preview.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_social_preview.py [-h] [--format {all,png,svg}]\n\nRender the repository social preview image assets.\n\noptions:\n  -h, --help            show this help message and exit\n  --format {all,png,svg}\n                        Asset forma",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/render_system_model.py",
+        "command": "python3 scripts/render_system_model.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: render_system_model.py [-h] [--output-md OUTPUT_MD]\n                              [--output-json OUTPUT_JSON]\n                              [skill_dir]\n\nRender a systems-thinking model for a skill package.\n\npositional arguments:\n  sk",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/resource_boundary_check.py",
+        "command": "python3 scripts/resource_boundary_check.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: resource_boundary_check.py [-h]\n                                  [--max-initial-tokens MAX_INITIAL_TOKENS]\n                                  [--warn-skill-body-tokens WARN_SKILL_BODY_TOKENS]\n                                  skill_d",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/run_conformance_suite.py",
+        "command": "python3 scripts/run_conformance_suite.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: run_conformance_suite.py [-h]\n                                [--target {openai,claude,agent-skills,vscode,generic}]\n                                [--output-json OUTPUT_JSON]\n                                [--output-md OUTPUT_MD]\n",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/run_description_optimization_suite.py",
+        "command": "python3 scripts/run_description_optimization_suite.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: run_description_optimization_suite.py [-h]\n                                             [--history-snapshot-output HISTORY_SNAPSHOT_OUTPUT]\n                                             [--snapshot-date SNAPSHOT_DATE]\n                ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/run_eval_suite.py",
+        "command": "python3 scripts/run_eval_suite.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: run_eval_suite.py [-h] [--eval-dir EVAL_DIR]\n                         [--description-file DESCRIPTION_FILE]\n                         [--baseline-description-file BASELINE_DESCRIPTION_FILE]\n                         [--output-file OUTP",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/run_output_eval.py",
+        "command": "python3 scripts/run_output_eval.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: run_output_eval.py [-h] [--cases CASES] [--output-json OUTPUT_JSON]\n                          [--output-md OUTPUT_MD]\n                          [--blind-pack-json BLIND_PACK_JSON]\n                          [--blind-pack-md BLIND_PACK",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/run_output_execution.py",
+        "command": "python3 scripts/run_output_execution.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: run_output_execution.py [-h] [--cases CASES]\n                               [--output-json OUTPUT_JSON]\n                               [--output-md OUTPUT_MD]\n                               [--runner-command RUNNER_COMMAND]\n         ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/simulate_install.py",
+        "command": "python3 scripts/simulate_install.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: simulate_install.py [-h] [--package-dir PACKAGE_DIR]\n                           [--install-root INSTALL_ROOT]\n                           [--output-json OUTPUT_JSON] [--output-md OUTPUT_MD]\n                           [--generated-at G",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/sync_local_install.py",
+        "command": "python3 scripts/sync_local_install.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: sync_local_install.py [-h] [--root ROOT] [--install-dir INSTALL_DIR]\n                             [--dry-run]\n\nSync the current yao-meta-skill source into a managed local skill mirror.\n\noptions:\n  -h, --help            show this help",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/trigger_eval.py",
+        "command": "python3 scripts/trigger_eval.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: trigger_eval.py [-h] [--description DESCRIPTION]\n                       [--description-file DESCRIPTION_FILE]\n                       [--baseline-description BASELINE_DESCRIPTION]\n                       [--baseline-description-file BA",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/trust_check.py",
+        "command": "python3 scripts/trust_check.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: trust_check.py [-h] [--output-json OUTPUT_JSON] [--output-md OUTPUT_MD]\n                      [--skip-help-smoke]\n                      [--help-smoke-timeout HELP_SMOKE_TIMEOUT]\n                      [skill_dir]\n\nRun Skill OS trust a",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/upgrade_check.py",
+        "command": "python3 scripts/upgrade_check.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: upgrade_check.py [-h] --previous-package-json PREVIOUS_PACKAGE_JSON\n                        [--current-package-json CURRENT_PACKAGE_JSON]\n                        [--output-json OUTPUT_JSON] [--output-md OUTPUT_MD]\n                   ",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/validate_skill.py",
+        "command": "python3 scripts/validate_skill.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: validate_skill.py [-h] skill_dir\n\nValidate a skill package.\n\npositional arguments:\n  skill_dir\n\noptions:\n  -h, --help  show this help message and exit",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/verify_package.py",
+        "command": "python3 scripts/verify_package.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: verify_package.py [-h] [--package-dir PACKAGE_DIR]\n                         [--expectations EXPECTATIONS]\n                         [--registry-json REGISTRY_JSON]\n                         [--output-json OUTPUT_JSON] [--output-md OUTP",
+        "stderr_excerpt": ""
+      },
+      {
+        "path": "scripts/yao.py",
+        "command": "python3 scripts/yao.py --help",
+        "returncode": 0,
+        "timed_out": false,
+        "passed": true,
+        "has_help_text": true,
+        "stdout_excerpt": "usage: yao.py [-h]\n              {init,quickstart,validate,optimize-description,promote-check,review,release-snapshot,workspace-flow,report,skill-report,review-viewer,review-studio,reference-scan,github-benchmark-scan,intent-confidence,inte",
+        "stderr_excerpt": ""
+      }
+    ],
+    "skipped": [
+      {
+        "path": "scripts/skill_report_charts.py",
+        "reason": "internal module"
+      },
+      {
+        "path": "scripts/skill_report_metrics.py",
+        "reason": "internal module"
+      },
+      {
+        "path": "scripts/skill_report_model.py",
+        "reason": "internal module"
+      }
+    ]
+  },
+  "permission_governance": {
+    "present": true,
+    "path": "security/permission_policy.json",
+    "schema_version": "1.0",
+    "reviewed_at": "2026-06-13",
+    "required_capabilities": [
+      "file_write",
+      "network",
+      "subprocess"
+    ],
+    "approved_capabilities": [
+      "file_write",
+      "network",
+      "subprocess"
+    ],
+    "missing_capabilities": [],
+    "invalid_capabilities": [],
+    "expired_capabilities": [],
+    "approval_count": 3,
+    "required_count": 3,
+    "missing_count": 0,
+    "invalid_count": 0,
+    "expired_count": 0,
+    "approvals": [
+      {
+        "capability": "network",
+        "status": "approved",
+        "scripts": [
+          "scripts/check_update.py",
+          "scripts/github_benchmark_scan.py"
+        ],
+        "reviewer": "Yao Team",
+        "scope": "Only scripts declared in security/network_policy.json may perform outbound requests.",
+        "reason": "Network use is bounded to public GitHub metadata and benchmark discovery, with allowed hosts reviewed in security/network_policy.json.",
+        "expires_at": "2026-09-30",
+        "evidence": [
+          "security/network_policy.json",
+          "reports/security_trust_report.md"
+        ],
+        "target_enforcement": {
+          "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
+          "claude": "adapter.json target_permission_contract and README note",
+          "generic": "adapter.json target_permission_contract"
+        },
+        "validation": []
+      },
+      {
+        "capability": "file_write",
+        "status": "approved",
+        "scripts": [
+          "scripts/adjudicate_output_review.py",
+          "scripts/build_confusion_matrix.py",
+          "scripts/build_skill_atlas.py",
+          "scripts/check_update.py",
+          "scripts/ci_test.py",
+          "scripts/collect_feedback.py",
+          "scripts/compile_skill.py",
+          "scripts/create_iteration_snapshot.py",
+          "scripts/cross_packager.py",
+          "scripts/export_skill_ir.py",
+          "scripts/github_benchmark_scan.py",
+          "scripts/init_skill.py",
+          "scripts/probe_runtime_permissions.py",
+          "scripts/promotion_checker.py",
+          "scripts/registry_audit.py",
+          "scripts/render_adoption_drift_report.py",
+          "scripts/render_artifact_design_profile.py",
+          "scripts/render_baseline_compare.py",
+          "scripts/render_context_reports.py",
+          "scripts/render_description_drift_history.py",
+          "scripts/render_eval_dashboard.py",
+          "scripts/render_intent_confidence.py",
+          "scripts/render_intent_dialogue.py",
+          "scripts/render_iteration_directions.py",
+          "scripts/render_iteration_ledger.py",
+          "scripts/render_output_risk_profile.py",
+          "scripts/render_portability_report.py",
+          "scripts/render_prompt_quality_profile.py",
+          "scripts/render_reference_scan.py",
+          "scripts/render_reference_synthesis.py",
+          "scripts/render_regression_history.py",
+          "scripts/render_review_annotations.py",
+          "scripts/render_review_studio.py",
+          "scripts/render_review_viewer.py",
+          "scripts/render_review_waivers.py",
+          "scripts/render_skill_overview.py",
+          "scripts/render_social_preview.py",
+          "scripts/render_system_model.py",
+          "scripts/run_conformance_suite.py",
+          "scripts/run_description_optimization_suite.py",
+          "scripts/run_output_eval.py",
+          "scripts/run_output_execution.py",
+          "scripts/simulate_install.py",
+          "scripts/sync_local_install.py",
+          "scripts/trust_check.py",
+          "scripts/upgrade_check.py",
+          "scripts/verify_package.py"
+        ],
+        "reviewer": "Yao Team",
+        "scope": "Local generated reports, registry metadata, temporary test outputs, and package artifacts under the skill workspace.",
+        "reason": "File writes are required to create auditable reports, compiled target contracts, package artifacts, and local test fixtures; package safety checks exclude generated temp outputs from archives.",
+        "expires_at": "2026-09-30",
+        "evidence": [
+          "reports/package_verification.md",
+          "reports/install_simulation.md",
+          "security/permission_policy.md"
+        ],
+        "target_enforcement": {
+          "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
+          "claude": "adapter.json target_permission_contract and README note",
+          "generic": "adapter.json target_permission_contract"
+        },
+        "validation": []
+      },
+      {
+        "capability": "subprocess",
+        "status": "approved",
+        "scripts": [
+          "scripts/ci_test.py",
+          "scripts/render_eval_dashboard.py",
+          "scripts/run_eval_suite.py",
+          "scripts/run_output_execution.py",
+          "scripts/sync_local_install.py",
+          "scripts/trust_check.py",
+          "scripts/yao.py"
+        ],
+        "reviewer": "Yao Team",
+        "scope": "Local deterministic validation, packaging, install simulation, and CI orchestration commands.",
+        "reason": "Subprocess use is limited to local verification and packaging flows that are surfaced through CLI help smoke tests and CI targets.",
+        "expires_at": "2026-09-30",
+        "evidence": [
+          "reports/security_trust_report.md",
+          "reports/review-studio.html"
+        ],
+        "target_enforcement": {
+          "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
+          "claude": "adapter.json target_permission_contract and README note",
+          "generic": "adapter.json target_permission_contract"
+        },
+        "validation": []
+      }
+    ]
   },
   "trust_metadata": {
     "source_tier": "local",

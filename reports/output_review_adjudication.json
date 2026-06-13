@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "ok": true,
+  "summary": {
+    "pair_count": 5,
+    "judgment_count": 0,
+    "pending_count": 5,
+    "agreement_count": 0,
+    "disagreement_count": 0,
+    "invalid_decision_count": 0,
+    "agreement_rate": null,
+    "needs_review": true,
+    "failure_count": 0
+  },
+  "reviewer": "",
+  "reviewed_at": "",
+  "artifacts": {
+    "blind_pack": "reports/output_blind_review_pack.json",
+    "answer_key": "reports/output_blind_answer_key.json",
+    "decisions": "reports/output_review_decisions.json",
+    "json": "reports/output_review_adjudication.json",
+    "markdown": "reports/output_review_adjudication.md"
+  },
+  "template_written": false,
+  "pairs": [
+    {
+      "case_id": "skill-package-contract",
+      "status": "pending",
+      "expected_winner_variant": "A",
+      "reviewer_winner_variant": "",
+      "confidence": null,
+      "reason": "",
+      "prompt": "Turn this repeated workflow into a reusable team skill package."
+    },
+    {
+      "case_id": "output-eval-expectation",
+      "status": "pending",
+      "expected_winner_variant": "A",
+      "reviewer_winner_variant": "",
+      "confidence": null,
+      "reason": "",
+      "prompt": "Upgrade this production skill so we know whether the generated output is better than baseline."
+    },
+    {
+      "case_id": "ir-before-packaging",
+      "status": "pending",
+      "expected_winner_variant": "B",
+      "reviewer_winner_variant": "",
+      "confidence": null,
+      "reason": "",
+      "prompt": "Package this skill for OpenAI, Claude, Agent Skills, and generic targets."
+    },
+    {
+      "case_id": "near-neighbor-boundary",
+      "status": "pending",
+      "expected_winner_variant": "B",
+      "reviewer_winner_variant": "",
+      "confidence": null,
+      "reason": "",
+      "prompt": "I only need a one-off summary of these notes, not a reusable process."
+    },
+    {
+      "case_id": "file-backed-governed-package",
+      "status": "pending",
+      "expected_winner_variant": "B",
+      "reviewer_winner_variant": "",
+      "confidence": null,
+      "reason": "",
+      "prompt": "Turn the attached release brief source into a governed skill package."
+    }
+  ],
+  "failures": []
+}

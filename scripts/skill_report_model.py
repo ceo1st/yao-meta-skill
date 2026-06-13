@@ -12,6 +12,9 @@ except ImportError:  # pragma: no cover
     yaml = None
 
 
+SCRIPT_INTERFACE = "internal-module"
+SCRIPT_INTERFACE_REASON = "Imported by render_skill_overview.py to build the v2 report data model."
+
 KNOWN_ENTRIES = [
     ("SKILL.md", "Skill entrypoint"),
     ("README.md", "Human-readable usage guide"),
@@ -194,14 +197,30 @@ def derive_strengths(skill_dir: Path, metadata: dict) -> list[str]:
     strengths = ["触发面保持精简，并锚定在 frontmatter description。"]
     if (skill_dir / "reports" / "skill-ir.json").exists() or (skill_dir / "skill-ir" / "examples").exists():
         strengths.append("已生成 Skill IR，核心语义可先于平台打包被审查和迁移。")
+    if (skill_dir / "reports" / "compiled_targets.json").exists():
+        strengths.append("已生成目标编译报告，可审查 IR 到 OpenAI、Claude、generic 等目标契约的映射。")
     if (skill_dir / "reports" / "output_quality_scorecard.json").exists():
         strengths.append("已生成 Output Eval Lab scorecard，可比较 with-skill 与 baseline 输出质量。")
+    if (skill_dir / "reports" / "output_execution_runs.json").exists():
+        strengths.append("已生成 Output Execution Runs，可区分记录样本、命令执行和模型执行证据。")
+    if (skill_dir / "reports" / "output_review_adjudication.json").exists():
+        strengths.append("已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。")
     if (skill_dir / "reports" / "conformance_matrix.json").exists():
         strengths.append("已生成 Runtime Conformance Matrix，可审查目标端消费能力。")
     if (skill_dir / "reports" / "security_trust_report.json").exists():
         strengths.append("已生成 Security Trust Report，可审查脚本、依赖、secret 和包完整性风险。")
     if (skill_dir / "reports" / "skill_atlas.json").exists():
         strengths.append("已生成 Skill Atlas，可审查多 Skill 组合中的路由冲突、过期资产和 owner 缺口。")
+    if (skill_dir / "reports" / "registry_audit.json").exists():
+        strengths.append("已生成 Registry Audit，可审查版本、owner、license、checksum 和目标兼容矩阵。")
+    if (skill_dir / "reports" / "install_simulation.json").exists():
+        strengths.append("已生成 Install Simulation，可审查 zip 解压、入口加载、接口元数据和 adapter 可读性。")
+    if (skill_dir / "reports" / "adoption_drift_report.json").exists():
+        strengths.append("已生成 Adoption Drift Report，可把本地使用反馈转为下一轮迭代信号。")
+    if (skill_dir / "reports" / "review_waivers.json").exists():
+        strengths.append("已生成 Review Waivers 台账，可记录 reviewer 对 warning 风险的批准、理由和到期时间。")
+    if (skill_dir / "reports" / "review_annotations.json").exists():
+        strengths.append("已生成 Review Annotations 台账，可把 reviewer 批注挂到 gate、文件和行号。")
     if (skill_dir / "reports" / "review-studio.json").exists():
         strengths.append("已生成 Review Studio 2.0，可在一页中查看 blocker、warning、证据路径和发布闸门。")
     if (skill_dir / "agents" / "interface.yaml").exists():
@@ -454,9 +473,21 @@ def build_report_model(skill_dir: Path) -> dict:
     system_model = load_json(skill_dir / "reports" / "system-model.json")
     output_risk = load_json(skill_dir / "reports" / "output-risk-profile.json")
     output_quality = load_json(skill_dir / "reports" / "output_quality_scorecard.json")
+    output_execution = load_json(skill_dir / "reports" / "output_execution_runs.json")
+    output_blind_review = load_json(skill_dir / "reports" / "output_blind_review_pack.json")
+    output_review_adjudication = load_json(skill_dir / "reports" / "output_review_adjudication.json")
     conformance = load_json(skill_dir / "reports" / "conformance_matrix.json")
+    runtime_permissions = load_json(skill_dir / "reports" / "runtime_permission_probes.json")
     trust_report = load_json(skill_dir / "reports" / "security_trust_report.json")
     skill_atlas = load_json(skill_dir / "reports" / "skill_atlas.json")
+    registry_audit = load_json(skill_dir / "reports" / "registry_audit.json")
+    package_verification = load_json(skill_dir / "reports" / "package_verification.json")
+    install_simulation = load_json(skill_dir / "reports" / "install_simulation.json")
+    upgrade_check = load_json(skill_dir / "reports" / "upgrade_check.json")
+    adoption_drift = load_json(skill_dir / "reports" / "adoption_drift_report.json")
+    review_waivers = load_json(skill_dir / "reports" / "review_waivers.json")
+    review_annotations = load_json(skill_dir / "reports" / "review_annotations.json")
+    compiled_targets = load_json(skill_dir / "reports" / "compiled_targets.json")
     skill_ir = load_json(skill_dir / "reports" / "skill-ir.json")
     if not skill_ir:
         example_ir = skill_dir / "skill-ir" / "examples" / f"{frontmatter.get('name', skill_dir.name)}.json"
@@ -485,6 +516,41 @@ def build_report_model(skill_dir: Path) -> dict:
         "skill_archetype": manifest.get("skill_archetype", manifest.get("maturity_tier", "scaffold")),
         "updated_at": manifest.get("updated_at", str(date.today())),
     }
+    deliverables = [
+        "SKILL.md",
+        "agents/interface.yaml",
+        "reports/skill-ir.json",
+        "reports/compiled_targets.md",
+        "reports/output_quality_scorecard.md",
+        "reports/conformance_matrix.md",
+        "reports/security_trust_report.md",
+        "reports/skill_atlas.html",
+        "reports/registry_audit.md",
+        "reports/package_verification.md",
+        "reports/install_simulation.md",
+        "reports/upgrade_check.md",
+        "reports/adoption_drift_report.md",
+        "reports/review_waivers.md",
+        "reports/review_annotations.md",
+        "reports/review-studio.html",
+        "reports/skill-overview.html",
+    ]
+    if (skill_dir / "reports" / "runtime_permission_probes.md").exists():
+        insert_after = deliverables.index("reports/security_trust_report.md") + 1
+        deliverables.insert(insert_after, "reports/runtime_permission_probes.md")
+    if (skill_dir / "reports" / "output_blind_review_pack.md").exists():
+        insert_after = deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/output_blind_review_pack.md")
+    if (skill_dir / "reports" / "output_execution_runs.md").exists():
+        insert_after = deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/output_execution_runs.md")
+    if (skill_dir / "reports" / "output_blind_answer_key.json").exists():
+        insert_after = deliverables.index("reports/output_blind_review_pack.md") + 1 if "reports/output_blind_review_pack.md" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/output_blind_answer_key.json")
+    if (skill_dir / "reports" / "output_review_adjudication.md").exists():
+        insert_after = deliverables.index("reports/output_blind_answer_key.json") + 1 if "reports/output_blind_answer_key.json" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/output_review_adjudication.md")
+
     skill_summary = {
         "name": name,
         "title": title,
@@ -494,17 +560,7 @@ def build_report_model(skill_dir: Path) -> dict:
         "updated_at": metadata["updated_at"],
         "core_value": "把一次性经验沉淀为可复用、可评估、可迁移的 Skill 包体。",
         "audience": "Skill 作者、复用团队和后续 reviewer。",
-        "deliverables": [
-            "SKILL.md",
-            "agents/interface.yaml",
-            "reports/skill-ir.json",
-            "reports/output_quality_scorecard.md",
-            "reports/conformance_matrix.md",
-            "reports/security_trust_report.md",
-            "reports/skill_atlas.html",
-            "reports/review-studio.html",
-            "reports/skill-overview.html",
-        ],
+        "deliverables": deliverables,
         "flow": ["输入材料", "Skill 包体", "可复用能力"],
     }
     contract = {
@@ -573,10 +629,115 @@ def build_report_model(skill_dir: Path) -> dict:
             "trigger_samples": len(skill_ir.get("trigger_surface", {}).get("should_trigger", [])),
             "output_eval_cases": len(skill_ir.get("eval_plan", {}).get("output", [])),
         },
+        "compiled_targets": {
+            "ok": compiled_targets.get("ok", False),
+            "schema_version": compiled_targets.get("schema_version", ""),
+            "summary": compiled_targets.get("summary", {}),
+            "targets": [
+                {
+                    "target": item.get("target", ""),
+                    "status": item.get("status", ""),
+                    "adapter_mode": item.get("target_transform", {}).get("adapter_mode", ""),
+                    "degradation_strategy": item.get("target_transform", {}).get("degradation_strategy", ""),
+                    "native_surface": item.get("target_native_contract", {}).get("native_surface", ""),
+                    "permission_enforcement": item.get("target_native_contract", {}).get("permissions", {}).get("enforcement", ""),
+                    "generated_files": item.get("target_transform", {}).get("generated_files", []),
+                    "unsupported_features": item.get("unsupported_features", []),
+                    "warnings": item.get("warnings", []),
+                }
+                for item in compiled_targets.get("targets", [])
+                if isinstance(item, dict)
+            ],
+            "failures": compiled_targets.get("failures", []),
+            "warnings": compiled_targets.get("warnings", []),
+        },
         "output_quality": output_quality.get("summary", {}),
+        "output_execution": {
+            "ok": output_execution.get("ok", False),
+            "summary": output_execution.get("summary", {}),
+            "runner": output_execution.get("runner", {}),
+            "failures": output_execution.get("failures", []),
+        },
+        "output_blind_review": {
+            "summary": output_blind_review.get("summary", {}),
+            "seed": output_blind_review.get("seed", ""),
+            "pair_count": output_blind_review.get("summary", {}).get("pair_count", 0),
+            "answer_key_separate": output_blind_review.get("summary", {}).get("answer_key_separate", False),
+        },
+        "output_review_adjudication": {
+            "ok": output_review_adjudication.get("ok", False),
+            "summary": output_review_adjudication.get("summary", {}),
+            "reviewer": output_review_adjudication.get("reviewer", ""),
+            "reviewed_at": output_review_adjudication.get("reviewed_at", ""),
+            "failures": output_review_adjudication.get("failures", []),
+        },
         "runtime_conformance": conformance.get("summary", {}),
+        "runtime_permissions": {
+            "ok": runtime_permissions.get("ok", False),
+            "summary": runtime_permissions.get("summary", {}),
+            "expected_capabilities": runtime_permissions.get("expected_capabilities", []),
+            "targets": [
+                {
+                    "target": item.get("target", ""),
+                    "status": item.get("status", ""),
+                    "assurance": item.get("assurance", ""),
+                    "native_enforcement": item.get("native_enforcement"),
+                    "metadata_fallback_explicit": item.get("metadata_fallback_explicit", False),
+                    "residual_risks": item.get("residual_risks", []),
+                }
+                for item in runtime_permissions.get("targets", [])
+                if isinstance(item, dict)
+            ],
+            "failures": runtime_permissions.get("failures", []),
+        },
         "trust_security": trust_report.get("summary", {}),
         "skill_atlas": skill_atlas.get("summary", {}),
+        "registry_distribution": {
+            "ok": registry_audit.get("ok", False),
+            "package": registry_audit.get("package", {}),
+            "failures": registry_audit.get("failures", []),
+            "warnings": registry_audit.get("warnings", []),
+        },
+        "package_verification": {
+            "ok": package_verification.get("ok", False),
+            "summary": package_verification.get("summary", {}),
+            "failures": package_verification.get("failures", []),
+            "warnings": package_verification.get("warnings", []),
+        },
+        "install_simulation": {
+            "ok": install_simulation.get("ok", False),
+            "summary": install_simulation.get("summary", {}),
+            "failures": install_simulation.get("failures", []),
+            "warnings": install_simulation.get("warnings", []),
+        },
+        "upgrade_check": {
+            "ok": upgrade_check.get("ok", False),
+            "summary": upgrade_check.get("summary", {}),
+            "upgrade_diff": upgrade_check.get("upgrade_diff", {}),
+            "release_notes": upgrade_check.get("release_notes", []),
+            "failures": upgrade_check.get("failures", []),
+            "warnings": upgrade_check.get("warnings", []),
+        },
+        "adoption_drift": {
+            "ok": adoption_drift.get("ok", False),
+            "summary": adoption_drift.get("summary", {}),
+            "next_iteration_candidates": adoption_drift.get("next_iteration_candidates", []),
+            "privacy_contract": adoption_drift.get("privacy_contract", {}),
+            "failures": adoption_drift.get("failures", []),
+        },
+        "review_waivers": {
+            "ok": review_waivers.get("ok", False),
+            "summary": review_waivers.get("summary", {}),
+            "policy": review_waivers.get("policy", {}),
+            "failures": review_waivers.get("failures", []),
+            "warnings": review_waivers.get("warnings", []),
+        },
+        "review_annotations": {
+            "ok": review_annotations.get("ok", False),
+            "summary": review_annotations.get("summary", {}),
+            "annotations": review_annotations.get("annotations", [])[:8],
+            "failures": review_annotations.get("failures", []),
+        },
         "synthesis_highlights": synthesis,
         "artifact_design": q_review["artifact_design"],
         "prompt_quality": q_review["prompt_quality"],

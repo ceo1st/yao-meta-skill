@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -123,6 +124,7 @@ def draw_png() -> None:
 
 
 def draw_svg() -> None:
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}">
   <rect width="{WIDTH}" height="{HEIGHT}" fill="{BACKGROUND}"/>
   <text x="92" y="142" font-family="Georgia, serif" font-size="74" fill="{INK}">YAO</text>
@@ -161,10 +163,21 @@ def draw_svg() -> None:
 
 
 def main() -> None:
-    draw_png()
-    draw_svg()
-    print(f"Wrote {PNG_PATH}")
-    print(f"Wrote {SVG_PATH}")
+    parser = argparse.ArgumentParser(description="Render the repository social preview image assets.")
+    parser.add_argument(
+        "--format",
+        choices=["all", "png", "svg"],
+        default="all",
+        help="Asset format to render.",
+    )
+    args = parser.parse_args()
+
+    if args.format in {"all", "png"}:
+        draw_png()
+        print(f"Wrote {PNG_PATH}")
+    if args.format in {"all", "svg"}:
+        draw_svg()
+        print(f"Wrote {SVG_PATH}")
 
 
 if __name__ == "__main__":

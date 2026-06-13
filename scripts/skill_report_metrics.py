@@ -2,8 +2,12 @@
 from pathlib import Path
 
 
+SCRIPT_INTERFACE = "internal-module"
+SCRIPT_INTERFACE_REASON = "Imported by skill_report_model.py to calculate overview report metrics."
+
 REPORT_EVIDENCE = [
     "skill-ir.json",
+    "compiled_targets.json",
     "intent-dialogue.json",
     "intent-confidence.json",
     "reference-synthesis.json",
@@ -11,6 +15,12 @@ REPORT_EVIDENCE = [
     "conformance_matrix.json",
     "security_trust_report.json",
     "skill_atlas.json",
+    "registry_audit.json",
+    "package_verification.json",
+    "install_simulation.json",
+    "upgrade_check.json",
+    "adoption_drift_report.json",
+    "review_waivers.json",
     "artifact-design-profile.json",
     "prompt-quality-profile.json",
     "system-model.json",

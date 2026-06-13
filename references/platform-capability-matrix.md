@@ -2,17 +2,20 @@
 
 This matrix describes the current packaging targets and their support level.
 
-| Target | Metadata Adapter | Output Contract | Snapshot Test | Portability Semantics | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `openai` | Yes | Yes | Yes | activation, execution, trust, degradation | Generates `targets/openai/agents/openai.yaml` |
-| `claude` | Yes | Yes | Yes | activation, execution, trust, degradation | Generates `targets/claude/README.md` plus adapter metadata |
-| `generic` | Yes | Yes | Yes | activation, execution, trust, degradation | Uses neutral adapter metadata only |
+| Target | Metadata Adapter | Compiler Contract | Native Behavior Contract | Output Contract | Snapshot Test | Portability Semantics | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `openai` | Yes | Yes | Yes | Yes | Yes | activation, execution, trust, permissions, degradation, native behavior | Generates `targets/openai/agents/openai.yaml` |
+| `claude` | Yes | Yes | Yes | Yes | Yes | activation, execution, trust, permissions, degradation, native behavior | Generates `targets/claude/README.md` plus adapter metadata |
+| `generic` | Yes | Yes | Yes | Yes | Yes | activation, execution, trust, permissions, degradation, native behavior | Uses neutral adapter metadata only |
+| `agent-skills-compatible` | Neutral source | Yes | Yes | Source-compatible | Yes | activation, execution, trust, permissions, degradation, native behavior | Keeps canonical `SKILL.md` plus `agents/interface.yaml` source shape |
 
 ## Current Support Model
 
-- `openai`: strongest metadata adapter support
-- `claude`: lightweight compatibility adapter, behavior still relies mainly on neutral source files
-- `generic`: lowest-friction export for neutral Agent Skills consumers
+- `openai`: strongest metadata adapter support with an explicit compiler contract.
+- `claude`: lightweight compatibility adapter with an explicit compiler contract and fallback notes.
+- `generic`: lowest-friction export for neutral Agent Skills consumers.
+- `agent-skills-compatible`: canonical source shape with compiler evidence for review and distribution.
+- runtime permission probes currently report metadata fallback for generated targets; no target is claimed as native-enforced until a client or installer integration can actually enforce the permission model.
 
 ## Portable Semantics
 
@@ -21,15 +24,19 @@ Each target now preserves:
 - activation mode and optional path filters
 - execution context and shell choice
 - trust tier and remote inline-execution policy
+- permission contract for network, file-write, subprocess, and interactive script surfaces
+- target-native behavior contract for native surface, activation policy, resource strategy, script strategy, permission enforcement, install scope, review artifacts, and fallback behavior
 - degradation strategy for unsupported client behavior
+- generated-file mapping and adapter mode from `reports/compiled_targets.json`
 
 ## Explicit Non-Goals
 
 This project does not yet implement:
 
-- runtime-specific behavior transforms
 - client SDK integration
 - provider-specific execution logic
+- provider-native installer actions or account-level activation changes
+- native runtime permission enforcement
 
 ## Degradation Rule
 

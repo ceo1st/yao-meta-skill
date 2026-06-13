@@ -50,6 +50,8 @@ def main() -> None:
     assert (created / "reports" / "intent-confidence.json").exists(), created
     assert (created / "reports" / "skill-overview.html").exists(), created
     assert (created / "reports" / "skill-overview.json").exists(), created
+    assert (created / "reports" / "compiled_targets.md").exists(), created
+    assert (created / "reports" / "compiled_targets.json").exists(), created
     assert (created / "reports" / "reference-synthesis.md").exists(), created
     assert (created / "reports" / "reference-synthesis.json").exists(), created
     assert (created / "reports" / "artifact-design-profile.md").exists(), created
@@ -60,6 +62,10 @@ def main() -> None:
     assert (created / "reports" / "system-model.json").exists(), created
     assert (created / "reports" / "iteration-directions.md").exists(), created
     assert (created / "reports" / "iteration-directions.json").exists(), created
+    assert (created / "reports" / "adoption_drift_report.md").exists(), created
+    assert (created / "reports" / "adoption_drift_report.json").exists(), created
+    assert (created / "reports" / "review_waivers.md").exists(), created
+    assert (created / "reports" / "review_waivers.json").exists(), created
 
     overview_json = json.loads((created / "reports" / "skill-overview.json").read_text(encoding="utf-8"))
     directions_json = json.loads((created / "reports" / "iteration-directions.json").read_text(encoding="utf-8"))
@@ -79,16 +85,41 @@ def main() -> None:
     }
     assert expected_v2_keys.issubset(overview_json.keys()), overview_json.keys()
     assert "reports/skill-ir.json" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/compiled_targets.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert "reports/output_quality_scorecard.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/output_blind_review_pack.md" not in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert "reports/conformance_matrix.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert "reports/security_trust_report.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/runtime_permission_probes.md" not in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert "reports/skill_atlas.html" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/registry_audit.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/package_verification.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/install_simulation.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/upgrade_check.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/adoption_drift_report.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
+    assert "reports/review_waivers.md" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert "reports/review-studio.html" in overview_json["skill_summary"]["deliverables"], overview_json["skill_summary"]
     assert overview_json["skill_ir"]["schema_version"] in {"", "2.0.0"}, overview_json.get("skill_ir")
+    assert overview_json["compiled_targets"]["summary"]["target_count"] >= 3, overview_json.get("compiled_targets")
+    assert overview_json["compiled_targets"]["summary"]["block_count"] == 0, overview_json.get("compiled_targets")
     assert "output_quality" in overview_json, overview_json.keys()
+    assert "output_execution" in overview_json, overview_json.keys()
+    assert overview_json["output_execution"]["summary"] == {}, overview_json["output_execution"]
+    assert "output_blind_review" in overview_json, overview_json.keys()
+    assert overview_json["output_blind_review"]["summary"] == {}, overview_json["output_blind_review"]
+    assert "output_review_adjudication" in overview_json, overview_json.keys()
+    assert overview_json["output_review_adjudication"]["summary"] == {}, overview_json["output_review_adjudication"]
     assert "runtime_conformance" in overview_json, overview_json.keys()
+    assert "runtime_permissions" in overview_json, overview_json.keys()
+    assert overview_json["runtime_permissions"]["summary"] == {}, overview_json["runtime_permissions"]
     assert "trust_security" in overview_json, overview_json.keys()
     assert "skill_atlas" in overview_json, overview_json.keys()
+    assert "registry_distribution" in overview_json, overview_json.keys()
+    assert "package_verification" in overview_json, overview_json.keys()
+    assert "install_simulation" in overview_json, overview_json.keys()
+    assert "upgrade_check" in overview_json, overview_json.keys()
+    assert "adoption_drift" in overview_json, overview_json.keys()
+    assert "review_waivers" in overview_json, overview_json.keys()
     assert [item["title"] for item in overview_json["iteration_roadmap"]["items"]] == [
         item["title"] for item in directions_json["directions"]
     ], {
@@ -141,6 +172,10 @@ def main() -> None:
     assert "执行流程" in report_html, report_html[:5000]
     assert "调用方式" in report_html, report_html[:5000]
     assert "证据不足" in report_html or "证据充分" in report_html, report_html[:8000]
+    assert "执行证据" in report_html, report_html
+    assert "尚未生成输出执行证据报告" in report_html, report_html
+    assert "盲评审定" in report_html, report_html
+    assert "尚未生成盲评审定报告" in report_html, report_html
     assert "原始说明可切换到英文查看；默认中文报告保留结论与结构说明。" not in report_html, report_html[:12000]
     assert "理解用户请求" in report_html, report_html[:5000]
     assert overview_json["logic_steps"][0] in report_html, overview_json.get("logic_steps")
