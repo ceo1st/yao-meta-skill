@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cover
     yaml = None
 
 
-DEFAULT_TARGETS = ["openai", "claude", "generic"]
+DEFAULT_TARGETS = ["openai", "claude", "generic", "vscode"]
 
 
 def display_path(path: Path, root: Path) -> str:
@@ -69,6 +69,103 @@ def sorted_strings(value: Any) -> list[str]:
     return sorted(str(item) for item in value) if isinstance(value, list) else []
 
 
+def check_index(checks: list[Any]) -> dict[str, str]:
+    indexed: dict[str, str] = {}
+    for item in checks:
+        if not isinstance(item, dict):
+            continue
+        check_id = str(item.get("id") or item.get("key") or "").strip()
+        status = str(item.get("status") or ("pass" if item.get("passed") is True else "")).strip()
+        if check_id:
+            indexed[check_id] = status
+    return indexed
+
+
+def installer_enforcement_source(
+    skill_dir: Path,
+    package_dir: Path,
+    targets: list[str],
+    expected: list[str],
+    install_simulation_path: Path | None,
+) -> dict[str, Any]:
+    path = install_simulation_path or skill_dir / "reports" / "install_simulation.json"
+    report = load_json(path)
+    source_display = display_path(path, skill_dir)
+    if not path.exists() or not report:
+        return {
+            "source": source_display,
+            "source_status": "missing",
+            "package_dir_matches": False,
+            "summary": {},
+            "targets": {
+                target: {
+                    "target": target,
+                    "source_status": "missing",
+                    "enforced": False,
+                    "enforced_capabilities": [],
+                    "missing_capabilities": expected,
+                    "failure_details": ["install simulation report is missing"],
+                }
+                for target in targets
+            },
+        }
+
+    expected_package_dir = display_path(package_dir, skill_dir)
+    observed_package_dir = str(report.get("package_dir", "")).strip()
+    package_matches = observed_package_dir in {expected_package_dir, str(package_dir)}
+    summary = report.get("summary", {}) if isinstance(report.get("summary"), dict) else {}
+    if not package_matches:
+        source_status = "package-mismatch"
+    else:
+        source_status = "present"
+
+    indexed = check_index(report.get("checks", []) if isinstance(report.get("checks"), list) else [])
+    target_results: dict[str, Any] = {}
+    for target in targets:
+        enforced_capabilities = []
+        missing_capabilities = []
+        failure_details = []
+        for capability in expected:
+            approval_id = f"permission-{target}-{capability}-approved"
+            enforcement_id = f"permission-{target}-{capability}-target-enforcement"
+            approval_ok = indexed.get(approval_id) == "pass"
+            enforcement_ok = indexed.get(enforcement_id) == "pass"
+            if source_status == "present" and approval_ok and enforcement_ok:
+                enforced_capabilities.append(capability)
+            else:
+                missing_capabilities.append(capability)
+                if source_status == "present" and not approval_ok:
+                    failure_details.append(f"{approval_id} did not pass")
+                if source_status == "present" and not enforcement_ok:
+                    failure_details.append(f"{enforcement_id} did not pass")
+        if source_status == "package-mismatch":
+            failure_details.append(
+                f"install simulation package_dir {observed_package_dir or 'missing'} does not match probed package_dir {expected_package_dir}"
+            )
+        target_results[target] = {
+            "target": target,
+            "source_status": source_status,
+            "enforced": bool(expected) and source_status == "present" and not missing_capabilities,
+            "enforced_capabilities": enforced_capabilities,
+            "missing_capabilities": missing_capabilities,
+            "failure_details": failure_details,
+        }
+
+    return {
+        "source": source_display,
+        "source_status": source_status,
+        "package_dir_matches": package_matches,
+        "summary": {
+            "installer_permission_enforced_count": int(summary.get("installer_permission_enforced_count", 0) or 0),
+            "installer_permission_failure_count": int(summary.get("installer_permission_failure_count", 0) or 0),
+            "permission_target_count": int(summary.get("permission_target_count", 0) or 0),
+            "permission_capability_count": int(summary.get("permission_capability_count", 0) or 0),
+            "failure_count": int(summary.get("failure_count", 0) or 0),
+        },
+        "targets": target_results,
+    }
+
+
 def probe_openai_yaml(package_dir: Path, expected: list[str]) -> tuple[list[dict[str, Any]], list[str]]:
     checks: list[dict[str, Any]] = []
     failures: list[str] = []
@@ -93,7 +190,13 @@ def probe_openai_yaml(package_dir: Path, expected: list[str]) -> tuple[list[dict
     return checks, failures
 
 
-def probe_target(skill_dir: Path, package_dir: Path, target: str, expected: list[str]) -> dict[str, Any]:
+def probe_target(
+    skill_dir: Path,
+    package_dir: Path,
+    target: str,
+    expected: list[str],
+    installer_targets: dict[str, Any],
+) -> dict[str, Any]:
     adapter_path = package_dir / "targets" / target / "adapter.json"
     checks: list[dict[str, Any]] = []
     failures: list[str] = []
@@ -167,6 +270,17 @@ def probe_target(skill_dir: Path, package_dir: Path, target: str, expected: list
     residual_risks = []
     if native is False:
         residual_risks.append("Client-native permission enforcement is not provided by this target; installer or operator must honor metadata.")
+    installer_enforcement = installer_targets.get(
+        target,
+        {
+            "target": target,
+            "source_status": "missing",
+            "enforced": False,
+            "enforced_capabilities": [],
+            "missing_capabilities": expected,
+            "failure_details": ["install simulation report is missing"],
+        },
+    )
     return {
         "target": target,
         "status": "pass" if not failures else "fail",
@@ -174,6 +288,7 @@ def probe_target(skill_dir: Path, package_dir: Path, target: str, expected: list
         "permission_model": str(target_contract.get("permission_model", "")),
         "native_enforcement": bool(native) if isinstance(native, bool) else None,
         "metadata_fallback_explicit": metadata_fallback,
+        "installer_enforcement": installer_enforcement,
         "assurance": assurance,
         "declared_capabilities": sorted_strings(target_contract.get("declared_capabilities")),
         "checks": checks,
@@ -184,10 +299,11 @@ def probe_target(skill_dir: Path, package_dir: Path, target: str, expected: list
 
 def render_markdown(report: dict[str, Any]) -> str:
     summary = report["summary"]
+    installer = report.get("installer_enforcement", {})
     lines = [
         "# Runtime Permission Probes",
         "",
-        "Runtime permission probes verify that generated target adapters expose high-permission capabilities and make native-enforcement limits explicit.",
+        "Runtime permission probes verify that generated target adapters expose high-permission capabilities, make native-enforcement limits explicit, and link installer enforcement evidence when available.",
         "",
         "## Summary",
         "",
@@ -197,17 +313,35 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Failed: `{summary['fail_count']}`",
         f"- Native enforcement targets: `{summary['native_enforcement_count']}`",
         f"- Explicit metadata fallbacks: `{summary['metadata_fallback_count']}`",
+        f"- Installer enforcement source: `{summary['installer_enforcement_source_status']}`",
+        f"- Installer-enforced targets: `{summary['installer_enforcement_pass_count']}`",
+        f"- Installer permission failures: `{summary['installer_permission_failure_count']}`",
+        f"- World-class native evidence ready: `{summary['world_class_native_evidence_ready']}`",
         f"- Required capabilities: `{', '.join(report['expected_capabilities']) or 'none'}`",
         "",
-        "| Target | Status | Assurance | Native Enforcement | Metadata Fallback | Residual Risk |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| Target | Status | Assurance | Native Enforcement | Metadata Fallback | Installer Enforcement | Residual Risk |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for target in report["targets"]:
         residual = "<br>".join(target["residual_risks"]) if target["residual_risks"] else "None"
+        installer_status = target.get("installer_enforcement", {})
+        installer_label = "pass" if installer_status.get("enforced") else installer_status.get("source_status", "missing")
         lines.append(
             f"| `{target['target']}` | `{target['status']}` | `{target['assurance']}` | "
-            f"`{target['native_enforcement']}` | `{target['metadata_fallback_explicit']}` | {residual} |"
+            f"`{target['native_enforcement']}` | `{target['metadata_fallback_explicit']}` | `{installer_label}` | {residual} |"
         )
+    lines.extend(
+        [
+            "",
+            "## Installer Enforcement",
+            "",
+            f"- Source: `{installer.get('source', '')}`",
+            f"- Source status: `{installer.get('source_status', 'missing')}`",
+            f"- Package dir matches probe: `{installer.get('package_dir_matches', False)}`",
+            "",
+            "Installer enforcement means the package install simulation blocks missing capability approvals or target enforcement notes. It is supporting local distribution evidence, not proof of target-client native enforcement.",
+        ]
+    )
     lines.extend(["", "## Failures", ""])
     lines.extend([f"- {item}" for item in report["failures"]] or ["- None"])
     lines.extend(
@@ -227,12 +361,21 @@ def probe_runtime_permissions(
     targets: list[str],
     output_json: Path,
     output_md: Path,
+    install_simulation_json: Path | None = None,
 ) -> dict[str, Any]:
     skill_dir = skill_dir.resolve()
     package_dir = package_dir.resolve()
     expected = expected_capabilities(skill_dir)
-    target_results = [probe_target(skill_dir, package_dir, target, expected) for target in targets]
+    installer = installer_enforcement_source(skill_dir, package_dir, targets, expected, install_simulation_json)
+    installer_targets = installer.get("targets", {}) if isinstance(installer.get("targets"), dict) else {}
+    target_results = [probe_target(skill_dir, package_dir, target, expected, installer_targets) for target in targets]
     failures = [failure for target in target_results for failure in target["failures"]]
+    installer_summary = installer.get("summary", {}) if isinstance(installer.get("summary"), dict) else {}
+    installer_pass_count = sum(
+        1
+        for item in installer_targets.values()
+        if isinstance(item, dict) and item.get("enforced") is True
+    )
     summary = {
         "target_count": len(target_results),
         "pass_count": sum(1 for item in target_results if item["status"] == "pass"),
@@ -242,6 +385,20 @@ def probe_runtime_permissions(
         "residual_risk_count": sum(len(item["residual_risks"]) for item in target_results),
         "required_capability_count": len(expected),
         "failure_count": len(failures),
+        "installer_enforcement_source_status": installer.get("source_status", "missing"),
+        "installer_enforcement_target_count": len(installer_targets),
+        "installer_enforcement_pass_count": installer_pass_count,
+        "installer_permission_enforced_count": int(installer_summary.get("installer_permission_enforced_count", 0) or 0),
+        "installer_permission_failure_count": int(installer_summary.get("installer_permission_failure_count", 0) or 0),
+        "installer_permission_capability_count": int(installer_summary.get("permission_capability_count", 0) or 0),
+        "world_class_native_evidence_ready": sum(1 for item in target_results if item["native_enforcement"] is True) > 0 and not failures,
+        "installer_enforcement_ready": (
+            installer.get("source_status") == "present"
+            and installer_pass_count == len(target_results)
+            and bool(expected)
+            and int(installer_summary.get("failure_count", 0) or 0) == 0
+            and int(installer_summary.get("installer_permission_failure_count", 0) or 0) == 0
+        ),
     }
     report = {
         "schema_version": "1.0",
@@ -250,6 +407,12 @@ def probe_runtime_permissions(
         "package_dir": display_path(package_dir, skill_dir),
         "expected_capabilities": expected,
         "summary": summary,
+        "installer_enforcement": {
+            "source": installer.get("source", ""),
+            "source_status": installer.get("source_status", "missing"),
+            "package_dir_matches": installer.get("package_dir_matches", False),
+            "summary": installer_summary,
+        },
         "targets": target_results,
         "failures": failures,
         "artifacts": {
@@ -271,6 +434,7 @@ def main() -> None:
     parser.add_argument("--target", action="append", choices=DEFAULT_TARGETS)
     parser.add_argument("--output-json")
     parser.add_argument("--output-md")
+    parser.add_argument("--install-simulation-json")
     args = parser.parse_args()
 
     skill_dir = Path(args.skill_dir).resolve()
@@ -280,6 +444,7 @@ def main() -> None:
         args.target or DEFAULT_TARGETS,
         Path(args.output_json).resolve() if args.output_json else skill_dir / "reports" / "runtime_permission_probes.json",
         Path(args.output_md).resolve() if args.output_md else skill_dir / "reports" / "runtime_permission_probes.md",
+        Path(args.install_simulation_json).resolve() if args.install_simulation_json else None,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     raise SystemExit(0 if report["ok"] else 2)

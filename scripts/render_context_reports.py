@@ -52,6 +52,9 @@ def main() -> None:
                 "budget_limit": stats.get("context_budget_limit"),
                 "initial_tokens": stats.get("estimated_initial_load_tokens"),
                 "skill_body_tokens": stats.get("skill_body_tokens"),
+                "deferred_resource_tokens": stats.get("deferred_resource_tokens"),
+                "large_deferred_resource_dirs": stats.get("large_deferred_resource_dirs", []),
+                "deferred_resource_governance": stats.get("deferred_resource_governance", {}),
                 "quality_density": stats.get("quality_density"),
                 "unused_resource_dirs": stats.get("unused_resource_dirs", []),
                 "ok": report.get("ok"),
@@ -72,14 +75,20 @@ def main() -> None:
     lines = [
         "# Context Budget Summary",
         "",
-        "| Target | Path | Tier | Limit | Initial | SKILL | Quality Density | Unused Dirs | Status |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- |",
+        "| Target | Path | Tier | Limit | Initial | SKILL | Deferred | Resource Governance | Large Deferred Dirs | Quality Density | Unused Dirs | Status |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | --- | --- |",
     ]
     for row in rows:
         unused = ", ".join(row["unused_resource_dirs"]) if row["unused_resource_dirs"] else "-"
+        governance = row.get("deferred_resource_governance", {}) or {}
+        governance_status = governance.get("status", "unknown")
+        large_dirs = ", ".join(
+            f"{item['path']}:{item['estimated_tokens']}"
+            for item in row.get("large_deferred_resource_dirs", [])
+        ) or "-"
         status = "ok" if row["ok"] else "fail"
         lines.append(
-            f"| {row['label']} | `{row['path']}` | `{row['budget_tier']}` | {row['budget_limit']} | {row['initial_tokens']} | {row['skill_body_tokens']} | {row['quality_density']} | {unused} | {status} |"
+            f"| {row['label']} | `{row['path']}` | `{row['budget_tier']}` | {row['budget_limit']} | {row['initial_tokens']} | {row['skill_body_tokens']} | {row['deferred_resource_tokens']} | `{governance_status}` | {large_dirs} | {row['quality_density']} | {unused} | {status} |"
         )
     lines.extend(["", "Per-target JSON reports are written beside each target and under `reports/`."])
     (ROOT / "reports" / "context_budget.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

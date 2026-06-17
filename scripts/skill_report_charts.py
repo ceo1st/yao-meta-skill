@@ -2,6 +2,8 @@
 import html
 import math
 
+from skill_report_i18n import bi_span, en_for
+
 
 SCRIPT_INTERFACE = "internal-module"
 SCRIPT_INTERFACE_REASON = "Imported by render_skill_overview.py to render inline SVG report charts."
@@ -17,11 +19,26 @@ def esc(value) -> str:
     return html.escape(str(value))
 
 
-def figure(name: str, svg: str, caption: str) -> str:
+def svg_text(zh: str, en: str | None = None, **attrs) -> str:
+    def attr_name(key: str) -> str:
+        if key.endswith("_"):
+            key = key[:-1]
+        return key.replace("_", "-")
+
+    attr = " ".join(f'{attr_name(key)}="{esc(value)}"' for key, value in attrs.items() if value is not None)
+    if attr:
+        attr = " " + attr
+    return (
+        f'<text data-lang="zh-CN"{attr}>{esc(zh)}</text>'
+        f'<text data-lang="en"{attr}>{esc(en_for(en if en is not None else zh))}</text>'
+    )
+
+
+def figure(name: str, svg: str, caption: str, caption_en: str | None = None) -> str:
     return (
         f'<figure class="chart-figure" data-chart="{esc(name)}">'
         f"{svg}"
-        f"<figcaption>{esc(caption)}</figcaption>"
+        f"<figcaption>{bi_span(caption, caption_en)}</figcaption>"
         "</figure>"
     )
 
@@ -47,12 +64,10 @@ def render_radar(scorecard: dict) -> str:
         data_points.append(f"{center + data_radius * math.cos(angle):.1f},{center + data_radius * math.sin(angle):.1f}")
         lx = center + (radius + 32) * math.cos(angle)
         ly = center + (radius + 32) * math.sin(angle)
-        label_nodes.append(
-            f'<text x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle" dominant-baseline="middle">{esc(labels[i])}</text>'
-        )
+        label_nodes.append(svg_text(labels[i], x=f"{lx:.1f}", y=f"{ly:.1f}", text_anchor="middle", dominant_baseline="middle"))
     svg = (
         '<svg viewBox="0 0 300 300" role="img" aria-label="评分雷达">'
-        f'<text x="20" y="28" class="chart-title">评分雷达</text>'
+        + svg_text("评分雷达", x="20", y="28", class_="chart-title")
         + "".join(rings)
         + f'<polygon points="{" ".join(data_points)}" fill="#E4ECF5" stroke="{BRAND}" stroke-width="2"/>'
         + "".join(label_nodes)
@@ -68,12 +83,12 @@ def render_flow(summary: dict) -> str:
         x = 38 + index * 210
         nodes.append(
             f'<g><rect x="{x}" y="56" width="150" height="74" rx="8" fill="#F6F8FB" stroke="{BORDER}"/>'
-            f'<text x="{x + 75}" y="99" text-anchor="middle">{esc(label)}</text></g>'
+            f'{svg_text(label, x=str(x + 75), y="99", text_anchor="middle")}</g>'
         )
     svg = (
         '<svg viewBox="0 0 620 170" role="img" aria-label="交付流程">'
-        '<text x="20" y="28" class="chart-title">交付流程</text>'
-        '<path d="M188 93 H248 M398 93 H458" class="chart-line"/>'
+        + svg_text("交付流程", x="20", y="28", class_="chart-title")
+        + '<path d="M188 93 H248 M398 93 H458" class="chart-line"/>'
         + "".join(nodes)
         + "</svg>"
     )
@@ -86,15 +101,15 @@ def render_matrix(profile: dict) -> str:
     y = 430 - matrix.get("knowledge_density", 60) * 3.2
     svg = (
         '<svg viewBox="0 0 520 460" role="img" aria-label="能力矩阵">'
-        '<text x="20" y="30" class="chart-title">能力矩阵</text>'
-        f'<rect x="70" y="70" width="380" height="320" fill="{SOFT}" stroke="{BORDER}"/>'
-        f'<line x1="260" y1="70" x2="260" y2="390" stroke="{BORDER}"/>'
-        f'<line x1="70" y1="230" x2="450" y2="230" stroke="{BORDER}"/>'
-        '<text x="260" y="424" text-anchor="middle">执行确定性</text>'
-        '<text x="22" y="230" transform="rotate(-90 22 230)" text-anchor="middle">知识密度</text>'
-        f'<circle cx="{x:.1f}" cy="{y:.1f}" r="12" fill="{BRAND}"/>'
-        f'<text x="{x + 18:.1f}" y="{y + 5:.1f}">{esc(profile.get("task_family", "Skill workflow"))}</text>'
-        "</svg>"
+        + svg_text("能力矩阵", x="20", y="30", class_="chart-title")
+        + f'<rect x="70" y="70" width="380" height="320" fill="{SOFT}" stroke="{BORDER}"/>'
+        + f'<line x1="260" y1="70" x2="260" y2="390" stroke="{BORDER}"/>'
+        + f'<line x1="70" y1="230" x2="450" y2="230" stroke="{BORDER}"/>'
+        + svg_text("执行确定性", x="260", y="424", text_anchor="middle")
+        + svg_text("知识密度", x="22", y="230", transform="rotate(-90 22 230)", text_anchor="middle")
+        + f'<circle cx="{x:.1f}" cy="{y:.1f}" r="12" fill="{BRAND}"/>'
+        + svg_text(str(profile.get("task_family", "Skill workflow")), x=f"{x + 18:.1f}", y=f"{y + 5:.1f}")
+        + "</svg>"
     )
     return figure("matrix", svg, "能力矩阵说明这个 Skill 更偏知识密集还是执行确定。")
 
@@ -106,11 +121,11 @@ def render_layers(principle: dict) -> str:
         y = 55 + index * 48
         blocks.append(
             f'<rect x="{70 + index * 18}" y="{y}" width="{380 - index * 36}" height="34" rx="7" fill="#F6F8FB" stroke="{BORDER}"/>'
-            f'<text x="260" y="{y + 22}" text-anchor="middle">{esc(layer)}</text>'
+            + svg_text(layer, x="260", y=str(y + 22), text_anchor="middle")
         )
     svg = (
         '<svg viewBox="0 0 520 320" role="img" aria-label="Skill principle flow">'
-        '<text x="20" y="30" class="chart-title">分层结构</text>'
+        + svg_text("分层结构", x="20", y="30", class_="chart-title")
         + "".join(blocks)
         + "</svg>"
     )
@@ -132,10 +147,10 @@ def render_risk_heatmap(risk: dict) -> str:
             )
     svg = (
         '<svg viewBox="0 0 380 300" role="img" aria-label="风险热力">'
-        '<text x="20" y="30" class="chart-title">风险热力</text>'
+        + svg_text("风险热力", x="20", y="30", class_="chart-title")
         + "".join(cells)
-        + '<text x="210" y="278" text-anchor="middle">发生概率</text>'
-        + '<text x="24" y="160" transform="rotate(-90 24 160)" text-anchor="middle">影响程度</text>'
+        + svg_text("发生概率", x="210", y="278", text_anchor="middle")
+        + svg_text("影响程度", x="24", y="160", transform="rotate(-90 24 160)", text_anchor="middle")
         + "</svg>"
     )
     return figure("risk_heatmap", svg, "风险热力图用影响程度和发生概率标出当前治理重点。")
@@ -157,12 +172,12 @@ def render_asset_donut(assets: dict) -> str:
             'pathLength="100" transform="rotate(-90 130 130)"/>'
         )
         offset += dash
-        labels.append(f'<text x="235" y="{78 + index * 22}">{esc(item.get("label", "asset"))}</text>')
+        labels.append(svg_text(str(item.get("label", "asset")), x="235", y=str(78 + index * 22)))
     svg = (
         '<svg viewBox="0 0 430 270" role="img" aria-label="资产分布">'
-        '<text x="20" y="30" class="chart-title">资产分布</text>'
+        + svg_text("资产分布", x="20", y="30", class_="chart-title")
         + "".join(circles)
-        + f'<text x="130" y="136" text-anchor="middle">{assets.get("file_count", 0)}项</text>'
+        + svg_text(f'{assets.get("file_count", 0)}项', f'{assets.get("file_count", 0)} items', x="130", y="136", text_anchor="middle")
         + "".join(labels)
         + "</svg>"
     )
@@ -177,15 +192,18 @@ def render_timeline(roadmap: dict) -> str:
         title = str(item.get("title", "升级"))
         if len(title) > 18:
             title = title[:17] + "…"
+        title_en = en_for(title)
+        if len(title_en) > 24:
+            title_en = title_en[:23] + "..."
         blocks.append(
             f'<circle cx="{x}" cy="92" r="10" fill="{BRAND}"/>'
-            f'<text x="{x}" y="126" text-anchor="middle">下一步 {index + 1}</text>'
-            f'<text x="{x}" y="150" text-anchor="middle">{esc(title)}</text>'
+            + svg_text(f"下一步 {index + 1}", f"Next {index + 1}", x=str(x), y="126", text_anchor="middle")
+            + svg_text(title, title_en, x=str(x), y="150", text_anchor="middle")
         )
     svg = (
         '<svg viewBox="0 0 520 210" role="img" aria-label="迭代时间">'
-        '<text x="20" y="30" class="chart-title">迭代时间</text>'
-        f'<line x1="60" y1="92" x2="{60 + max(0, len(items) - 1) * 190}" y2="92" class="chart-line"/>'
+        + svg_text("迭代时间", x="20", y="30", class_="chart-title")
+        + f'<line x1="60" y1="92" x2="{60 + max(0, len(items) - 1) * 190}" y2="92" class="chart-line"/>'
         + "".join(blocks)
         + "</svg>"
     )

@@ -1,32 +1,25 @@
 #!/usr/bin/env python3
-import json
-import re
 from datetime import date
 from pathlib import Path
 
+from skill_ir_paths import find_skill_ir
 from skill_report_metrics import calculate_scorecard
-
-try:
-    import yaml
-except ImportError:  # pragma: no cover
-    yaml = None
+from skill_report_sources import (
+    extract_title,
+    load_json,
+    load_yaml,
+    package_entries,
+    parse_frontmatter,
+    parse_sections,
+    summarize_logic,
+    summarize_usage,
+)
+from skill_report_sections import package_assets, quality_review, risk_governance
+from skill_report_world_class import world_class_readiness, world_class_roadmap_item
 
 
 SCRIPT_INTERFACE = "internal-module"
 SCRIPT_INTERFACE_REASON = "Imported by render_skill_overview.py to build the v2 report data model."
-
-KNOWN_ENTRIES = [
-    ("SKILL.md", "Skill entrypoint"),
-    ("README.md", "Human-readable usage guide"),
-    ("agents/interface.yaml", "Neutral interface metadata"),
-    ("manifest.json", "Lifecycle and portability metadata"),
-    ("references", "Extended guidance and reusable notes"),
-    ("scripts", "Deterministic helpers or local tooling"),
-    ("evals", "Trigger and quality checks"),
-    ("reports", "Generated evidence and overview artifacts"),
-]
-
-IGNORED_PACKAGE_PARTS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist"}
 
 REPORT_NAV_V2 = [
     {"label": "技能概述", "label_en": "Overview", "href": "overview"},
@@ -39,131 +32,6 @@ REPORT_NAV_V2 = [
     {"label": "包体资产", "label_en": "Assets", "href": "assets"},
     {"label": "迭代路线", "label_en": "Roadmap", "href": "roadmap"},
 ]
-
-
-def parse_frontmatter(text: str) -> tuple[dict, str]:
-    lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
-        return {}, text
-    try:
-        end_index = lines[1:].index("---") + 1
-    except ValueError:
-        return {}, text
-    frontmatter_text = "\n".join(lines[1:end_index])
-    body = "\n".join(lines[end_index + 1 :]).lstrip()
-    if yaml is not None:
-        data = yaml.safe_load(frontmatter_text) or {}
-        return data if isinstance(data, dict) else {}, body
-    data = {}
-    for line in frontmatter_text.splitlines():
-        if ":" not in line:
-            continue
-        key, value = line.split(":", 1)
-        data[key.strip()] = value.strip().strip('"')
-    return data, body
-
-
-def load_yaml(path: Path) -> dict:
-    if not path.exists():
-        return {}
-    text = path.read_text(encoding="utf-8")
-    if yaml is not None:
-        payload = yaml.safe_load(text) or {}
-        return payload if isinstance(payload, dict) else {}
-    return {}
-
-
-def load_json(path: Path) -> dict:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
-    return payload if isinstance(payload, dict) else {}
-
-
-def extract_title(body: str, fallback: str) -> str:
-    for line in body.splitlines():
-        if line.startswith("# "):
-            return line[2:].strip()
-    return fallback
-
-
-def parse_sections(body: str) -> dict[str, str]:
-    sections: dict[str, list[str]] = {}
-    current = "_preamble"
-    sections[current] = []
-    for line in body.splitlines():
-        if line.startswith("## "):
-            current = line[3:].strip()
-            sections[current] = []
-            continue
-        sections[current].append(line)
-    return {name: "\n".join(lines).strip() for name, lines in sections.items()}
-
-
-def extract_list_items(text: str) -> list[str]:
-    items = []
-    for line in text.splitlines():
-        stripped = line.strip()
-        if not stripped:
-            continue
-        ordered = re.match(r"^\d+\.\s+(.*)$", stripped)
-        bullet = re.match(r"^[-*]\s+(.*)$", stripped)
-        match = ordered or bullet
-        if match:
-            items.append(match.group(1).strip())
-    return items
-
-
-def summarize_logic(sections: dict[str, str]) -> list[str]:
-    for key in ("Compact Workflow", "Workflow", "How It Works", "Logic", "Quick Start"):
-        if key in sections:
-            items = extract_list_items(sections[key])
-            if items:
-                return items[:5]
-    return extract_list_items(sections.get("_preamble", ""))[:5] or [
-        "Understand the request",
-        "Execute the main task",
-        "Validate the result",
-    ]
-
-
-def summarize_usage(sections: dict[str, str], default_prompt: str, description: str) -> list[str]:
-    for key in ("How To Use", "Quick Start", "Usage", "Runbook"):
-        if key in sections:
-            items = extract_list_items(sections[key])
-            if items:
-                return items[:5]
-    usage = []
-    if default_prompt:
-        usage.append(default_prompt)
-    usage.append(f"Use this skill when the request matches: {description}")
-    return usage[:5]
-
-
-def package_entries(skill_dir: Path) -> list[dict]:
-    items = []
-    for rel_path, label in KNOWN_ENTRIES:
-        target = skill_dir / rel_path
-        if target.exists():
-            kind = "folder" if target.is_dir() else "file"
-            if target.is_dir():
-                count = len(
-                    [
-                        path
-                        for path in target.rglob("*")
-                        if path.is_file()
-                        and not path.is_symlink()
-                        and not any(part in IGNORED_PACKAGE_PARTS for part in path.relative_to(target).parts)
-                        and path.suffix not in {".pyc", ".pyo"}
-                    ]
-                )
-            else:
-                count = 1
-            items.append({"path": rel_path, "label": label, "kind": kind, "file_count": count})
-    return items
 
 
 def context_payload(intent: dict) -> dict:
@@ -307,9 +175,12 @@ def principle_nodes(system_model: dict) -> list[dict]:
     ]
 
 
-def roadmap_items(iteration: dict) -> list[dict]:
+def roadmap_items(iteration: dict, readiness: dict | None = None) -> list[dict]:
     directions = iteration.get("directions", []) if isinstance(iteration, dict) else []
     items = []
+    evidence_item = world_class_roadmap_item(readiness or {})
+    if evidence_item:
+        items.append(evidence_item)
     for item in directions[:3]:
         items.append(
             {
@@ -319,6 +190,8 @@ def roadmap_items(iteration: dict) -> list[dict]:
                 "unlocks": item.get("unlocks", ""),
             }
         )
+        if len(items) >= 3:
+            break
     if items:
         return items
     return [
@@ -329,42 +202,6 @@ def roadmap_items(iteration: dict) -> list[dict]:
             "unlocks": "更稳定的路由边界。",
         }
     ]
-
-
-def artifact_design_highlights(profile: dict) -> list[str]:
-    primary = profile.get("primary_artifact", {})
-    highlights = []
-    if primary.get("direction"):
-        highlights.append(primary["direction"])
-    highlights.extend(profile.get("quality_gates", [])[:3])
-    return highlights[:4]
-
-
-def prompt_quality_highlights(profile: dict) -> list[str]:
-    highlights = []
-    primary = profile.get("primary_task_family", {})
-    complexity = profile.get("complexity", {})
-    if primary.get("label"):
-        highlights.append(f"Primary prompt task family: {primary['label']}.")
-    if complexity.get("band"):
-        highlights.append(f"Complexity: {complexity['band']} — {complexity.get('reason', '')}")
-    for item in profile.get("quality_matrix", [])[:2]:
-        highlights.append(f"{item.get('label', 'Quality')}: {item.get('score', 'n/a')}/100.")
-    return highlights[:4]
-
-
-def system_model_highlights(model: dict) -> list[str]:
-    highlights = []
-    stability = model.get("stability", {})
-    if stability:
-        highlights.append(f"Stability: {stability.get('band', 'unknown')} ({stability.get('score', 'n/a')}/100).")
-    boundary = model.get("boundary_map", {})
-    if boundary.get("owned_job"):
-        highlights.append(f"Owned job: {boundary['owned_job']}")
-    for point in model.get("leverage_points", [])[:2]:
-        if point.get("point"):
-            highlights.append(f"Leverage: {point['point']} — {point.get('move', '')}")
-    return highlights[:4]
 
 
 def capability_profile(manifest: dict, interface_data: dict, prompt_quality: dict) -> dict:
@@ -384,82 +221,6 @@ def capability_profile(manifest: dict, interface_data: dict, prompt_quality: dic
     }
 
 
-def risk_governance(output_risk: dict, system_model: dict, scorecard: dict) -> dict:
-    risk_names = [
-        ("误触发风险", "trigger_score"),
-        ("输出漂移风险", "evidence_score"),
-        ("证据不足风险", "evidence_score"),
-        ("包体膨胀风险", "maintainability_score"),
-        ("跨平台迁移风险", "portability_score"),
-    ]
-    risks = []
-    for index, (name, metric_key) in enumerate(risk_names):
-        score = scorecard.get(metric_key, {}).get("score", 50)
-        probability = max(1, min(3, 4 - round(score / 34)))
-        impact = 3 if index in {0, 2, 4} else 2
-        risks.append(
-            {
-                "name": name,
-                "impact": impact,
-                "probability": probability,
-                "signal": scorecard.get(metric_key, {}).get("reasons", ["证据不足"])[0],
-                "response": "先补证据和边界，再增加包体复杂度。",
-            }
-        )
-    human_boundary = system_model.get("boundary_map", {}).get("human_judgment_boundary", [])
-    return {
-        "risks": risks,
-        "risk_families": output_risk.get("risk_families", []),
-        "human_judgment_boundary": human_boundary,
-    }
-
-
-def quality_review(
-    strengths: list[str],
-    scorecard: dict,
-    artifact_design: dict,
-    prompt_quality: dict,
-    system_model: dict,
-) -> dict:
-    gaps = []
-    for key, payload in scorecard.items():
-        if payload.get("score", 0) < 70:
-            gaps.append(f"{payload.get('label', key)}需要补强：{payload.get('reasons', ['证据不足'])[0]}")
-    return {
-        "strengths": strengths,
-        "gaps": gaps or ["当前关键证据较完整，优先保持轻量。"],
-        "recommendations": [
-            "先改触发边界，再扩展工作流。",
-            "只把重复且稳定的步骤沉淀为脚本。",
-            "每次升级后重新生成报告并检查分数原因。",
-        ],
-        "artifact_design": {
-            "design_system": artifact_design.get("design_system", "content-led editorial"),
-            "highlights": artifact_design_highlights(artifact_design),
-        },
-        "prompt_quality": {
-            "overall_quality_score": prompt_quality.get("overall_quality_score", "n/a"),
-            "highlights": prompt_quality_highlights(prompt_quality),
-        },
-        "system_model": {
-            "stability": system_model.get("stability", {}),
-            "highlights": system_model_highlights(system_model),
-        },
-    }
-
-
-def package_assets(package_map: list[dict]) -> dict:
-    files = sum(item.get("file_count", 0) for item in package_map if item.get("kind") == "file")
-    folders = [item for item in package_map if item.get("kind") == "folder"]
-    distribution = [{"label": item["path"], "value": max(1, item.get("file_count", 1))} for item in package_map]
-    return {
-        "entries": package_map,
-        "file_count": files + sum(item.get("file_count", 0) for item in folders),
-        "folder_count": len(folders),
-        "distribution": distribution,
-    }
-
-
 def build_report_model(skill_dir: Path) -> dict:
     skill_dir = skill_dir.resolve()
     skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
@@ -475,7 +236,9 @@ def build_report_model(skill_dir: Path) -> dict:
     output_quality = load_json(skill_dir / "reports" / "output_quality_scorecard.json")
     output_execution = load_json(skill_dir / "reports" / "output_execution_runs.json")
     output_blind_review = load_json(skill_dir / "reports" / "output_blind_review_pack.json")
+    output_review_kit = load_json(skill_dir / "reports" / "output_review_kit.json")
     output_review_adjudication = load_json(skill_dir / "reports" / "output_review_adjudication.json")
+    benchmark_reproducibility = load_json(skill_dir / "reports" / "benchmark_reproducibility.json")
     conformance = load_json(skill_dir / "reports" / "conformance_matrix.json")
     runtime_permissions = load_json(skill_dir / "reports" / "runtime_permission_probes.json")
     trust_report = load_json(skill_dir / "reports" / "security_trust_report.json")
@@ -487,15 +250,14 @@ def build_report_model(skill_dir: Path) -> dict:
     adoption_drift = load_json(skill_dir / "reports" / "adoption_drift_report.json")
     review_waivers = load_json(skill_dir / "reports" / "review_waivers.json")
     review_annotations = load_json(skill_dir / "reports" / "review_annotations.json")
+    world_class_evidence = load_json(skill_dir / "reports" / "world_class_evidence_plan.json")
+    world_class_evidence_ledger = load_json(skill_dir / "reports" / "world_class_evidence_ledger.json")
     compiled_targets = load_json(skill_dir / "reports" / "compiled_targets.json")
-    skill_ir = load_json(skill_dir / "reports" / "skill-ir.json")
-    if not skill_ir:
-        example_ir = skill_dir / "skill-ir" / "examples" / f"{frontmatter.get('name', skill_dir.name)}.json"
-        skill_ir = load_json(example_ir)
     reference_synthesis = load_json(skill_dir / "reports" / "reference-synthesis.json")
     iteration = load_json(skill_dir / "reports" / "iteration-directions.json")
 
     name = frontmatter.get("name", skill_dir.name)
+    skill_ir, skill_ir_path = find_skill_ir(skill_dir, name)
     description = frontmatter.get("description", "No description found.")
     title = extract_title(body, name.replace("-", " ").title())
     display_name = interface_data.get("interface", {}).get("display_name", title)
@@ -508,7 +270,8 @@ def build_report_model(skill_dir: Path) -> dict:
     trigger = trigger_contract(interface_data, description)
     io = io_contract(intent, package_map, description)
     principles = principle_nodes(system_model)
-    roadmap = roadmap_items(iteration)
+    readiness = world_class_readiness(world_class_evidence_ledger)
+    roadmap = roadmap_items(iteration, readiness)
     metadata = {
         "canonical_format": interface_data.get("compatibility", {}).get("canonical_format", "agent-skills"),
         "targets": interface_data.get("compatibility", {}).get("adapter_targets", []),
@@ -519,7 +282,7 @@ def build_report_model(skill_dir: Path) -> dict:
     deliverables = [
         "SKILL.md",
         "agents/interface.yaml",
-        "reports/skill-ir.json",
+        skill_ir_path or "reports/skill-ir.json",
         "reports/compiled_targets.md",
         "reports/output_quality_scorecard.md",
         "reports/conformance_matrix.md",
@@ -533,6 +296,7 @@ def build_report_model(skill_dir: Path) -> dict:
         "reports/review_waivers.md",
         "reports/review_annotations.md",
         "reports/review-studio.html",
+        "reports/skill-interpretation.html",
         "reports/skill-overview.html",
     ]
     if (skill_dir / "reports" / "runtime_permission_probes.md").exists():
@@ -547,9 +311,25 @@ def build_report_model(skill_dir: Path) -> dict:
     if (skill_dir / "reports" / "output_blind_answer_key.json").exists():
         insert_after = deliverables.index("reports/output_blind_review_pack.md") + 1 if "reports/output_blind_review_pack.md" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
         deliverables.insert(insert_after, "reports/output_blind_answer_key.json")
+    if (skill_dir / "reports" / "output_review_kit.md").exists():
+        insert_after = deliverables.index("reports/output_blind_review_pack.md") + 1 if "reports/output_blind_review_pack.md" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/output_review_kit.md")
     if (skill_dir / "reports" / "output_review_adjudication.md").exists():
-        insert_after = deliverables.index("reports/output_blind_answer_key.json") + 1 if "reports/output_blind_answer_key.json" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
+        insert_after = deliverables.index("reports/output_review_kit.md") + 1 if "reports/output_review_kit.md" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
         deliverables.insert(insert_after, "reports/output_review_adjudication.md")
+    if (skill_dir / "reports" / "benchmark_reproducibility.md").exists():
+        insert_after = deliverables.index("reports/output_review_adjudication.md") + 1 if "reports/output_review_adjudication.md" in deliverables else deliverables.index("reports/output_quality_scorecard.md") + 1
+        deliverables.insert(insert_after, "reports/benchmark_reproducibility.md")
+    if (skill_dir / "reports" / "world_class_evidence_plan.md").exists():
+        insert_after = deliverables.index("reports/review_waivers.md") + 1
+        deliverables.insert(insert_after, "reports/world_class_evidence_plan.md")
+    if (skill_dir / "reports" / "world_class_evidence_ledger.md").exists():
+        insert_after = (
+            deliverables.index("reports/world_class_evidence_plan.md") + 1
+            if "reports/world_class_evidence_plan.md" in deliverables
+            else deliverables.index("reports/review_waivers.md") + 1
+        )
+        deliverables.insert(insert_after, "reports/world_class_evidence_ledger.md")
 
     skill_summary = {
         "name": name,
@@ -599,6 +379,7 @@ def build_report_model(skill_dir: Path) -> dict:
         "contract_boundary": contract,
         "quality_review": q_review,
         "risk_governance": risk_governance(output_risk, system_model, scorecard),
+        "world_class_readiness": readiness,
         "package_assets": package_assets(package_map),
         "iteration_roadmap": {"items": roadmap},
         "report_contract": report_contract,
@@ -625,6 +406,7 @@ def build_report_model(skill_dir: Path) -> dict:
         "benchmark_highlights": [],
         "skill_ir": {
             "schema_version": skill_ir.get("schema_version", ""),
+            "source_path": skill_ir_path,
             "target_count": len(skill_ir.get("targets", [])),
             "trigger_samples": len(skill_ir.get("trigger_surface", {}).get("should_trigger", [])),
             "output_eval_cases": len(skill_ir.get("eval_plan", {}).get("output", [])),
@@ -664,12 +446,25 @@ def build_report_model(skill_dir: Path) -> dict:
             "pair_count": output_blind_review.get("summary", {}).get("pair_count", 0),
             "answer_key_separate": output_blind_review.get("summary", {}).get("answer_key_separate", False),
         },
+        "output_review_kit": {
+            "ok": output_review_kit.get("ok", False),
+            "summary": output_review_kit.get("summary", {}),
+            "artifacts": output_review_kit.get("artifacts", {}),
+            "failures": output_review_kit.get("failures", []),
+        },
         "output_review_adjudication": {
             "ok": output_review_adjudication.get("ok", False),
             "summary": output_review_adjudication.get("summary", {}),
             "reviewer": output_review_adjudication.get("reviewer", ""),
             "reviewed_at": output_review_adjudication.get("reviewed_at", ""),
             "failures": output_review_adjudication.get("failures", []),
+        },
+        "benchmark_reproducibility": {
+            "ok": benchmark_reproducibility.get("ok", False),
+            "summary": benchmark_reproducibility.get("summary", {}),
+            "commit": benchmark_reproducibility.get("commit", ""),
+            "missing_artifacts": benchmark_reproducibility.get("missing_artifacts", []),
+            "limitations": benchmark_reproducibility.get("limitations", []),
         },
         "runtime_conformance": conformance.get("summary", {}),
         "runtime_permissions": {
@@ -737,6 +532,18 @@ def build_report_model(skill_dir: Path) -> dict:
             "summary": review_annotations.get("summary", {}),
             "annotations": review_annotations.get("annotations", [])[:8],
             "failures": review_annotations.get("failures", []),
+        },
+        "world_class_evidence_plan": {
+            "ok": world_class_evidence.get("ok", False),
+            "summary": world_class_evidence.get("summary", {}),
+            "tasks": world_class_evidence.get("tasks", [])[:8],
+            "source_audit": world_class_evidence.get("source_audit", {}),
+        },
+        "world_class_evidence_ledger": {
+            "ok": world_class_evidence_ledger.get("ok", False),
+            "summary": world_class_evidence_ledger.get("summary", {}),
+            "entries": world_class_evidence_ledger.get("entries", [])[:8],
+            "source_plan": world_class_evidence_ledger.get("source_plan", {}),
         },
         "synthesis_highlights": synthesis,
         "artifact_design": q_review["artifact_design"],

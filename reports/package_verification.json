@@ -1,15 +1,15 @@
 {
   "ok": true,
   "schema_version": "2.0",
-  "generated_at": "2026-06-13",
+  "generated_at": "2026-06-17",
   "skill_dir": ".",
   "package_dir": "dist",
   "summary": {
-    "target_count": 3,
-    "adapter_count": 3,
+    "target_count": 4,
+    "adapter_count": 4,
     "archive_present": true,
-    "archive_sha256": "7bc83805501d24cf8e5932ef76e0454100398d5a73652e7440be47984d0cf4a9",
-    "archive_entry_count": 488,
+    "archive_sha256": "7db44f059844b71930ea8194a72ba1a316116ca970620de5550d60616e8f23c2",
+    "archive_entry_count": 689,
     "failure_count": 0,
     "warning_count": 0
   },
@@ -425,6 +425,141 @@
       "detail": "generic adapter includes field: portability_profile"
     },
     {
+      "id": "vscode-adapter",
+      "status": "pass",
+      "detail": "Adapter exists for target: vscode"
+    },
+    {
+      "id": "vscode-field-name",
+      "status": "pass",
+      "detail": "vscode adapter includes field: name"
+    },
+    {
+      "id": "vscode-field-description",
+      "status": "pass",
+      "detail": "vscode adapter includes field: description"
+    },
+    {
+      "id": "vscode-field-version",
+      "status": "pass",
+      "detail": "vscode adapter includes field: version"
+    },
+    {
+      "id": "vscode-field-display_name",
+      "status": "pass",
+      "detail": "vscode adapter includes field: display_name"
+    },
+    {
+      "id": "vscode-field-short_description",
+      "status": "pass",
+      "detail": "vscode adapter includes field: short_description"
+    },
+    {
+      "id": "vscode-field-default_prompt",
+      "status": "pass",
+      "detail": "vscode adapter includes field: default_prompt"
+    },
+    {
+      "id": "vscode-field-job_to_be_done",
+      "status": "pass",
+      "detail": "vscode adapter includes field: job_to_be_done"
+    },
+    {
+      "id": "vscode-field-ir_source",
+      "status": "pass",
+      "detail": "vscode adapter includes field: ir_source"
+    },
+    {
+      "id": "vscode-field-ir_schema_version",
+      "status": "pass",
+      "detail": "vscode adapter includes field: ir_schema_version"
+    },
+    {
+      "id": "vscode-field-semantic_contract",
+      "status": "pass",
+      "detail": "vscode adapter includes field: semantic_contract"
+    },
+    {
+      "id": "vscode-field-semantic_parity",
+      "status": "pass",
+      "detail": "vscode adapter includes field: semantic_parity"
+    },
+    {
+      "id": "vscode-field-compiler",
+      "status": "pass",
+      "detail": "vscode adapter includes field: compiler"
+    },
+    {
+      "id": "vscode-field-compiled_contract",
+      "status": "pass",
+      "detail": "vscode adapter includes field: compiled_contract"
+    },
+    {
+      "id": "vscode-field-permission_contract",
+      "status": "pass",
+      "detail": "vscode adapter includes field: permission_contract"
+    },
+    {
+      "id": "vscode-field-target_permission_contract",
+      "status": "pass",
+      "detail": "vscode adapter includes field: target_permission_contract"
+    },
+    {
+      "id": "vscode-field-target_native_contract",
+      "status": "pass",
+      "detail": "vscode adapter includes field: target_native_contract"
+    },
+    {
+      "id": "vscode-field-target_transform",
+      "status": "pass",
+      "detail": "vscode adapter includes field: target_transform"
+    },
+    {
+      "id": "vscode-field-canonical_metadata",
+      "status": "pass",
+      "detail": "vscode adapter includes field: canonical_metadata"
+    },
+    {
+      "id": "vscode-field-canonical_format",
+      "status": "pass",
+      "detail": "vscode adapter includes field: canonical_format"
+    },
+    {
+      "id": "vscode-field-activation_mode",
+      "status": "pass",
+      "detail": "vscode adapter includes field: activation_mode"
+    },
+    {
+      "id": "vscode-field-execution_context",
+      "status": "pass",
+      "detail": "vscode adapter includes field: execution_context"
+    },
+    {
+      "id": "vscode-field-shell",
+      "status": "pass",
+      "detail": "vscode adapter includes field: shell"
+    },
+    {
+      "id": "vscode-field-trust_level",
+      "status": "pass",
+      "detail": "vscode adapter includes field: trust_level"
+    },
+    {
+      "id": "vscode-field-remote_inline_execution",
+      "status": "pass",
+      "detail": "vscode adapter includes field: remote_inline_execution"
+    },
+    {
+      "id": "vscode-field-degradation_strategy",
+      "status": "pass",
+      "detail": "vscode adapter includes field: degradation_strategy"
+    },
+    {
+      "id": "vscode-field-portability_profile",
+      "status": "pass",
+      "detail": "vscode adapter includes field: portability_profile"
+    },
+    {
       "id": "openai-file-targets/openai/adapter.json",
       "status": "pass",
       "detail": "Package contains targets/openai/adapter.json"
@@ -450,6 +585,16 @@
       "detail": "Package contains targets/generic/adapter.json"
     },
     {
+      "id": "vscode-file-targets/vscode/adapter.json",
+      "status": "pass",
+      "detail": "Package contains targets/vscode/adapter.json"
+    },
+    {
+      "id": "vscode-file-targets/vscode/README.md",
+      "status": "pass",
+      "detail": "Package contains targets/vscode/README.md"
+    },
+    {
       "id": "archive-safe-paths",
       "status": "pass",
       "detail": "Archive has no absolute or parent-traversal entries"
@@ -472,7 +617,7 @@
     {
       "id": "archive-excludes-generated",
       "status": "pass",
-      "detail": "Archive excludes generated dist/ and tests/tmp* contents"
+      "detail": "Archive excludes generated dist/, .previews/, and tests/tmp* contents"
     },
     {
       "id": "registry-ok",
@@ -503,6 +648,11 @@
       "id": "registry-compat-generic",
       "status": "pass",
       "detail": "Registry compatibility is reviewable for target: generic"
+    },
+    {
+      "id": "registry-compat-vscode",
+      "status": "pass",
+      "detail": "Registry compatibility is reviewable for target: vscode"
     }
   ],
   "failures": [],

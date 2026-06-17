@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TMP = ROOT / "tests" / "tmp_runtime_permission"
 SCRIPT = ROOT / "scripts" / "probe_runtime_permissions.py"
+SIMULATOR = ROOT / "scripts" / "simulate_install.py"
 
 
 def run(cmd: list[str]) -> dict:
@@ -40,6 +41,8 @@ def main() -> None:
             "claude",
             "--platform",
             "generic",
+            "--platform",
+            "vscode",
             "--expectations",
             str(ROOT / "evals" / "packaging_expectations.json"),
             "--output-dir",
@@ -48,6 +51,24 @@ def main() -> None:
         ]
     )
     assert package["ok"], package
+    install = run(
+        [
+            sys.executable,
+            str(SIMULATOR),
+            str(ROOT),
+            "--package-dir",
+            str(package_dir),
+            "--install-root",
+            str(TMP / "install-root"),
+            "--output-json",
+            str(TMP / "install_simulation.json"),
+            "--output-md",
+            str(TMP / "install_simulation.md"),
+            "--generated-at",
+            "2026-06-13",
+        ]
+    )
+    assert install["ok"], install
 
     probe = run(
         [
@@ -60,19 +81,28 @@ def main() -> None:
             str(TMP / "runtime_permission_probes.json"),
             "--output-md",
             str(TMP / "runtime_permission_probes.md"),
+            "--install-simulation-json",
+            str(TMP / "install_simulation.json"),
         ]
     )
     assert probe["ok"], probe
     payload = probe["payload"]
     summary = payload["summary"]
-    assert summary["target_count"] == 3, summary
-    assert summary["pass_count"] == 3, summary
+    assert summary["target_count"] == 4, summary
+    assert summary["pass_count"] == 4, summary
     assert summary["fail_count"] == 0, summary
     assert summary["native_enforcement_count"] == 0, summary
-    assert summary["metadata_fallback_count"] == 3, summary
-    assert summary["residual_risk_count"] == 3, summary
+    assert summary["metadata_fallback_count"] == 4, summary
+    assert summary["installer_enforcement_source_status"] == "present", summary
+    assert summary["installer_enforcement_pass_count"] == 4, summary
+    assert summary["installer_permission_enforced_count"] == 12, summary
+    assert summary["installer_permission_failure_count"] == 0, summary
+    assert summary["world_class_native_evidence_ready"] is False, summary
+    assert summary["installer_enforcement_ready"] is True, summary
+    assert summary["residual_risk_count"] == 4, summary
     assert payload["expected_capabilities"] == ["file_write", "network", "subprocess"], payload
     assert {item["assurance"] for item in payload["targets"]} == {"metadata-fallback-explicit"}, payload["targets"]
+    assert all(item["installer_enforcement"]["enforced"] is True for item in payload["targets"]), payload["targets"]
     assert (TMP / "runtime_permission_probes.md").exists(), TMP
 
     bad_dir = TMP / "bad-dist"
@@ -92,6 +122,8 @@ def main() -> None:
             str(TMP / "bad_runtime_permission_probes.json"),
             "--output-md",
             str(TMP / "bad_runtime_permission_probes.md"),
+            "--install-simulation-json",
+            str(TMP / "install_simulation.json"),
         ]
     )
     assert bad_probe["returncode"] == 2, bad_probe

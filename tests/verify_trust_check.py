@@ -8,6 +8,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "scripts" / "trust_check.py"
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from trust_check import iter_scan_files, relpath
 
 
 INTERFACE = """interface:
@@ -60,8 +63,13 @@ def main() -> None:
     assert payload["summary"]["package_hash_scope"] == "source-contract-without-generated-reports", payload
     assert payload["summary"]["package_hash_file_count"] == payload["summary"]["scanned_files"], payload
     assert payload["summary"]["package_sha256"], payload
+    scanned_paths = {relpath(ROOT, path) for path in iter_scan_files(ROOT)}
+    assert "assets/skill-overview.css" in scanned_paths, scanned_paths
+    assert "assets/skill-overview.js" in scanned_paths, scanned_paths
+    assert "assets/review-studio.css" in scanned_paths, scanned_paths
+    assert "assets/review-viewer.css" in scanned_paths, scanned_paths
     assert payload["summary"]["internal_module_count"] >= 3, payload
-    assert payload["summary"]["network_script_count"] == 2, payload
+    assert payload["summary"]["network_script_count"] == 3, payload
     assert payload["summary"]["network_policy_covered_count"] == payload["summary"]["network_script_count"], payload
     assert payload["summary"]["network_policy_missing_count"] == 0, payload
     assert payload["summary"]["permission_required_count"] >= 3, payload
@@ -85,26 +93,91 @@ def main() -> None:
     assert payload["permission_governance"]["expired_capabilities"] == [], payload["permission_governance"]
     assert "scripts/check_update.py" in payload["network_policy"]["covered_scripts"], payload["network_policy"]
     assert "scripts/github_benchmark_scan.py" in payload["network_policy"]["covered_scripts"], payload["network_policy"]
+    assert "scripts/provider_output_eval_runner.py" in payload["network_policy"]["covered_scripts"], payload["network_policy"]
     script_map = {item["path"]: item for item in payload["scripts"]}
     for internal_module in [
+        "scripts/build_skill_atlas_layout.py",
+        "scripts/build_skill_atlas_opportunities.py",
+        "scripts/compile_skill_targets.py",
+        "scripts/cross_packager_contracts.py",
+        "scripts/description_optimizer_reporting.py",
+        "scripts/reference_synthesis_markdown.py",
         "scripts/review_studio_formatting.py",
+        "scripts/review_studio_gate_contract.py",
+        "scripts/review_studio_gate_helpers.py",
+        "scripts/review_studio_gates.py",
         "scripts/review_studio_layout.py",
+        "scripts/review_studio_panels.py",
+        "scripts/trust_check_scripts.py",
+        "scripts/evidence_consistency_core.py",
+        "scripts/evidence_consistency_release.py",
+        "scripts/evidence_consistency_skill_os2_review.py",
+        "scripts/evidence_consistency_world_class.py",
+        "scripts/skill_ir_paths.py",
         "scripts/skill_report_charts.py",
+        "scripts/skill_report_i18n.py",
         "scripts/skill_report_layout.py",
         "scripts/skill_report_metrics.py",
         "scripts/skill_report_model.py",
+        "scripts/skill_report_sections.py",
+        "scripts/skill_report_sources.py",
+        "scripts/skill_report_world_class.py",
+        "scripts/skill_os2_coverage_markdown.py",
+        "scripts/world_class_preflight_layout.py",
+        "scripts/world_class_evidence_contract.py",
+        "scripts/world_class_source_checks.py",
+        "scripts/yao_cli_adaptation_commands.py",
         "scripts/yao_cli_config.py",
+        "scripts/yao_cli_distribution_commands.py",
+        "scripts/yao_cli_output_commands.py",
+        "scripts/yao_cli_parser.py",
+        "scripts/yao_cli_parser_evidence.py",
+        "scripts/yao_cli_parser_operations.py",
+        "scripts/yao_cli_report_commands.py",
+        "scripts/yao_cli_telemetry.py",
     ]:
         assert script_map[internal_module]["interface"] == "internal-module", script_map[internal_module]
         assert script_map[internal_module]["interface_declared"], script_map[internal_module]
     warning_text = "\n".join(payload["warnings"])
+    assert "build_skill_atlas_layout.py" not in warning_text, payload["warnings"]
+    assert "build_skill_atlas_opportunities.py" not in warning_text, payload["warnings"]
+    assert "compile_skill_targets.py" not in warning_text, payload["warnings"]
+    assert "cross_packager_contracts.py" not in warning_text, payload["warnings"]
+    assert "description_optimizer_reporting.py" not in warning_text, payload["warnings"]
+    assert "reference_synthesis_markdown.py" not in warning_text, payload["warnings"]
     assert "review_studio_formatting.py" not in warning_text, payload["warnings"]
+    assert "review_studio_gate_contract.py" not in warning_text, payload["warnings"]
+    assert "review_studio_gate_helpers.py" not in warning_text, payload["warnings"]
+    assert "review_studio_gates.py" not in warning_text, payload["warnings"]
     assert "review_studio_layout.py" not in warning_text, payload["warnings"]
+    assert "review_studio_panels.py" not in warning_text, payload["warnings"]
+    assert "trust_check_scripts.py" not in warning_text, payload["warnings"]
+    assert "evidence_consistency_core.py" not in warning_text, payload["warnings"]
+    assert "evidence_consistency_release.py" not in warning_text, payload["warnings"]
+    assert "evidence_consistency_skill_os2_review.py" not in warning_text, payload["warnings"]
+    assert "evidence_consistency_world_class.py" not in warning_text, payload["warnings"]
+    assert "skill_ir_paths.py" not in warning_text, payload["warnings"]
     assert "skill_report_charts.py" not in warning_text, payload["warnings"]
+    assert "skill_report_i18n.py" not in warning_text, payload["warnings"]
     assert "skill_report_layout.py" not in warning_text, payload["warnings"]
     assert "skill_report_metrics.py" not in warning_text, payload["warnings"]
     assert "skill_report_model.py" not in warning_text, payload["warnings"]
+    assert "skill_report_sections.py" not in warning_text, payload["warnings"]
+    assert "skill_report_sources.py" not in warning_text, payload["warnings"]
+    assert "skill_report_world_class.py" not in warning_text, payload["warnings"]
+    assert "skill_os2_coverage_markdown.py" not in warning_text, payload["warnings"]
+    assert "world_class_preflight_layout.py" not in warning_text, payload["warnings"]
+    assert "world_class_evidence_contract.py" not in warning_text, payload["warnings"]
+    assert "world_class_source_checks.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_adaptation_commands.py" not in warning_text, payload["warnings"]
     assert "yao_cli_config.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_distribution_commands.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_output_commands.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_parser.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_parser_evidence.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_parser_operations.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_report_commands.py" not in warning_text, payload["warnings"]
+    assert "yao_cli_telemetry.py" not in warning_text, payload["warnings"]
     assert "render_context_reports.py" not in warning_text, payload["warnings"]
     assert "render_social_preview.py" not in warning_text, payload["warnings"]
     assert "Network-capable scripts require bounded host policy" not in warning_text, payload["warnings"]
@@ -214,6 +287,7 @@ def main() -> None:
                             "openai": "metadata-only",
                             "claude": "adapter metadata",
                             "generic": "adapter metadata",
+                            "vscode": "workspace trust note",
                         },
                     }
                 },

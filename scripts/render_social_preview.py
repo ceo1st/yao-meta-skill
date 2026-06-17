@@ -4,8 +4,6 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
-
 
 WIDTH = 1280
 HEIGHT = 640
@@ -20,15 +18,19 @@ PNG_PATH = OUT_DIR / "social-preview.png"
 SVG_PATH = OUT_DIR / "social-preview.svg"
 
 
-def font(path: str, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(path, size)
-
-
 SERIF = "/System/Library/Fonts/Supplemental/Georgia.ttf"
 SANS = "/System/Library/Fonts/SFNS.ttf"
 
 
 def draw_png() -> None:
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError as exc:
+        raise SystemExit("Pillow is required to render PNG social previews.") from exc
+
+    def font(path: str, size: int):
+        return ImageFont.truetype(path, size)
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     image = Image.new("RGB", (WIDTH, HEIGHT), BACKGROUND)
     draw = ImageDraw.Draw(image)

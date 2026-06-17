@@ -41,6 +41,8 @@ This document tracks the first migration path from Yao Meta Skill 1.x to the Ski
    python3 scripts/build_skill_atlas.py --workspace-root . --output-dir skill_atlas --report-html reports/skill_atlas.html --report-json reports/skill_atlas.json
    ```
 
+   This also writes `skill_atlas/drift_signals.json` from aggregate `reports/adoption_drift_report.json` files. Do not migrate or publish raw `reports/telemetry_events.jsonl` logs.
+
 5. Keep legacy trigger eval gates intact while output eval coverage grows.
 
 6. Move adapter-specific logic toward future compiler commands after IR fields are stable.

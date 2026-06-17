@@ -3,10 +3,12 @@ import argparse
 import json
 import shutil
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import yaml
 
 from compile_skill import compile_target_contract
+from cross_packager_contracts import PLATFORM_CONTRACTS
+from skill_ir_paths import find_skill_ir as find_skill_ir_document
 
 
 def display_path(path: Path, root: Path) -> str:
@@ -48,20 +50,15 @@ def read_interface(skill_dir: Path) -> dict:
 
 
 def find_skill_ir(skill_dir: Path, name: str) -> tuple[dict, str]:
-    candidates = [
-        skill_dir / "reports" / "skill-ir.json",
-        skill_dir / "skill-ir" / "examples" / f"{name}.json",
-        skill_dir / "skill-ir" / "examples" / f"{skill_dir.name}.json",
-    ]
-    seen = set()
-    for path in candidates:
-        if path in seen:
-            continue
-        seen.add(path)
-        payload = read_json(path)
-        if payload:
-            return payload, display_path(path, skill_dir)
-    return {}, "frontmatter-fallback"
+    return find_skill_ir_document(skill_dir, name, fallback_source="frontmatter-fallback")
+
+
+def package_name_from_manifest(manifest: dict, skill_dir: Path) -> str:
+    name = str(manifest.get("name") or "").strip()
+    if name:
+        return name
+    frontmatter = read_frontmatter(skill_dir / "SKILL.md")
+    return str(frontmatter.get("name") or skill_dir.name)
 
 
 def require_fields(payload: dict, fields: list[str], label: str) -> None:
@@ -147,13 +144,17 @@ def build_semantic_contract(
         "targets": target_values,
         "source_files_count": count_list(ir, "source_files") if ir else 0,
     }
+    alias_declared = (
+        platform in {"agent-skills", "vscode"} and "agent-skills-compatible" in target_values
+    )
     semantic_parity = {
         "source": "skill-ir" if ir else "frontmatter-fallback",
         "ir_source": ir_source,
         "name_matches_ir": bool(ir) and frontmatter_name == name,
         "description_matches_ir": bool(ir) and frontmatter_description == description,
         "platform_declared_in_ir": platform in target_values
-        or (platform == "generic" and "agent-skills-compatible" in target_values),
+        or (platform == "generic" and "agent-skills-compatible" in target_values)
+        or alias_declared,
         "platform_declared_in_interface": platform in adapter_targets,
         "display_name_present": bool(interface.get("display_name")),
         "default_prompt_present": bool(interface.get("default_prompt")),
@@ -209,7 +210,7 @@ def build_manifest(skill_dir: Path, platform: str) -> dict:
         "description": semantic["description"],
         "version": manifest.get("version") or frontmatter.get("version", "1.0.0"),
         "platform": platform,
-        "skill_root": skill_dir.name,
+        "skill_root": semantic["name"],
         "job_to_be_done": semantic["job_to_be_done"],
         "ir_source": semantic["ir_source"],
         "ir_schema_version": semantic["ir_schema_version"],
@@ -250,115 +251,7 @@ def build_manifest(skill_dir: Path, platform: str) -> dict:
     }
 
 
-PLATFORM_CONTRACTS = {
-    "openai": {
-        "required_fields": [
-            "name",
-            "description",
-            "version",
-            "display_name",
-            "short_description",
-            "default_prompt",
-            "job_to_be_done",
-            "ir_source",
-            "ir_schema_version",
-            "semantic_contract",
-            "semantic_parity",
-            "canonical_metadata",
-            "canonical_format",
-            "activation_mode",
-            "execution_context",
-            "shell",
-            "trust_level",
-            "remote_inline_execution",
-            "degradation_strategy",
-            "portability_profile",
-            "permission_contract",
-            "target_permission_contract",
-            "target_native_contract",
-        ],
-        "required_files": ["targets/openai/adapter.json", "targets/openai/agents/openai.yaml"],
-        "field_mapping": {
-            "display_name": "interface.display_name",
-            "short_description": "interface.short_description",
-            "default_prompt": "interface.default_prompt",
-            "execution_context": "compatibility.execution.context",
-            "shell": "compatibility.execution.shell",
-        },
-    },
-    "claude": {
-        "required_fields": [
-            "name",
-            "description",
-            "version",
-            "display_name",
-            "short_description",
-            "default_prompt",
-            "job_to_be_done",
-            "ir_source",
-            "ir_schema_version",
-            "semantic_contract",
-            "semantic_parity",
-            "canonical_metadata",
-            "canonical_format",
-            "activation_mode",
-            "execution_context",
-            "shell",
-            "trust_level",
-            "remote_inline_execution",
-            "degradation_strategy",
-            "portability_profile",
-            "permission_contract",
-            "target_permission_contract",
-            "target_native_contract",
-        ],
-        "required_files": ["targets/claude/adapter.json", "targets/claude/README.md"],
-        "field_mapping": {
-            "display_name": "adapter.display_name",
-            "short_description": "adapter.short_description",
-            "default_prompt": "adapter.default_prompt",
-            "execution_context": "compatibility.execution.context",
-            "shell": "compatibility.execution.shell",
-        },
-    },
-    "generic": {
-        "required_fields": [
-            "name",
-            "description",
-            "version",
-            "display_name",
-            "short_description",
-            "default_prompt",
-            "job_to_be_done",
-            "ir_source",
-            "ir_schema_version",
-            "semantic_contract",
-            "semantic_parity",
-            "canonical_metadata",
-            "canonical_format",
-            "activation_mode",
-            "execution_context",
-            "shell",
-            "trust_level",
-            "remote_inline_execution",
-            "degradation_strategy",
-            "portability_profile",
-            "permission_contract",
-            "target_permission_contract",
-            "target_native_contract",
-        ],
-        "required_files": ["targets/generic/adapter.json"],
-        "field_mapping": {
-            "display_name": "adapter.display_name",
-            "short_description": "adapter.short_description",
-            "default_prompt": "adapter.default_prompt",
-            "execution_context": "compatibility.execution.context",
-            "shell": "compatibility.execution.shell",
-        },
-    },
-}
-
-EXCLUDED_ARCHIVE_PARTS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist"}
+EXCLUDED_ARCHIVE_PARTS = {".git", ".previews", "__pycache__", ".venv", "venv", "node_modules", "dist"}
 
 
 def should_skip_archive_path(rel_path: Path) -> bool:
@@ -454,7 +347,7 @@ def write_adapter(skill_dir: Path, out_dir: Path, platform: str) -> Path:
         notes = target_dir / "README.md"
         native = payload["target_native_contract"]
         notes.write_text(
-            f"# Claude-Compatible Package\n\nUse `{skill_dir.name}` with its neutral source files. This target does not require vendor metadata by default.\n\n"
+            f"# Claude-Compatible Package\n\nUse `{payload['name']}` with its neutral source files. This target does not require vendor metadata by default.\n\n"
             f"Native surface: {native['native_surface']}.\n\n"
             f"Activation: {native['activation']['policy']}\n\n"
             f"Resources: {native['resources']['strategy']}\n\n"
@@ -463,16 +356,34 @@ def write_adapter(skill_dir: Path, out_dir: Path, platform: str) -> Path:
             encoding="utf-8",
         )
         payload["install_hint"] = f"Use the packaged skill directly; this target relies on SKILL.md and optional neutral metadata."
+    elif platform == "vscode":
+        notes = target_dir / "README.md"
+        native = payload["target_native_contract"]
+        notes.write_text(
+            f"# VS Code / Copilot Agent Skills Package\n\n"
+            f"Install `{payload['name']}` as a VS Code user or project scoped Agent Skill. Keep the folder name aligned with `SKILL.md` frontmatter name.\n\n"
+            f"Native surface: {native['native_surface']}.\n\n"
+            f"Activation: {native['activation']['policy']}\n\n"
+            f"Resources: {native['resources']['strategy']}\n\n"
+            f"Scripts: {native['scripts']['strategy']}\n\n"
+            f"Permission model: {payload['target_permission_contract']['permission_model']}. "
+            "Review `target_permission_contract`, workspace trust, and `reports/security_trust_report.md` before running scripts.\n\n"
+            "This adapter does not perform automatic VS Code installation; it preserves the reviewed source package plus install notes.\n",
+            encoding="utf-8",
+        )
+        payload["install_hint"] = (
+            "Install the package as a VS Code user or project scoped Agent Skill; use targets/vscode/README.md for scope and trust notes."
+        )
     else:
-        payload["install_hint"] = f"Use {skill_dir.name} as an Agent Skills compatible package."
+        payload["install_hint"] = f"Use {payload['name']} as an Agent Skills compatible package."
     path = target_dir / "adapter.json"
     payload["contract"] = PLATFORM_CONTRACTS.get(platform, PLATFORM_CONTRACTS["generic"])
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return path
 
 
-def make_zip(skill_dir: Path, out_dir: Path) -> Path:
-    zip_path = out_dir / f"{skill_dir.name}.zip"
+def make_zip(skill_dir: Path, out_dir: Path, package_name: str) -> Path:
+    zip_path = out_dir / f"{package_name}.zip"
     skill_root = skill_dir.resolve()
     out_root = out_dir.resolve()
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
@@ -487,17 +398,18 @@ def make_zip(skill_dir: Path, out_dir: Path) -> Path:
             rel_path = path.relative_to(skill_dir)
             if should_skip_archive_path(rel_path):
                 continue
-            zf.write(path, arcname=str(path.relative_to(skill_dir.parent)))
+            zf.write(path, arcname=str(PurePosixPath(package_name, *rel_path.parts)))
     return zip_path
 
 
-def copy_manifest(skill_dir: Path, out_dir: Path) -> Path:
+def copy_manifest(skill_dir: Path, out_dir: Path) -> tuple[Path, str]:
     manifest_path = out_dir / "manifest.json"
+    manifest = build_manifest(skill_dir, "generic")
     manifest_path.write_text(
-        json.dumps(build_manifest(skill_dir, "generic"), ensure_ascii=False, indent=2),
+        json.dumps(manifest, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    return manifest_path
+    return manifest_path, package_name_from_manifest(manifest, skill_dir)
 
 
 def load_expectations(path: Path | None) -> dict:
@@ -511,9 +423,9 @@ def validate_exports(out_dir: Path, expectations: dict) -> dict:
     required_targets = expectations.get("required_targets", [])
     required_fields = expectations.get("required_fields", [])
     required_by_target = {
-        "openai": expectations.get("openai_required_files", []),
-        "claude": expectations.get("claude_required_files", []),
-        "generic": expectations.get("generic_required_files", []),
+        key[: -len("_required_files")]: value
+        for key, value in expectations.items()
+        if key.endswith("_required_files")
     }
 
     for target in required_targets:
@@ -534,7 +446,7 @@ def validate_exports(out_dir: Path, expectations: dict) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate lightweight cross-platform packaging artifacts.")
     parser.add_argument("skill_dir", help="Path to the skill directory")
-    parser.add_argument("--platform", action="append", default=[], help="Target platform: openai, claude, generic")
+    parser.add_argument("--platform", action="append", default=[], help="Target platform: openai, claude, generic, vscode")
     parser.add_argument("--output-dir", default="dist", help="Output directory")
     parser.add_argument("--expectations", help="JSON file describing packaging expectations")
     parser.add_argument("--zip", action="store_true", help="Create a zip package")
@@ -548,12 +460,12 @@ def main() -> None:
         if out_dir.exists():
             shutil.rmtree(out_dir)
         out_dir.mkdir(parents=True)
-        manifest = copy_manifest(skill_dir, out_dir)
+        manifest, package_name = copy_manifest(skill_dir, out_dir)
         generated.append(str(manifest))
         for platform in (args.platform or ["generic"]):
             generated.append(str(write_adapter(skill_dir, out_dir, platform)))
         if args.zip:
-            generated.append(str(make_zip(skill_dir, out_dir)))
+            generated.append(str(make_zip(skill_dir, out_dir, package_name)))
     except (FileNotFoundError, ValueError, yaml.YAMLError) as exc:
         failures.append(str(exc))
 

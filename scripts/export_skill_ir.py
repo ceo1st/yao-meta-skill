@@ -51,6 +51,8 @@ KEY_REPORTS = [
     "reports/security_trust_report.md",
     "reports/runtime_permission_probes.json",
     "reports/runtime_permission_probes.md",
+    "reports/telemetry_hook_recipes.json",
+    "reports/telemetry_hook_recipes.md",
     "reports/skill_atlas.json",
     "reports/skill_atlas.html",
     "reports/skill-os-2-review.md",
@@ -157,7 +159,7 @@ def report_list(skill_dir: Path) -> list[str]:
     return [rel for rel in KEY_REPORTS if (skill_dir / rel).exists()]
 
 
-def file_list(skill_dir: Path, folder: str, suffixes: set[str] | None = None, limit: int = 80) -> list[str]:
+def file_list(skill_dir: Path, folder: str, suffixes: set[str] | None = None, limit: int | None = None) -> list[str]:
     target = skill_dir / folder
     if not target.exists():
         return []
@@ -168,7 +170,7 @@ def file_list(skill_dir: Path, folder: str, suffixes: set[str] | None = None, li
         if suffixes is not None and path.suffix not in suffixes:
             continue
         paths.append(str(path.relative_to(skill_dir)))
-        if len(paths) >= limit:
+        if limit is not None and len(paths) >= limit:
             break
     return paths
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import csv
-import html
 import json
 import re
 from collections import Counter, defaultdict
@@ -9,6 +8,9 @@ from datetime import date, datetime
 from io import StringIO
 from pathlib import Path
 from typing import Any
+
+from build_skill_atlas_opportunities import no_route_opportunities
+from build_skill_atlas_layout import render_html
 
 try:
     import yaml
@@ -57,6 +59,7 @@ DEFAULT_SCOPE = {
     "actionable": True,
     "scope_reason": "default release-actionable skill",
 }
+TELEMETRY_REQUIRED_MATURITIES = {"production", "library", "governed"}
 
 
 def parse_frontmatter(path: Path) -> tuple[dict[str, Any], str]:
@@ -217,6 +220,105 @@ def collect_skill(workspace_root: Path, skill_dir: Path, policy: dict[str, Any])
     }
 
 
+def load_telemetry_profile(workspace_root: Path, skill_dir: Path, skill: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    report_path = skill_dir / "reports" / "adoption_drift_report.json"
+    rel_report = safe_rel(workspace_root, report_path)
+    maturity = str(skill.get("maturity", "")).casefold()
+    report_present = report_path.exists()
+    telemetry = {
+        "report_present": report_present,
+        "report": rel_report,
+        "risk_band": "missing",
+        "event_count": 0,
+        "adoption_sample_count": 0,
+        "adoption_rate": 0,
+        "candidate_count": 0,
+    }
+    signals: list[dict[str, Any]] = []
+    if not report_present:
+        if skill.get("actionable") and maturity in TELEMETRY_REQUIRED_MATURITIES:
+            signals.append(
+                {
+                    "name": skill["name"],
+                    "path": skill["path"],
+                    "source": rel_report,
+                    "risk_band": "no-data",
+                    "signal_types": ["no telemetry"],
+                    "recommendation": "Render adoption drift evidence or record a small metadata-only sample before release review.",
+                    "actionable": bool(skill.get("actionable")),
+                    "scope": str(skill.get("atlas_scope", "")),
+                    "summary": {"event_count": 0, "adoption_sample_count": 0},
+                }
+            )
+        return telemetry, signals
+
+    payload = load_json(report_path)
+    summary = payload.get("summary", {}) if isinstance(payload.get("summary"), dict) else {}
+    candidates = payload.get("next_iteration_candidates", [])
+    candidates = candidates if isinstance(candidates, list) else []
+    risk_band = str(summary.get("risk_band") or "unknown")
+    telemetry.update(
+        {
+            "risk_band": risk_band,
+            "event_count": int(summary.get("event_count") or 0),
+            "adoption_sample_count": int(summary.get("adoption_sample_count") or 0),
+            "adoption_rate": summary.get("adoption_rate", 0),
+            "candidate_count": len(candidates),
+        }
+    )
+
+    signal_types: list[str] = []
+    if telemetry["event_count"] == 0 and maturity in TELEMETRY_REQUIRED_MATURITIES:
+        signal_types.append("no telemetry")
+    if int(summary.get("missed_trigger_count") or 0):
+        signal_types.append("missed trigger")
+    if int(summary.get("wrong_trigger_count") or 0):
+        signal_types.append("wrong trigger")
+    if int(summary.get("bad_output_count") or 0):
+        signal_types.append("bad output")
+    if int(summary.get("missing_resource_count") or 0):
+        signal_types.append("missing resource")
+    if int(summary.get("script_error_count") or 0):
+        signal_types.append("script error")
+    if int(summary.get("review_overdue_count") or 0):
+        signal_types.append("review overdue")
+    if risk_band in {"medium", "high"} and not signal_types:
+        signal_types.append("telemetry drift")
+
+    if signal_types:
+        recommendation = "Convert telemetry drift into eval, trust, or owner-review actions."
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            if str(candidate.get("signal", "")) in signal_types:
+                recommendation = str(candidate.get("recommendation") or recommendation)
+                break
+        signals.append(
+            {
+                "name": skill["name"],
+                "path": skill["path"],
+                "source": rel_report,
+                "risk_band": risk_band,
+                "signal_types": signal_types,
+                "recommendation": recommendation,
+                "actionable": bool(skill.get("actionable")),
+                "scope": str(skill.get("atlas_scope", "")),
+                "summary": {
+                    "event_count": telemetry["event_count"],
+                    "adoption_sample_count": telemetry["adoption_sample_count"],
+                    "adoption_rate": telemetry["adoption_rate"],
+                    "missed_trigger_count": int(summary.get("missed_trigger_count") or 0),
+                    "wrong_trigger_count": int(summary.get("wrong_trigger_count") or 0),
+                    "bad_output_count": int(summary.get("bad_output_count") or 0),
+                    "missing_resource_count": int(summary.get("missing_resource_count") or 0),
+                    "script_error_count": int(summary.get("script_error_count") or 0),
+                    "review_overdue_count": int(summary.get("review_overdue_count") or 0),
+                },
+            }
+        )
+    return telemetry, signals
+
+
 def route_overlap(skills: list[dict[str, Any]], threshold: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     rows = []
     collisions = []
@@ -351,22 +453,6 @@ def owner_review_gaps(skills: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return gaps
 
 
-def no_route_opportunities(workspace_root: Path) -> list[dict[str, Any]]:
-    opportunities = []
-    for path in sorted(workspace_root.rglob("failure-cases.md")):
-        if should_skip(path, workspace_root):
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        for line in text.splitlines():
-            stripped = line.strip()
-            if not stripped.startswith("-"):
-                continue
-            lowered = stripped.casefold()
-            if "no_route" in lowered or "no route" in lowered or "missed" in lowered or "under-trigger" in lowered:
-                opportunities.append({"source": safe_rel(workspace_root, path), "note": stripped.lstrip("- ").strip()})
-    return opportunities[:50]
-
-
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = ["skill_a", "skill_b", "path_a", "path_b", "score", "status", "actionable", "scope_a", "scope_b"]
@@ -378,93 +464,35 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.write_text(buffer.getvalue(), encoding="utf-8")
 
 
-def render_html(payload: dict[str, Any]) -> str:
-    summary = payload["summary"]
-    rows = []
-    for skill in payload["catalog"]["skills"][:80]:
-        rows.append(
-            "<tr>"
-            f"<td>{html.escape(skill['name'])}</td>"
-            f"<td>{html.escape(skill['path'])}</td>"
-            f"<td>{html.escape(skill.get('owner') or 'missing')}</td>"
-            f"<td>{html.escape(skill.get('maturity') or 'unknown')}</td>"
-            f"<td>{html.escape(skill.get('review_cadence') or 'missing')}</td>"
-            f"<td>{html.escape(skill.get('atlas_scope') or 'release')}</td>"
-            "</tr>"
-        )
-    blockers = payload["actionable_route_collisions"][:20] + payload["actionable_owner_review_gaps"][:20] + payload["actionable_stale_skills"][:20]
-    blocker_items = "".join(
-        f"<li><strong>{html.escape(item.get('name', item.get('skill_a', 'issue')))}</strong> {html.escape(item.get('reason', item.get('status', ', '.join(item.get('missing', [])))))}</li>"
-        for item in blockers
-    )
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Skill Atlas</title>
-  <style>
-    body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #fff; }}
-    main {{ max-width: 1120px; margin: 0 auto; padding: 40px 24px; }}
-    h1 {{ font-size: 34px; margin-bottom: 8px; }}
-    .grid {{ display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 28px 0; }}
-    .card {{ border: 1px solid #d9e0ea; border-radius: 8px; padding: 16px; background: #f8fafc; }}
-    .card span {{ display: block; color: #697386; font-size: 13px; }}
-    .card strong {{ display: block; font-size: 28px; color: #1B365D; margin-top: 6px; }}
-    table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-    th, td {{ text-align: left; border-bottom: 1px solid #e5e9f0; padding: 10px; vertical-align: top; }}
-    th {{ color: #1B365D; font-size: 13px; }}
-    li {{ margin: 8px 0; }}
-    @media (max-width: 760px) {{ .grid {{ grid-template-columns: 1fr 1fr; }} }}
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Skill Atlas</h1>
-    <p>Portfolio-level review for route overlap, stale ownership, shared resources, and no-route opportunities.</p>
-    <section class="grid">
-      <div class="card"><span>Skills</span><strong>{summary['skill_count']}</strong></div>
-      <div class="card"><span>Actionable</span><strong>{summary['actionable_skill_count']}</strong></div>
-      <div class="card"><span>Route Collisions</span><strong>{summary['actionable_route_collision_count']}</strong></div>
-      <div class="card"><span>Owner Gaps</span><strong>{summary['actionable_owner_gap_count']}</strong></div>
-      <div class="card"><span>Stale Skills</span><strong>{summary['actionable_stale_count']}</strong></div>
-      <div class="card"><span>No-Route Opportunities</span><strong>{summary['no_route_opportunity_count']}</strong></div>
-    </section>
-    <section>
-      <h2>Actionable Issues</h2>
-      <ul>{blocker_items or '<li>No blocking portfolio issues detected.</li>'}</ul>
-    </section>
-    <section>
-      <h2>Full Portfolio Counts</h2>
-      <p>All scanned skills remain visible: {summary['route_collision_count']} total route collisions, {summary['owner_gap_count']} total owner gaps, and {summary['stale_count']} total stale signals.</p>
-    </section>
-    <section>
-      <h2>Catalog</h2>
-      <table>
-        <thead><tr><th>Name</th><th>Path</th><th>Owner</th><th>Maturity</th><th>Review</th><th>Scope</th></tr></thead>
-        <tbody>{''.join(rows)}</tbody>
-      </table>
-    </section>
-  </main>
-</body>
-</html>
-"""
-
-
 def build_atlas(workspace_root: Path, output_dir: Path, report_html: Path, report_json: Path, threshold: float, today: date) -> dict[str, Any]:
     workspace_root = workspace_root.resolve()
     scope_policy = load_scope_policy(workspace_root)
     skill_dirs = find_skill_dirs(workspace_root)
-    skills = [collect_skill(workspace_root, skill_dir, scope_policy) for skill_dir in skill_dirs]
+    skills = []
+    drift_signals: list[dict[str, Any]] = []
+    telemetry_report_count = 0
+    for skill_dir in skill_dirs:
+        skill = collect_skill(workspace_root, skill_dir, scope_policy)
+        telemetry, signals = load_telemetry_profile(workspace_root, skill_dir, skill)
+        skill["telemetry"] = telemetry
+        telemetry_report_count += 1 if telemetry["report_present"] else 0
+        drift_signals.extend(signals)
+        skills.append(skill)
     overlap_rows, collisions = route_overlap(skills, threshold)
     graph = dependency_graph(skills)
     stale = stale_skills(skills, today)
     owner_gaps = owner_review_gaps(skills)
-    opportunities = no_route_opportunities(workspace_root)
+    opportunities = no_route_opportunities(
+        workspace_root,
+        drift_signals,
+        should_skip=should_skip,
+        safe_rel=safe_rel,
+    )
     actionable_skills = [skill for skill in skills if skill.get("actionable")]
     actionable_collisions = [item for item in collisions if item.get("actionable")]
     actionable_stale = [item for item in stale if item.get("actionable")]
     actionable_owner_gaps = [item for item in owner_gaps if item.get("actionable")]
+    actionable_drift_signals = [item for item in drift_signals if item.get("actionable")]
     summary = {
         "skill_count": len(skills),
         "actionable_skill_count": len(actionable_skills),
@@ -476,9 +504,13 @@ def build_atlas(workspace_root: Path, output_dir: Path, report_html: Path, repor
         "actionable_stale_count": len(actionable_stale),
         "shared_resource_count": len(graph["shared_resources"]),
         "no_route_opportunity_count": len(opportunities),
+        "telemetry_report_count": telemetry_report_count,
+        "drift_signal_count": len(drift_signals),
+        "actionable_drift_signal_count": len(actionable_drift_signals),
         "non_actionable_issue_count": (len(collisions) - len(actionable_collisions))
         + (len(owner_gaps) - len(actionable_owner_gaps))
-        + (len(stale) - len(actionable_stale)),
+        + (len(stale) - len(actionable_stale))
+        + (len(drift_signals) - len(actionable_drift_signals)),
     }
     catalog = {
         "workspace_root": display_path(workspace_root),
@@ -499,6 +531,8 @@ def build_atlas(workspace_root: Path, output_dir: Path, report_html: Path, repor
         "actionable_stale_skills": actionable_stale,
         "owner_review_gaps": owner_gaps,
         "actionable_owner_review_gaps": actionable_owner_gaps,
+        "drift_signals": drift_signals,
+        "actionable_drift_signals": actionable_drift_signals,
         "no_route_opportunities": opportunities,
         "artifacts": {
             "catalog": display_path(output_dir / "catalog.json"),
@@ -506,6 +540,7 @@ def build_atlas(workspace_root: Path, output_dir: Path, report_html: Path, repor
             "dependency_graph": display_path(output_dir / "dependency_graph.json"),
             "stale_skills": display_path(output_dir / "stale_skills.json"),
             "owner_review_gaps": display_path(output_dir / "owner_review_gaps.json"),
+            "drift_signals": display_path(output_dir / "drift_signals.json"),
             "no_route_opportunities": display_path(output_dir / "no_route_opportunities.json"),
             "report_json": display_path(report_json),
             "report_html": display_path(report_html),
@@ -517,6 +552,7 @@ def build_atlas(workspace_root: Path, output_dir: Path, report_html: Path, repor
     (output_dir / "dependency_graph.json").write_text(json.dumps(graph, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output_dir / "stale_skills.json").write_text(json.dumps(stale, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output_dir / "owner_review_gaps.json").write_text(json.dumps(owner_gaps, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (output_dir / "drift_signals.json").write_text(json.dumps(drift_signals, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (output_dir / "no_route_opportunities.json").write_text(json.dumps(opportunities, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     report_json.parent.mkdir(parents=True, exist_ok=True)
     report_html.parent.mkdir(parents=True, exist_ok=True)

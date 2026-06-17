@@ -11,6 +11,8 @@ try:
 except ImportError:  # pragma: no cover
     yaml = None
 
+from skill_ir_paths import find_skill_ir as find_skill_ir_document
+
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY_DIR = ROOT / "registry"
@@ -73,16 +75,7 @@ def read_frontmatter(path: Path) -> dict[str, Any]:
 
 
 def find_skill_ir(skill_dir: Path, name: str) -> tuple[dict[str, Any], str]:
-    candidates = [
-        skill_dir / "reports" / "skill-ir.json",
-        skill_dir / "skill-ir" / "examples" / f"{name}.json",
-        skill_dir / "skill-ir" / "examples" / f"{skill_dir.name}.json",
-    ]
-    for path in candidates:
-        payload = load_json(path)
-        if payload:
-            return payload, display_path(path, skill_dir)
-    return {}, "missing"
+    return find_skill_ir_document(skill_dir, name, fallback_source="missing")
 
 
 def license_id(skill_dir: Path) -> str:

@@ -10,6 +10,8 @@ try:
 except ImportError:  # pragma: no cover
     yaml = None
 
+from skill_ir_paths import find_skill_ir as find_skill_ir_document
+
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_TARGETS = ["openai", "claude", "agent-skills", "vscode", "generic"]
@@ -64,10 +66,7 @@ def parse_frontmatter(path: Path) -> tuple[dict[str, Any], str]:
 
 
 def find_skill_ir(skill_dir: Path, name: str) -> dict[str, Any]:
-    direct = load_json(skill_dir / "reports" / "skill-ir.json")
-    if direct:
-        return direct
-    return load_json(skill_dir / "skill-ir" / "examples" / f"{name}.json")
+    return find_skill_ir_document(skill_dir, name)[0]
 
 
 def add_check(checks: list[str], failures: list[str], condition: bool, passed: str, failed: str) -> None:
@@ -144,7 +143,11 @@ def check_target(skill_dir: Path, target: str, evidence: dict[str, Any]) -> dict
     add_check(checks, failures, re.fullmatch(r"[a-z0-9][a-z0-9_-]*", name) is not None, "name is runtime-safe", "name contains unsafe characters")
 
     if target in {"agent-skills", "vscode"}:
-        add_check(checks, failures, skill_dir.name == name, "directory name matches skill name", "directory name must match skill name")
+        add_check(checks, failures, bool(name), "package identity derives from skill name", "Missing package identity")
+        if skill_dir.name != name:
+            warnings.append(
+                "source checkout directory differs from skill name; package verification must enforce archive top-level identity."
+            )
 
     for field in ("name", "version", "owner", "status", "maturity_tier", "review_cadence"):
         add_check(checks, failures, bool(manifest.get(field)), f"manifest.{field} exists", f"Missing manifest.{field}")

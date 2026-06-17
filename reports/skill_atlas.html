@@ -22,13 +22,14 @@
 <body>
   <main>
     <h1>Skill Atlas</h1>
-    <p>Portfolio-level review for route overlap, stale ownership, shared resources, and no-route opportunities.</p>
+    <p>Portfolio-level review for route overlap, stale ownership, shared resources, telemetry drift, and no-route opportunities.</p>
     <section class="grid">
       <div class="card"><span>Skills</span><strong>12</strong></div>
       <div class="card"><span>Actionable</span><strong>1</strong></div>
       <div class="card"><span>Route Collisions</span><strong>0</strong></div>
       <div class="card"><span>Owner Gaps</span><strong>0</strong></div>
       <div class="card"><span>Stale Skills</span><strong>0</strong></div>
+      <div class="card"><span>Drift Signals</span><strong>0</strong></div>
       <div class="card"><span>No-Route Opportunities</span><strong>0</strong></div>
     </section>
     <section>
@@ -36,8 +37,13 @@
       <ul><li>No blocking portfolio issues detected.</li></ul>
     </section>
     <section>
+      <h2>No-Route Opportunities</h2>
+      <p>Missed-trigger telemetry and explicit failure cases become candidate routing work without storing raw prompts or outputs.</p>
+      <ul><li>No no-route opportunities detected.</li></ul>
+    </section>
+    <section>
       <h2>Full Portfolio Counts</h2>
-      <p>All scanned skills remain visible: 5 total route collisions, 9 total owner gaps, and 10 total stale signals.</p>
+      <p>All scanned skills remain visible: 5 total route collisions, 9 total owner gaps, 10 total stale signals, and 0 telemetry drift signals.</p>
     </section>
     <section>
       <h2>Catalog</h2>

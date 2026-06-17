@@ -5,172 +5,18 @@ import json
 from pathlib import Path
 
 from skill_report_charts import render_chart_set
+from skill_report_i18n import (
+    KIND_ZH,
+    LABEL_EN,
+    PACKAGE_LABEL_ZH,
+    bi_item,
+    bi_span,
+    en_for,
+    mode_zh,
+    readable_description_zh,
+)
 from skill_report_layout import render_language_switch, render_report_nav, skill_overview_css, skill_overview_script
 from skill_report_model import REPORT_NAV_V2, build_report_model
-
-
-TEXT_ZH = {
-    "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.": "从工作流、提示词、对话记录、文档或笔记中创建、重构、评估和打包 agent skill；适用于新建 Skill、沉淀重复流程、改进现有 Skill、补充 eval 或团队复用打包。",
-    "Understand the request.": "理解用户请求。",
-    "Execute the main task.": "执行核心任务。",
-    "Validate the result.": "校验交付结果。",
-    "Understand the request": "理解用户请求。",
-    "Execute the main task": "执行核心任务。",
-    "Validate the result": "校验交付结果。",
-    "Decide whether the request should become a skill and choose the lightest fit.": "判断请求是否应该沉淀为 Skill，并选择最轻量可靠的模式。",
-    "Capture job, output, exclusions, constraints, and standards.": "捕捉任务、输出、排除项、约束和质量标准。",
-    "Run reference scan: external benchmarks first, user references second, local fit third; surface only uncertainty or conflict.": "运行参考扫描：先看外部 benchmark，再看用户材料，最后校验本地适配；只暴露不确定性或冲突。",
-    "Write the `description` early and test route quality before expanding the package.": "尽早写出 `description`，先测试路由质量，再扩展包体。",
-    "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.": "只在确有价值时添加 output-risk、artifact-design、prompt-quality 和 system-model 报告。",
-    "Use $yao-meta-skill to turn my workflow or notes into a reusable skill with lean structure, clear triggering, and the right evals.": "当你需要把工作流或笔记沉淀成结构精简、触发清晰且带必要 eval 的可复用 Skill 时使用 $yao-meta-skill。",
-    "Turn rough requests into a compact reusable demo skill.": "把粗糙请求整理成紧凑、可复用的演示 Skill。",
-    "Tighten trigger and exclusions": "收紧触发与排除边界",
-    "Add the first execution asset": "补上第一个执行资产",
-    "Promote from scaffold to production-ready": "从脚手架推进到生产可用",
-    "Borrow one proven pattern on purpose": "有选择地借鉴一个成熟模式",
-    "Harden portability semantics": "加固跨环境语义",
-    "Create an iteration evidence loop": "建立迭代证据回路",
-    "The package needs clearer near-neighbor exclusions before it grows.": "在继续扩展前，需要先把相邻但不应触发的场景说清楚。",
-    "The package is still mostly prose. Add one asset that removes repeated manual work.": "当前包体仍偏文本说明，应先增加一个能减少重复人工操作的资产。",
-    "The first version exists; the next gain usually comes from adding the smallest useful gates.": "第一版已经存在，下一步收益通常来自补上最小但有效的质量门禁。",
-    "You already have public benchmark objects. The next gain is to choose one pattern intentionally instead of absorbing everything loosely.": "已经有公开 benchmark 对象，下一步应主动选择一个模式借鉴，而不是松散吸收所有做法。",
-    "The skill already signals reuse across environments, so contract clarity matters early.": "这个 Skill 已经面向跨环境复用，因此早期就需要把契约语义说清楚。",
-    "The package should show what changed and why after the first draft.": "第一版之后，包体应该能说明改了什么以及为什么改。",
-    "Add 3 to 5 should-trigger and should-not-trigger examples.": "增加 3 到 5 个应触发和不应触发的例子。",
-    "Refine the frontmatter description to name the recurring job and non-goals.": "精炼 frontmatter description，明确重复任务和非目标。",
-    "Run a first trigger evaluation pass before expanding the package.": "扩展包体前先跑一轮触发评估。",
-    "Move stable procedural guidance into references if users will need it repeatedly.": "如果用户会反复使用某段流程说明，把它沉淀到 references。",
-    "Create one deterministic helper script if a repeated step can be executed instead of described.": "如果某个重复步骤可以执行而不是描述，就沉淀成一个确定性 helper script。",
-    "Keep the main SKILL.md compact and route-oriented.": "保持主 SKILL.md 简洁，并围绕路由与入口组织。",
-    "Decide whether this skill is personal, team-reused, or library-grade.": "判断这个 Skill 是个人使用、团队复用，还是库级基础能力。",
-    "Add only the gates that match that risk level.": "只添加与风险等级匹配的质量门禁。",
-    "Record lifecycle metadata and review cadence once reuse becomes real.": "一旦进入真实复用，就记录生命周期元数据和评审节奏。",
-    "Decide whether to borrow method, structure, execution, or portability, but only one of them first.": "先判断要借鉴的是方法、结构、执行方式还是可迁移性，并且第一轮只借鉴其中一个。",
-    "Record what you will not borrow so the package stays light.": "记录本轮不借鉴的内容，避免包体过重。",
-    "Confirm activation mode, execution context, and trust assumptions.": "确认激活模式、执行上下文和信任假设。",
-    "Add or review degradation strategy for non-native targets.": "补充或复核非原生目标端的降级策略。",
-    "Package the skill once to verify adapter expectations.": "至少打包一次 Skill，用来验证 adapter 预期。",
-    "Generate the HTML skill report and keep it aligned with the package.": "生成 HTML Skill 报告，并保持它与包体内容一致。",
-    "Record reference scan choices and non-goals.": "记录参考扫描的取舍和非目标。",
-    "Capture the next iteration choice explicitly before adding more files.": "在继续增加文件前，明确记录下一轮迭代选择。",
-    "Cleaner routing and fewer accidental activations.": "路由更清晰，误触发更少。",
-    "Stronger execution quality without bloating the entrypoint.": "在不膨胀入口文件的前提下提升执行质量。",
-    "A clearer path from exploratory package to maintained asset.": "更清晰地从探索性包体走向可维护资产。",
-    "A cleaner package shape with less accidental over-design.": "包体形态更清晰，也减少偶然过度设计。",
-    "Safer cross-environment reuse with less target drift.": "跨环境复用更安全，目标漂移更少。",
-    "A clearer path for the next author or reviewer.": "让下一位作者或评审者更容易接手。",
-}
-
-TEXT_EN = {
-    "触发面保持精简，并锚定在 frontmatter description。": "The trigger surface stays lean and anchored in the frontmatter description.",
-    "已打包 agents/interface.yaml，便于后续做跨平台适配。": "Portable interface metadata is packaged for later adapter-based export.",
-    "长指导被拆到 references 中，入口文件可以保持轻量。": "Extended guidance is separated into references so the entrypoint can stay compact.",
-    "确定性辅助逻辑放在 scripts 中，而不是藏在提示词里。": "Deterministic helper logic lives in scripts instead of hidden prompt text.",
-    "包内包含可随 Skill 迁移的质量门禁或触发检查。": "The package includes portable quality gates or trigger checks.",
-    "这份报告用于快速理解新生成 Skill 的定位、原理、触发边界和交付内容。": "Use this report to quickly understand the generated skill's role, principles, trigger boundary, and deliverables.",
-    "先确认重复任务、真实输入形态和可交付输出，再决定是否继续加 references、scripts 或 evals。": "Clarify the recurring job, real input shape, and deliverable output before adding references, scripts, or evals.",
-    "如果需求仍然模糊，优先回到 intent dialogue 收紧边界，再扩展包体结构。": "If the request is still fuzzy, tighten the boundary through intent dialogue before expanding the package.",
-    "已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。": "Output Review Adjudication is generated to record blind-review decisions, agreement rate, and pending cases.",
-    "已生成 Output Execution Runs，可区分记录样本、命令执行和模型执行证据。": "Output Execution Runs is generated to distinguish recorded fixtures, command runs, and model-run evidence.",
-    "尚未生成盲评审定报告。": "The blind review adjudication report has not been generated yet.",
-    "尚未生成输出执行证据报告。": "The output execution evidence report has not been generated yet.",
-    "先记录 reviewer 对 A/B 的选择，再打开答案 key 计算一致率。": "Record the reviewer's A/B choice before opening the answer key and calculating agreement.",
-    "缺少真实 reviewer 决策时只显示待评审，不伪造人工结论。": "When real reviewer decisions are missing, show pending status instead of fabricating human conclusions.",
-    "recorded fixture 只能证明可复现样本，不等同于模型执行。": "A recorded fixture proves reproducible samples only; it is not model execution.",
-    "只有 provider runner 返回 model metadata 时才计入 model-executed。": "Only provider runners that return model metadata count as model-executed.",
-}
-
-MODE_ZH = {
-    "scaffold": "脚手架",
-    "production": "生产",
-    "library": "库级",
-    "governed": "治理",
-    "manual": "手动",
-    "inline": "内联",
-    "agent-skills": "Agent Skills",
-}
-
-PACKAGE_LABEL_ZH = {
-    "SKILL.md": "Skill 入口文件",
-    "README.md": "人类可读使用说明",
-    "agents/interface.yaml": "跨平台接口元数据",
-    "manifest.json": "生命周期与打包元数据",
-    "references": "扩展指导与复用资料",
-    "scripts": "确定性脚本或本地工具",
-    "evals": "触发与质量检查",
-    "reports": "生成的证据与总结报告",
-}
-
-KIND_ZH = {"file": "文件", "folder": "目录"}
-
-LABEL_EN = {
-    "强项": "Strength",
-    "缺口": "Gap",
-    "保留并复用": "Keep",
-    "纳入下一轮修复": "Fix next",
-}
-
-
-def contains_cjk(text: str) -> bool:
-    return any("\u4e00" <= char <= "\u9fff" for char in str(text))
-
-
-def zh_for(text: str) -> str:
-    value = str(text).strip()
-    if not value:
-        return ""
-    if value in TEXT_ZH:
-        return TEXT_ZH[value]
-    if value in TEXT_EN or contains_cjk(value):
-        return value
-    if value.startswith("Use this skill when the request matches:"):
-        return "当用户请求与该 Skill 的触发描述匹配时使用。"
-    if value.startswith("用户说出类似需求时："):
-        return "当用户提出与该 Skill 触发描述相近的请求时使用。"
-    if value.startswith("Use $") and " when you need to " in value:
-        skill, need = value.removeprefix("Use ").split(" when you need to ", 1)
-        return f"当你需要{zh_for(need).rstrip('。')}时使用 `{skill}`。"
-    if value.startswith("Read the strongest pattern from "):
-        repo = value.removeprefix("Read the strongest pattern from ").rstrip(".")
-        return f"阅读 `{repo}` 中最值得借鉴的模式。"
-    if value.startswith("Primary prompt task family:"):
-        return "主要提示任务类型已记录在 prompt quality profile 中。"
-    if value.startswith("Complexity:"):
-        return "复杂度判断已记录在 prompt quality profile 中。"
-    if value.startswith("Stability:"):
-        return "系统稳定性评分已记录在 system model 中。"
-    if value.startswith("Owned job:"):
-        return "负责的核心任务已在 system model 中说明。"
-    if value.startswith("Leverage:"):
-        return "关键杠杆点已在 system model 中说明。"
-    return "原始说明可切换到英文查看；默认中文报告保留结论与结构说明。"
-
-
-def en_for(text: str) -> str:
-    value = str(text).strip()
-    return TEXT_EN.get(value, value)
-
-
-def bi_span(zh: str, en: str | None = None) -> str:
-    english = en if en is not None else en_for(zh)
-    return (
-        f'<span data-lang="zh-CN">{html.escape(str(zh))}</span>'
-        f'<span data-lang="en">{html.escape(str(english))}</span>'
-    )
-
-
-def bi_item(text: str) -> str:
-    return bi_span(zh_for(text), en_for(text))
-
-
-def mode_zh(value: str) -> str:
-    return MODE_ZH.get(str(value), str(value))
-
-
-def readable_description_zh(description: str) -> str:
-    if contains_cjk(description):
-        return description
-    return "该 Skill 的触发描述来自 SKILL.md frontmatter；默认中文报告先呈现能力边界，原始英文描述可切换到英文查看。"
 
 
 def render_list(items: list[str], class_name: str = "list") -> str:
@@ -192,7 +38,7 @@ def render_metric_cards(scorecard: dict) -> str:
         cards.append(
             "<article class='metric-card'>"
             "<div class='metric-card-head'>"
-            f"<span class='metric-label'>{html.escape(str(item.get('label', key)))}</span>"
+            f"<span class='metric-label'>{bi_item(str(item.get('label', key)))}</span>"
             f"<strong>{html.escape(str(item.get('score', 'n/a')))}</strong>"
             "</div>"
             f"<div class='metric-card-body'>{reasons}</div>"
@@ -219,7 +65,7 @@ def render_metric_summary(scorecard: dict) -> str:
         items.append(
             "<li>"
             f"<span class='metric-status'>{bi_span(verdict, verdict_en)}</span>"
-            f"<b>{html.escape(label)}</b>"
+            f"<b>{bi_item(label)}</b>"
             f"<em>{score}</em>"
             f"<small>{bi_item(reason)}</small>"
             "</li>"
@@ -242,6 +88,118 @@ def render_audit_rows(items: list[dict]) -> str:
     return "".join(rows)
 
 
+WORLD_CLASS_CHECK_COPY = {
+    "Provider model run": ("提供商实跑", "Provider model run"),
+    "Token usage observed": ("Token 用量", "Token usage observed"),
+    "No pending decisions": ("无待判定", "No pending decisions"),
+    "Judgments complete": ("盲评完成", "Judgments complete"),
+    "Native enforcement": ("原生执行", "Native enforcement"),
+    "External events": ("外部事件", "External events"),
+    "Adoption sample": ("采用样本", "Adoption sample"),
+}
+
+
+def render_world_class_check(check: object) -> str:
+    if isinstance(check, dict):
+        label_en = str(check.get("label_en") or check.get("label") or "")
+        label_zh = str(check.get("label_zh") or "")
+    else:
+        label_en = str(check)
+        label_zh = ""
+    label_zh, label_en = WORLD_CLASS_CHECK_COPY.get(label_en, (label_zh or label_en, label_en))
+    return f"<li>{bi_span(label_zh, label_en)}</li>"
+
+
+def render_world_class_readiness(readiness: dict) -> str:
+    if not readiness:
+        return ""
+    kpis = [
+        (
+            "待补证据",
+            "Pending",
+            readiness.get("pending_count", 0),
+            "仍需外部或人工证据接受。",
+            "External or human evidence still needs acceptance.",
+        ),
+        (
+            "已接受",
+            "Accepted",
+            readiness.get("accepted_count", 0),
+            "已通过 source check 与提交契约。",
+            "Passed source checks and submission contract.",
+        ),
+        (
+            "源检查",
+            "Source Checks",
+            f"{readiness.get('source_pass_count', 0)} / {readiness.get('source_check_count', 0)}",
+            "通过数 / 总检查数。",
+            "Passed checks / total checks.",
+        ),
+    ]
+    kpi_html = "".join(
+        "<article class='evidence-kpi'>"
+        f"<span>{bi_span(zh, en)}</span>"
+        f"<strong>{html.escape(str(value))}</strong>"
+        f"<small>{bi_span(note_zh, note_en)}</small>"
+        "</article>"
+        for zh, en, value, note_zh, note_en in kpis
+    )
+    entries = readiness.get("entries", [])
+    if entries:
+        blocks = []
+        for item in entries:
+            blocked_checks = [
+                str(check).strip()
+                for check in item.get("blocked_checks", [])
+                if str(check).strip()
+            ]
+            if blocked_checks:
+                checks_html = (
+                    "<ul class='blocked-checks'>"
+                    + "".join(render_world_class_check(check) for check in blocked_checks)
+                    + "</ul>"
+                )
+            else:
+                checks_html = (
+                    "<p class='blocked-checks-empty'>"
+                    f"{bi_span('当前没有阻塞检查。', 'No blocked checks right now.')}"
+                    "</p>"
+                )
+            blocks.append(
+                "<article class='evidence-item'>"
+                "<div>"
+                f"<span>{bi_span(str(item.get('category_zh', '外部证据')), str(item.get('category_en', 'External evidence')))}</span>"
+                f"<h4>{bi_span(str(item.get('label_zh', item.get('key', '证据项'))), str(item.get('label_en', item.get('key', 'Evidence item'))))}</h4>"
+                "</div>"
+                f"<p>{bi_span(str(item.get('summary_zh', '仍待补充证据。')), str(item.get('summary_en', 'Evidence is still pending.')))}</p>"
+                f"<h5>{bi_span('阻塞检查', 'Blocked Checks')}</h5>"
+                f"{checks_html}"
+                "</article>"
+            )
+        entry_html = "".join(blocks)
+    else:
+        entry_html = (
+            "<article class='evidence-item empty'>"
+            f"<p>{bi_span('尚未生成 world-class ledger；这里只保留反过度承诺提示。', 'No world-class ledger has been generated; this panel keeps the anti-overclaim guard visible.')}</p>"
+            "</article>"
+        )
+    status = "可宣称" if readiness.get("ready") else "证据待补"
+    status_en = "Claim-ready" if readiness.get("ready") else "Evidence pending"
+    return (
+        "<article class='panel world-readiness'>"
+        "<div class='world-readiness-head'>"
+        "<div>"
+        f"<h3>{bi_span('世界证据', 'World Evidence')}</h3>"
+        f"<p>{bi_span(str(readiness.get('conclusion_zh', '世界级证据状态未知。')), str(readiness.get('conclusion_en', 'World-class evidence status is unknown.')))}</p>"
+        "</div>"
+        f"<span class='world-status'>{bi_span(status, status_en)}</span>"
+        "</div>"
+        f"<div class='evidence-kpis'>{kpi_html}</div>"
+        f"<div class='evidence-list'>{entry_html}</div>"
+        "</article>"
+    )
+
+
 def render_score_strip(scorecard: dict) -> str:
     keys = ["completeness_score", "trigger_score", "evidence_score", "context_cost"]
     cards = []
@@ -253,7 +211,7 @@ def render_score_strip(scorecard: dict) -> str:
         reason = item.get("reasons", [""])[0]
         cards.append(
             "<article class='score-chip'>"
-            f"<span>{html.escape(str(item.get('label', key)))}</span>"
+            f"<span>{bi_item(str(item.get('label', key)))}</span>"
             f"<strong>{score}</strong>"
             f"<i style='--score:{score}%'></i>"
             f"<small>{bi_item(str(reason))}</small>"
@@ -289,12 +247,16 @@ def render_html(summary: dict) -> str:
     contract = summary.get("contract_boundary", {})
     quality = summary.get("quality_review", {})
     risk = summary.get("risk_governance", {})
+    world_readiness = summary.get("world_class_readiness", {})
     assets = summary.get("package_assets", {})
     roadmap = summary.get("iteration_roadmap", {})
     output_execution = summary.get("output_execution", {})
     output_execution_summary = output_execution.get("summary", {})
     output_review = summary.get("output_review_adjudication", {})
     output_review_summary = output_review.get("summary", {})
+    report_contract = summary.get("report_contract", {})
+    html_report_path = str(report_contract.get("html_report") or "reports/skill-overview.html")
+    open_report_message = f"创建完成后建议先打开 {html_report_path}，再继续扩展包体。"
     hero_meta = [
         (f"技能名称：{summary['name']}", f"Skill name: {summary['name']}"),
         (f"成熟度：{mode_zh(metadata.get('maturity_tier', 'scaffold'))}", f"Maturity: {metadata.get('maturity_tier', 'scaffold')}"),
@@ -375,13 +337,13 @@ def render_html(summary: dict) -> str:
           <p class="eyebrow">{bi_span("YAO Skill 生成审计报告", "YAO Skill Generation Audit")}</p>
           <p class="slug">{html.escape(summary['name'])}</p>
           <h1 id="report-title">{bi_span("技能审计报告", f"{summary['display_name']} Audit Report")}</h1>
-          <p class="lead">{bi_span("这份报告默认使用中文简体，把新 Skill 的定位、指标、原理、契约、质量、风险、资产和迭代路线整理为一份可审计的 HTML 报告。", summary["description"])}</p>
+          <p class="lead">{bi_span("这份报告默认使用中文简体，把新 Skill 的定位、指标、原理、契约、质量、风险、资产和迭代路线整理为一份可审计的 HTML 报告。", en_for(str(summary["description"])))}</p>
           <div class="hero-meta">{hero_meta_html}</div>
           <div class="badges">{target_badges}</div>
         </div>
         <aside class="hero-card">
           <h3>{bi_span("核心判断", "Core reading")}</h3>
-          {render_list([skill.get("core_value", ""), skill.get("audience", ""), "创建完成后建议先打开 reports/skill-overview.html，再继续扩展包体。"])}
+          {render_list([skill.get("core_value", ""), skill.get("audience", ""), open_report_message])}
         </aside>
       </div>
       <div class="score-strip" aria-label="报告关键指标">{score_strip}</div>
@@ -409,17 +371,24 @@ def render_html(summary: dict) -> str:
           <h2>{bi_span("总览指标", "Metrics")}</h2>
           <p>{bi_span("分数来自本地文件和 reports 证据，缺失时明确标为证据不足。", "Scores are derived from package files and reports; missing inputs are shown as evidence gaps.")}</p>
         </div>
-        <div>
-          <div class="metrics-stack">
-            <div class="metrics-lead">
-              {charts["radar"]}
-              <article class="panel metrics-note">
-                <h3>{bi_span("指标判读", "Reading")}</h3>
-                <p>{bi_span("先看雷达图判断能力短板，再看下方每项分数的证据原因。分数不是装饰数字，必须和本地文件、reports 证据或证据不足提示对应。", "Read the radar first for weak spots, then inspect each score with its evidence. Scores must map to local files, reports, or explicit evidence gaps.")}</p>
-                {render_metric_summary(scorecard)}
-              </article>
-            </div>
-            <div class="metric-grid">{render_metric_cards(scorecard)}</div>
+        <article class="panel metrics-note">
+          <h3>{bi_span("指标判读", "Reading")}</h3>
+          <p>{bi_span("先看雷达图判断能力短板，再看每项分数的证据原因。分数不是装饰数字，必须和本地文件、reports 证据或证据不足提示对应。", "Read the radar first for weak spots, then inspect each score with its evidence. Scores must map to local files, reports, or explicit evidence gaps.")}</p>
+        </article>
+      </div>
+      <div class="section-body metrics-report">
+        <div class="metrics-flow">
+          <div class="metrics-primary" aria-label="指标图表与成熟度摘要">
+            {charts["radar"]}
+            <article class="panel metrics-note metrics-summary-panel">
+              <h3>{bi_span("成熟度条", "Maturity Bar")}</h3>
+              <p>{bi_span("这里把每个指标压缩为状态、分数和第一条证据，先给出整体判断，再进入下方明细。", "This compresses each metric into status, score, and the first evidence item before the detailed cards below.")}</p>
+              {render_metric_summary(scorecard)}
+            </article>
+          </div>
+          <div class="metric-detail-section">
+            <div class="detail-section-kicker">{bi_span("指标明细", "Metric Details")}</div>
+            <div class="metric-grid metric-detail-grid">{render_metric_cards(scorecard)}</div>
           </div>
         </div>
       </div>
@@ -472,7 +441,7 @@ def render_html(summary: dict) -> str:
         <div class="two-col">
           <article class="panel">
             <h3>{bi_span("触发描述", "Trigger")}</h3>
-            <p>{bi_span(readable_description_zh(str(trigger.get("description", ""))), str(trigger.get("description", "")))}</p>
+            <p>{bi_span(readable_description_zh(str(trigger.get("description", ""))), en_for(str(trigger.get("description", ""))))}</p>
             <h3>{bi_span("输入材料", "Inputs")}</h3>
             {render_list(contract.get("inputs", []))}
           </article>
@@ -536,6 +505,7 @@ def render_html(summary: dict) -> str:
             </table>
           </div>
         </div>
+        {render_world_class_readiness(world_readiness)}
       </div>
     </section>
 

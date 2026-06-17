@@ -12,10 +12,11 @@
         "openai",
         "claude",
         "generic",
-        "agent-skills-compatible"
+        "agent-skills-compatible",
+        "vscode"
       ],
       "package_metadata": "registry/packages/yao-meta-skill.json",
-      "package_sha256": "742dc905b0d221c4f336e741d168861edaf7b75e97fe1e89f7d454c1cabf928f"
+      "package_sha256": "5a99ef3133b0148cd5bbc1cd85fad4830bf34ca2bbac709f1e1fea2f810b1257"
     }
   ]
 }

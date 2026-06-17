@@ -64,6 +64,7 @@ Permission approval validates reviewer intent. Runtime permission probes validat
 - Run `python3 scripts/probe_runtime_permissions.py . --package-dir dist` after `cross_packager.py`.
 - The probe writes `reports/runtime_permission_probes.json` and `reports/runtime_permission_probes.md`.
 - A passing probe requires every target adapter to carry `permission_contract`, `target_permission_contract`, declared capabilities, a native-enforcement boolean, representation notes, and operator notes.
+- When `reports/install_simulation.json` matches the same package directory, the probe also reports installer enforcement counts from the install simulation. This proves the local package installer gate is wired, but it does not count as target-client native enforcement.
 - If a target has no native enforcement, the probe must mark an explicit metadata fallback and keep residual risk reviewer-visible.
 - Review Studio surfaces this as the `permission-runtime` gate.
 

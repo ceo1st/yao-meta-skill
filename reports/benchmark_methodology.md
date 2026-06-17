@@ -60,6 +60,7 @@ Recommended release evidence:
 git rev-parse HEAD
 python3 scripts/run_output_eval.py
 python3 scripts/export_skill_ir.py . --output-json skill-ir/examples/yao-meta-skill.json
+python3 scripts/yao.py benchmark-reproducibility .
 make ci-test
 ```
 

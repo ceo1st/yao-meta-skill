@@ -23,15 +23,32 @@ It turns rough workflows, transcripts, prompts, notes, and runbooks into reusabl
 - a silent-by-default GitHub benchmark scan plus reference synthesis that studies top public repositories and world-class pattern tracks, then surfaces only real conflicts or uncertainty to the user
 - a generated visual HTML overview for each newly initialized skill
 - a Review Studio 2.0 HTML gate page that combines intent, trigger, output eval, context, runtime, trust, atlas, adoption drift, reviewer waivers, reviewer annotations, release evidence, and per-warning fix actions
+- a Skill OS 2.0 audit that maps each world-class requirement to current evidence, human-required gaps, and external-required gaps
+- a Skill OS 2.0 blueprint coverage report that maps the upgrade plan's core modules and recommended PRs to concrete artifacts, commands, and tests
+- a world-class evidence plan that turns remaining provider, human, native-permission, and real-client telemetry gaps into executable evidence tasks
+- a world-class evidence ledger that records which external and human evidence is accepted or still pending without treating planned work as proof
+- a world-class evidence intake contract that validates external and human evidence packets for provenance, privacy, artifact refs, and anti-overclaim rules before ledger review
+- a redacted world-class preflight report that checks local files, environment readiness, human/external prerequisites, and source blockers before operators collect evidence
+- a world-class submission review queue that compares evidence packets, intake validation, source artifacts, and ledger state without accepting evidence
+- a world-class operator runbook that gives reviewers the exact commands, artifacts, and collection checklist needed to close remaining evidence gaps
+- a world-class claim guard that scans public claim surfaces and blocks premature completed/true claims while the evidence ledger still has pending external or human evidence
+- a benchmark reproducibility manifest that checks methodology sections, required artifacts, failure disclosure, and reproduction commands
+- an evidence consistency gate that compares generated reports against each other so benchmark, overview, interpretation, adoption, world-class ledger, coverage, and Review Studio facts do not drift silently
 - Output Eval Lab evidence with assertion grading, execution/timing/token evidence, a blind A/B review pack, a separate answer key, and reviewer adjudication reports
 - a runtime permission probe report that checks packaged target adapters for explicit permission metadata, native-enforcement flags, metadata fallback notes, and residual risks
+- a Python compatibility gate that catches supported-runtime syntax hazards before they reach GitHub Actions or packaged distribution
 - a side-by-side HTML review studio for first-pass human review
 - an artifact design profile that defines visual direction, layout patterns, and quality gates for reports, tutorials, dashboards, screenshots, and review pages
 - a prompt quality profile that abstracts need modeling, RTF mapping, complexity, and quality checks into reviewer-visible evidence instead of bloating `SKILL.md`
 - a systems-thinking model that maps boundaries, feedback loops, drift risks, recurring failure patterns, and highest-leverage quality moves
 - three high-value next iteration directions after the first package is created
 - a lightweight feedback log that does not require a full promotion cycle
-- a local-first metadata-only adoption and drift report that turns real usage signals into next iteration candidates
+- a local-first metadata-only adoption and drift report that turns real usage signals into next iteration candidates, with optional `yao.py` CLI run capture, external client event emit hooks, hook recipes, and JSONL import that record command names and outcomes without arguments or raw content
+- an explicit-source adaptive proposal loop that summarizes redacted repeated user preferences and generates approval-gated adaptation proposals without scanning private logs or writing source files
+- a SkillOps opportunity scorer and decision policy that ranks redacted repeated signals, maps them to report-only, AGENTS update, existing-skill patch, or eval-addition actions, and keeps every durable write approval-gated
+- a weekly SkillOps curator report that aggregates daily opportunities, Skill Atlas portfolio signals, release lock state, and world-class evidence gaps into a proposal-only maintenance queue
+- a Browser/Chrome Native Messaging telemetry host that can receive length-prefixed metadata-only client events and generate a local launcher plus manifest without storing raw content
+- a Skill Atlas drift layer that reads aggregate adoption reports and surfaces portfolio-level drift signals without packaging raw telemetry logs
 - a baseline compare report for with-skill vs baseline review
 - a conversation-style, archetype-aware quickstart that steers new packages toward scaffold, production, library, or governed fits
 - Skill IR as the platform-neutral semantic contract, plus compiler reports and client-specific adapters
@@ -89,7 +106,7 @@ Weighted score formula: `sum(score / 10 * weight)`.
 2. Start with a short, human intent dialogue so the real job, outputs, exclusions, constraints, and standards are explicit.
 3. Let `quickstart` clarify intent first, then run silent benchmark scan and reference synthesis; it only surfaces explicit questions when intent is still unclear or when there is a real design conflict.
 4. Use the archetype-aware `quickstart` or the full authoring flow to generate or improve the package in scaffold, production, library, or governed mode.
-5. Review the generated `reports/skill-overview.html` first for the bilingual HTML skill report. It defaults to Simplified Chinese and provides an English switch in the top right. Then open `reports/review-studio.html` to inspect release blockers, permission approvals, and evidence paths in one page before adding more structure.
+5. Review the generated `reports/skill-interpretation.html` first for the bilingual interpretation report. It defaults to Simplified Chinese and provides an English switch in the top right. Then open `reports/skill-overview.html` for the audit scorecard and `reports/review-studio.html` to inspect release blockers, permission approvals, and evidence paths in one page before adding more structure.
 
 Or use the unified authoring CLI:
 
@@ -100,32 +117,56 @@ python3 scripts/yao.py reference-scan my-skill \
   --external-reference "World Class Method::method::Borrow a tight evaluation loop.::Do not copy heavy process." \
   --user-reference "A product or repo I admire::taste::Learn the clarity and operating standard.::Do not copy wording." \
   --local-constraint "Current Library Naming::structure::Keep naming aligned with the local skill library.::Do not inherit private references."
+python3 scripts/yao.py skill-interpretation my-skill
 python3 scripts/yao.py review-viewer my-skill
 python3 scripts/yao.py review-studio my-skill
 python3 scripts/yao.py artifact-design-profile my-skill
 python3 scripts/yao.py prompt-quality-profile my-skill
 python3 scripts/yao.py system-model my-skill
 python3 scripts/yao.py feedback my-skill --note "Tighten exclusions before adding scripts." --rating 4 --category boundary
+python3 scripts/yao.py adapt-scan my-skill --source ./curated-user-signals.jsonl
+python3 scripts/yao.py adapt-propose my-skill
+python3 scripts/yao.py daily-skillops my-skill --source ./curated-user-signals.jsonl
+python3 scripts/yao.py weekly-curator my-skill
 python3 scripts/yao.py adoption-drift my-skill --record-event skill_activation --activation-type explicit --outcome accepted
+YAO_CLI_TELEMETRY=1 python3 scripts/yao.py validate my-skill
+python3 scripts/yao.py telemetry-emit my-skill --event skill_activation --activation-type explicit --outcome accepted --command browser-extension
+python3 scripts/yao.py telemetry-hooks my-skill
+python3 scripts/telemetry_native_host.py my-skill --write-launcher /tmp/yao-telemetry-host.sh --write-manifest /tmp/yao-telemetry-host.json --allowed-origin chrome-extension://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/
+python3 scripts/yao.py telemetry-import my-skill --input-jsonl /tmp/external-client-events.jsonl --command browser-extension
 python3 scripts/yao.py review-waivers my-skill --add-waiver --gate-key trust-report --reviewer "Yao Team" --reason "Known warning accepted for this release with bounded follow-up." --expires-at 2026-09-30
 python3 scripts/yao.py review-waivers my-skill --add-waiver --gate-key permission-gates --reviewer "Yao Team" --reason "Permission warning accepted only for this non-governed release window." --expires-at 2026-09-30
 python3 scripts/yao.py review-annotations my-skill --add-annotation --gate-key output-lab --target-path reports/output_quality_scorecard.md --line 1 --body "Clarify recorded fixture vs model-executed evidence before release."
 python3 scripts/yao.py baseline-compare
 python3 scripts/yao.py check-update
 python3 scripts/yao.py skill-ir . --output-json skill-ir/examples/yao-meta-skill.json
-python3 scripts/yao.py compile-skill . --target openai --target claude --target generic
+python3 scripts/yao.py compile-skill . --target openai --target claude --target generic --target vscode
 python3 scripts/yao.py package . --platform generic --output-dir dist
 python3 scripts/yao.py output-eval
 python3 scripts/yao.py output-exec
 python3 scripts/yao.py output-review
 python3 scripts/yao.py conformance .
 python3 scripts/yao.py trust .
+python3 scripts/yao.py python-compat .
 python3 scripts/yao.py runtime-permissions . --package-dir dist
 python3 scripts/yao.py skill-atlas --workspace-root .
 python3 scripts/yao.py registry-audit .
 python3 scripts/yao.py package-verify . --package-dir dist --require-zip
 python3 scripts/yao.py install-simulate . --package-dir dist
 python3 scripts/yao.py upgrade-check . --previous-package-json registry/examples/yao-meta-skill-1.0.0.json
+python3 scripts/yao.py world-class-evidence .
+SUBMISSIONS_DIR="${SUBMISSIONS_DIR:-evidence/world_class/submissions}"
+python3 scripts/yao.py world-class-preflight . --submissions-dir "$SUBMISSIONS_DIR"
+python3 scripts/yao.py world-class-submission-kit . --output-dir "$SUBMISSIONS_DIR"
+# Alternative: prefill artifact SHA-256 digests while keeping drafts template-only.
+python3 scripts/yao.py world-class-submission-kit . --output-dir "$SUBMISSIONS_DIR" --prefill-artifacts
+python3 scripts/yao.py world-class-intake . --submissions-dir "$SUBMISSIONS_DIR"
+python3 scripts/yao.py world-class-submission-review . --submissions-dir "$SUBMISSIONS_DIR"
+python3 scripts/yao.py world-class-ledger . --submissions-dir "$SUBMISSIONS_DIR"
+python3 scripts/yao.py world-class-runbook . --submissions-dir "$SUBMISSIONS_DIR"
+python3 scripts/yao.py world-class-claim-guard .
+python3 scripts/yao.py benchmark-reproducibility .
+python3 scripts/yao.py evidence-consistency .
 ```
 
 ## Local Development Source
@@ -140,7 +181,7 @@ Sync the current source into the disabled mirror:
 make sync-local-install
 ```
 
-The sync command copies Git-tracked files plus new source files in code and guidance directories such as `scripts/`, `tests/`, `references/`, and `docs/`. It skips untracked business-skill folders and untracked private reports by default, so local experiments do not leak into the mirror.
+The sync command first rebuilds the package and runs install preflight against `dist/yao-meta-skill.zip`. It refuses to sync when package extraction, adapter readability, or installer permission enforcement fails. After the preflight passes, it copies Git-tracked files plus new source files in code and guidance directories such as `scripts/`, `tests/`, `references/`, and `docs/`. It skips untracked business-skill folders and untracked private reports by default, so local experiments do not leak into the mirror.
 
 Restore an active global Codex install only when you intentionally want this skill discoverable outside the development workspace:
 
@@ -177,7 +218,7 @@ python3 scripts/context_sizer.py .
 python3 scripts/resource_boundary_check.py .
 python3 scripts/governance_check.py . --require-manifest
 python3 scripts/compile_skill.py .
-python3 scripts/cross_packager.py . --platform openai --platform claude --platform generic --expectations evals/packaging_expectations.json --zip
+python3 scripts/cross_packager.py . --platform openai --platform claude --platform generic --platform vscode --expectations evals/packaging_expectations.json --zip
 python3 scripts/probe_runtime_permissions.py . --package-dir dist
 python3 tests/verify_packager_failures.py
 ```
@@ -199,7 +240,7 @@ python3 scripts/yao.py review --target root
 python3 scripts/yao.py release-snapshot --target root --label release-candidate
 python3 scripts/yao.py skill-ir . --output-json skill-ir/examples/yao-meta-skill.json
 python3 scripts/yao.py compile-skill .
-python3 scripts/yao.py package . --platform openai --platform claude --platform generic --output-dir dist --zip
+python3 scripts/yao.py package . --platform openai --platform claude --platform generic --platform vscode --output-dir dist --zip
 python3 scripts/yao.py runtime-permissions . --package-dir dist
 python3 scripts/yao.py package-verify . --package-dir dist --require-zip
 python3 scripts/yao.py test
@@ -247,9 +288,9 @@ The homepage panel below is generated from the current eval suite so the family-
 Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/family_summary.md](reports/family_summary.md)
 <!-- END:EVAL_RESULTS -->
 
-- packaging validation: `openai`, `claude`, and `generic` targets pass contract checks and carry IR provenance, semantic parity metadata, and target-native behavior contracts
-- target compiler validation: `openai`, `claude`, `generic`, and Agent Skills compatible contracts are compiled from Skill IR with generated-file mappings, adapter modes, native surfaces, permission enforcement notes, and unsupported-feature notes
-- runtime permission probes: `openai`, `claude`, and `generic` adapters expose explicit permission contracts; current targets report `0` native-enforcement adapters and `3` metadata fallbacks with residual risks visible to reviewers
+- packaging validation: `openai`, `claude`, `generic`, and `vscode` targets pass contract checks and carry IR provenance, semantic parity metadata, and target-native behavior contracts
+- target compiler validation: `openai`, `claude`, `generic`, Agent Skills compatible, and VS Code / Copilot contracts are compiled from Skill IR with generated-file mappings, adapter modes, native surfaces, permission enforcement notes, and unsupported-feature notes
+- runtime permission probes: `openai`, `claude`, `generic`, and `vscode` adapters expose explicit permission contracts; current targets report `0` native-enforcement adapters and `4` metadata fallbacks with residual risks visible to reviewers
 - portability score: `100/100` with neutral activation, execution, trust, and degradation metadata preserved across all exported targets
 - description optimization suite: root, team frontend review, and governed incident command pass blind and adversarial holdout gates; governed incident command still carries one visible holdout miss, and adversarial calibration plus family drift are now tracked separately
 - judge-backed blind eval: root, team frontend review, and governed incident command now pass an independent rubric judge on blind holdout prompts
@@ -258,8 +299,8 @@ Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/fa
 - governance and resource-boundary checks are part of the default test path
 - root governance maturity score: `90/100`; governed benchmark example: `95/100`
 - CJK-aware trigger matching is now covered by explicit Chinese build, packaging, eval, and near-neighbor cases
-- context budgets: root `987/1000`, complex benchmark `790/1000`, governed benchmark `760/1000`
-- quality density: root `131.7`, complex benchmark `164.6`, governed benchmark `171.1`
+- context budgets: root `944/1000`, complex benchmark `790/1000`, governed benchmark `760/1000`
+- quality density: root `137.7`, complex benchmark `164.6`, governed benchmark `171.1`
 - regression milestones are tracked in [reports/regression_history.md](reports/regression_history.md)
 - description drift history is tracked in [reports/description_drift_history.md](reports/description_drift_history.md)
 - route confusion is tracked in [reports/route_scorecard.md](reports/route_scorecard.md)
@@ -269,8 +310,18 @@ Full reports: [reports/eval_suite.json](reports/eval_suite.json) and [reports/fa
 - lightweight with-skill vs baseline comparison is published in [reports/baseline-compare.md](reports/baseline-compare.md)
 - Review Studio 2.0 gate evidence is published in [reports/review-studio.html](reports/review-studio.html)
 - Review Studio fix actions are embedded in [reports/review-studio.json](reports/review-studio.json)
+- Skill OS 2.0 blueprint coverage is published in [reports/skill_os2_coverage.md](reports/skill_os2_coverage.md)
 - reviewer waiver evidence is published in [reports/review_waivers.md](reports/review_waivers.md)
+- remaining world-class evidence tasks are published in [reports/world_class_evidence_plan.md](reports/world_class_evidence_plan.md)
+- current world-class evidence acceptance state is published in [reports/world_class_evidence_ledger.md](reports/world_class_evidence_ledger.md)
+- world-class evidence intake readiness is published in [reports/world_class_evidence_intake.md](reports/world_class_evidence_intake.md)
+- world-class submission review queue is published in [reports/world_class_submission_review.md](reports/world_class_submission_review.md)
+- world-class operator runbook is published in [reports/world_class_operator_runbook.md](reports/world_class_operator_runbook.md) and [reports/world_class_operator_runbook.html](reports/world_class_operator_runbook.html)
+- world-class public claim guard status is published in [reports/world_class_claim_guard.md](reports/world_class_claim_guard.md)
+- benchmark reproducibility evidence is published in [reports/benchmark_reproducibility.md](reports/benchmark_reproducibility.md)
+- cross-report evidence consistency is published in [reports/evidence_consistency.md](reports/evidence_consistency.md)
 - target compiler evidence is published in [reports/compiled_targets.md](reports/compiled_targets.md)
+- Python runtime compatibility evidence is published in [reports/python_compatibility.md](reports/python_compatibility.md)
 - registry package metadata and audit status are published in [reports/registry_audit.md](reports/registry_audit.md)
 - package archive verification is published in [reports/package_verification.md](reports/package_verification.md)
 - temporary local install simulation is published in [reports/install_simulation.md](reports/install_simulation.md)
@@ -385,7 +436,7 @@ Utility scripts that make the meta-skill operational:
 - `run_description_optimization_suite.py`: runs description optimization across the root skill and governed examples, then writes reusable reports and optional drift snapshots with calibration and family summaries
 - `promotion_checker.py`: applies promotion policy to current description candidates, writes promotion decisions, builds candidate registries, and emits iteration bundles with review stubs
 - `create_iteration_snapshot.py`: freezes the current promotion decision into a versioned release snapshot with review, route, and context evidence
-- `yao.py`: unified authoring CLI that exposes init, validate, optimize-description, promote-check, review, release-snapshot, workspace-flow, report, skill-ir, compile-skill, output-exec, output-review, package, registry-audit, package-verify, install-simulate, upgrade-check, review-waivers, and test as one entrypoint
+- `yao.py`: unified authoring CLI that exposes init, validate, optimize-description, promote-check, python-compat, review, release-snapshot, workspace-flow, report, skill-report, skill-interpretation, skill-ir, compile-skill, output-exec, output-review, skill-os2-audit, skill-os2-coverage, world-class-evidence, world-class-ledger, world-class-intake, world-class-preflight, world-class-submission-kit, world-class-submission-review, world-class-runbook, world-class-claim-guard, benchmark-reproducibility, evidence-consistency, adapt-scan, adapt-propose, adapt-apply, daily-skillops, weekly-curator, telemetry-emit, telemetry-hooks, telemetry-import, package, registry-audit, package-verify, install-simulate, upgrade-check, review-waivers, and test as one entrypoint
 - `render_description_drift_history.py`: turns description-optimization snapshots into a readable drift-history report
 - `build_confusion_matrix.py`: scores route confusion across tracked sibling skills and `no_route` cases, then writes a route scorecard and optional milestone snapshot
 - `render_iteration_ledger.py`: compresses regression milestones, description optimization drift, and route scorecards into one iteration-facing ledger
@@ -394,9 +445,25 @@ Utility scripts that make the meta-skill operational:
 - `governance_check.py`: validates owner, review cadence, lifecycle stage, and maturity metadata
 - `render_context_reports.py`: generates root and example context-budget reports plus a shared context summary
 - `render_regression_history.py`: turns milestone snapshots into a readable regression history report
+- `render_skill_os2_audit.py`: renders a requirement-by-requirement Skill OS 2.0 audit that separates landed local evidence from human-required and external-required gaps
+- `render_skill_os2_coverage.py`: maps the Skill OS 2.0 upgrade blueprint to local artifacts, commands, tests, and remaining evidence boundaries
+- `render_daily_skillops_report.py`: renders an explicit-source Daily SkillOps operations report that summarizes redacted user patterns, proposal-only adaptations, approval state, release evidence, and world-class evidence gaps without scanning private logs or applying patches
+- `render_weekly_curator_report.py`: renders a weekly SkillOps curator report from generated daily reports, Skill Atlas, benchmark lock, evidence consistency, and world-class ledger state without scanning private logs or applying patches
+- `skillops_opportunity.py`: scores redacted SkillOps opportunities and maps them to approval-gated action types such as report-only, AGENTS update, existing-skill patch, or eval addition
+- `render_world_class_evidence_plan.py`: renders executable evidence tasks for remaining world-class gaps without treating planned external work as completed evidence
+- `render_world_class_evidence_ledger.py`: renders a machine-checkable ledger for current world-class evidence acceptance, anti-overclaim guards, provenance requirements, and privacy contracts
+- `render_world_class_evidence_intake.py`: validates world-class external and human evidence packets against provenance, privacy, artifact, and anti-overclaim requirements before ledger review
+- `render_world_class_preflight.py`: renders redacted collection preflight checks for pending provider, human, native-permission, and native-client evidence without accepting evidence
+- `render_world_class_submission_review.py`: renders a read-only queue that compares submissions, intake validation, source evidence, and ledger state without accepting evidence
+- `render_world_class_operator_runbook.py`: renders an operator-facing checklist and command map for collecting pending world-class evidence without accepting evidence
+- `render_world_class_claim_guard.py`: scans README, docs, and reports for premature world-class completion claims while accepted evidence is still pending
+- `render_benchmark_reproducibility.py`: renders methodology, artifact, failure-disclosure, and reproduction-command evidence for public benchmark claims
+- `render_evidence_consistency.py`: compares generated report facts across benchmark reproducibility, overview, interpretation, adoption drift, world-class ledger, coverage, and Review Studio artifacts
+- `python_compat_check.py`: checks Python source for supported-runtime compatibility hazards such as Python 3.11 f-string expression backslashes
 - `cross_packager.py`: builds client-specific export artifacts from Skill IR plus neutral metadata, with explicit platform contracts and validation
 - `render_portability_report.py`: scores cross-environment portability from neutral metadata, degradation rules, and consumer validation coverage
 - `render_skill_overview.py`: generates the white-background bilingual HTML skill audit report with sticky four-character Chinese navigation, top-right language switch, v2 scorecard, inline SVG charts, contract boundary, quality review, risk governance, assets, and iteration roadmap
+- `render_skill_interpretation.py`: renders `reports/skill-interpretation.html/json` as the first-class post-creation interpretation report while reusing the Skill Overview v2 model and Kami white layout
 - `export_skill_ir.py`: exports the 2.0 platform-neutral Skill IR contract from `SKILL.md`, manifest, interface metadata, evals, resources, and reports
 - `compile_skill.py`: compiles Skill IR into target-specific semantic contracts, generated-file maps, adapter modes, target-native behavior contracts, preserved semantics, warnings, and unsupported-feature notes
 - `run_output_eval.py`: runs the Output Eval Lab v0 with static with-skill vs baseline assertion grading, blind A/B review pack generation, and separate answer key artifacts
@@ -406,12 +473,17 @@ Utility scripts that make the meta-skill operational:
 - `render_review_annotations.py`: records reviewer annotations tied to Review Studio gates, source/report paths, and optional line numbers, with open blocker annotations reflected in Review Studio decisions
 - `run_conformance_suite.py`: verifies runtime conformance for OpenAI, Claude, Agent Skills, VS Code/Copilot-style, and generic targets
 - `trust_check.py`: generates the trust/security report for scripts, dependencies, secret risk, bounded network host policy, execution-level `--help` smoke checks, permission inputs, trust metadata, and stable source-contract integrity
-- `build_skill_atlas.py`: builds the Skill Atlas catalog, route-overlap matrix, dependency graph, stale report, owner gaps, and HTML overview for a multi-skill workspace
+- `build_skill_atlas.py`: builds the Skill Atlas catalog, route-overlap matrix, dependency graph, stale report, owner gaps, aggregate drift signals, and HTML overview for a multi-skill workspace
 - `registry_audit.py`: builds registry package metadata and audits version, owner, license, checksum, Skill IR source, and compatibility matrix
 - `verify_package.py`: verifies generated package manifests, target adapters, zip archive safety, archive checksum, and registry parity
 - `simulate_install.py`: extracts a generated zip into a temporary skill root and verifies entrypoint, manifest, interface, reports, and adapters can be loaded
 - `upgrade_check.py`: compares current and previous registry package metadata, recommends a version bump, and blocks incompatible upgrade claims
 - `render_adoption_drift_report.py`: records metadata-only local telemetry and renders adoption, missed-trigger, bad-output, script-error, and review-drift signals without packaging raw event logs
+- `import_telemetry_events.py`: imports external metadata-only telemetry JSONL after whole-file privacy validation, then refreshes the aggregate adoption drift report
+- `emit_telemetry_event.py`: emits one metadata-only external client event into a local spool for later `telemetry-import`, with dry-run validation and raw-content field blocking
+- `render_telemetry_hook_recipes.py`: renders Browser, Chrome, VS Code, CLI wrapper, and provider-adapter telemetry hook recipes with dry-run commands and explicit native-integration caveats
+- `telemetry_native_host.py`: receives Browser/Chrome Native Messaging length-prefixed JSON events, rejects raw-content fields, appends metadata-only events, and writes local launcher/manifest files for operator installation
+- `yao_cli_telemetry.py`: opt-in metadata-only `yao.py` run capture for command name, source, outcome, and failure class without command arguments or raw content
 - `render_review_waivers.py`: validates human reviewer risk approvals with gate keys, reasons, expiry dates, and blocker-safe waiver policy
 - `init_skill.py`, `lint_skill.py`, `validate_skill.py`, `diff_eval.py`: minimal authoring toolchain
 - `check_update.py`: checks GitHub for a newer `VERSION` or remote manifest version and reports a reinstall hint without modifying local files

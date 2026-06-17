@@ -10,6 +10,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 
 ALLOWED_EVENTS = {"skill_activation", "skill_output", "script_run", "review_event"}
+ADOPTION_EVENTS = {"skill_activation", "skill_output"}
 ALLOWED_ACTIVATION_TYPES = {"implicit", "explicit", "manual", "unknown"}
 ALLOWED_OUTCOMES = {"accepted", "edited", "rejected", "missed", "failed", "reviewed", "unknown"}
 ALLOWED_FAILURE_TYPES = {
@@ -22,14 +23,17 @@ ALLOWED_FAILURE_TYPES = {
     "review_overdue",
 }
 ALLOWED_FIELDS = {
+    "command",
     "event",
     "skill",
+    "source",
     "version",
     "activation_type",
     "outcome",
     "failure_type",
     "timestamp",
 }
+ALLOWED_SOURCES = {"manual", "yao_cli", "external", "unknown"}
 SENSITIVE_FIELDS = {
     "prompt",
     "content",
@@ -111,6 +115,8 @@ def normalize_event(raw: dict[str, Any], defaults: dict[str, str], line_label: s
     timestamp = str(raw.get("timestamp") or utc_now())
     skill = str(raw.get("skill") or defaults["skill"])
     version = str(raw.get("version") or defaults["version"])
+    source = str(raw.get("source") or "manual")
+    command = str(raw.get("command") or "unknown")
 
     if event not in ALLOWED_EVENTS:
         failures.append(f"{line_label}: unsupported event `{event}`")
@@ -120,12 +126,18 @@ def normalize_event(raw: dict[str, Any], defaults: dict[str, str], line_label: s
         failures.append(f"{line_label}: unsupported outcome `{outcome}`")
     if failure_type not in ALLOWED_FAILURE_TYPES:
         failures.append(f"{line_label}: unsupported failure_type `{failure_type}`")
+    if source not in ALLOWED_SOURCES:
+        failures.append(f"{line_label}: unsupported source `{source}`")
+    if not command.replace("-", "").replace("_", "").isalnum() or len(command) > 64:
+        failures.append(f"{line_label}: command must use only letters, numbers, hyphens, or underscores and stay under 64 chars")
 
     if failures:
         return None, failures
     return {
+        "command": command,
         "event": event,
         "skill": skill,
+        "source": source,
         "version": version,
         "activation_type": activation_type,
         "outcome": outcome,
@@ -165,21 +177,27 @@ def append_event(path: Path, event: dict[str, str]) -> None:
 
 def adoption_by_skill(events: list[dict[str, str]]) -> list[dict[str, Any]]:
     grouped: dict[str, Counter[str]] = defaultdict(Counter)
+    adoption_grouped: dict[str, Counter[str]] = defaultdict(Counter)
     for event in events:
-        grouped[event["skill"]][event["outcome"]] += 1
+        skill = event["skill"]
+        grouped[skill]["events"] += 1
+        if event["event"] in ADOPTION_EVENTS:
+            adoption_grouped[skill][event["outcome"]] += 1
     rows = []
     for skill, counts in sorted(grouped.items()):
-        total = sum(counts.values())
-        adopted = counts["accepted"] + counts["edited"]
+        adoption_counts = adoption_grouped[skill]
+        adoption_total = sum(adoption_counts.values())
+        adopted = adoption_counts["accepted"] + adoption_counts["edited"]
         rows.append(
             {
                 "skill": skill,
-                "events": total,
-                "accepted": counts["accepted"],
-                "edited": counts["edited"],
-                "rejected": counts["rejected"],
-                "missed": counts["missed"],
-                "adoption_rate": round(adopted / total * 100, 1) if total else 0,
+                "events": counts["events"],
+                "adoption_events": adoption_total,
+                "accepted": adoption_counts["accepted"],
+                "edited": adoption_counts["edited"],
+                "rejected": adoption_counts["rejected"],
+                "missed": adoption_counts["missed"],
+                "adoption_rate": round(adopted / adoption_total * 100, 1) if adoption_total else 0,
             }
         )
     return rows
@@ -243,11 +261,15 @@ def next_candidates(summary: dict[str, Any]) -> list[dict[str, str]]:
 
 
 def summarize(events: list[dict[str, str]], review_overdue_count: int) -> dict[str, Any]:
-    outcomes = Counter(event["outcome"] for event in events)
+    adoption_events = [event for event in events if event["event"] in ADOPTION_EVENTS]
+    outcomes = Counter(event["outcome"] for event in adoption_events)
     failures = Counter(event["failure_type"] for event in events if event["failure_type"] != "none")
     event_types = Counter(event["event"] for event in events)
+    source_types = Counter(event.get("source", "manual") for event in events)
+    command_counts = Counter(event.get("command", "unknown") for event in events if event.get("command", "unknown") != "unknown")
     adopted = outcomes["accepted"] + outcomes["edited"]
     event_count = len(events)
+    adoption_sample_count = len(adoption_events)
     missed_trigger = outcomes["missed"] + failures["under_trigger"]
     bad_output = failures["bad_output"]
     script_error = failures["script_error"]
@@ -263,13 +285,14 @@ def summarize(events: list[dict[str, str]], review_overdue_count: int) -> dict[s
             risk_band = "low"
     return {
         "event_count": event_count,
+        "adoption_sample_count": adoption_sample_count,
         "activation_count": event_types["skill_activation"],
         "accepted_count": outcomes["accepted"],
         "edited_count": outcomes["edited"],
         "rejected_count": outcomes["rejected"],
         "missed_count": outcomes["missed"],
         "failed_count": outcomes["failed"],
-        "adoption_rate": round(adopted / event_count * 100, 1) if event_count else 0,
+        "adoption_rate": round(adopted / adoption_sample_count * 100, 1) if adoption_sample_count else 0,
         "missed_trigger_count": missed_trigger,
         "wrong_trigger_count": wrong_trigger,
         "bad_output_count": bad_output,
@@ -279,6 +302,8 @@ def summarize(events: list[dict[str, str]], review_overdue_count: int) -> dict[s
         "risk_band": risk_band,
         "event_types": dict(sorted(event_types.items())),
         "failure_types": dict(sorted(failures.items())),
+        "source_types": dict(sorted(source_types.items())),
+        "command_counts": dict(sorted(command_counts.items())),
     }
 
 
@@ -292,6 +317,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         "## Summary",
         "",
         f"- Events: `{summary['event_count']}`",
+        f"- Adoption samples: `{summary['adoption_sample_count']}`",
         f"- Activation events: `{summary['activation_count']}`",
         f"- Adoption rate: `{summary['adoption_rate']}`",
         f"- Missed trigger signals: `{summary['missed_trigger_count']}`",
@@ -309,16 +335,16 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         "## Adoption By Skill",
         "",
-        "| Skill | Events | Accepted | Edited | Rejected | Missed | Adoption Rate |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Skill | Events | Adoption Samples | Accepted | Edited | Rejected | Missed | Adoption Rate |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in report["adoption_by_skill"]:
         lines.append(
-            f"| `{row['skill']}` | {row['events']} | {row['accepted']} | {row['edited']} | "
+            f"| `{row['skill']}` | {row['events']} | {row['adoption_events']} | {row['accepted']} | {row['edited']} | "
             f"{row['rejected']} | {row['missed']} | {row['adoption_rate']} |"
         )
     if not report["adoption_by_skill"]:
-        lines.append("| `none` | 0 | 0 | 0 | 0 | 0 | 0 |")
+        lines.append("| `none` | 0 | 0 | 0 | 0 | 0 | 0 | 0 |")
     lines.extend(["", "## Next Iteration Candidates", ""])
     for item in report["next_iteration_candidates"]:
         lines.append(f"- `{item['signal']}`: {item['recommendation']}")
@@ -328,6 +354,7 @@ def render_markdown(report: dict[str, Any]) -> str:
     for event in report["recent_events"]:
         lines.append(
             f"- `{event['timestamp']}` `{event['skill']}` event=`{event['event']}` "
+            f"source=`{event.get('source', 'manual')}` command=`{event.get('command', 'unknown')}` "
             f"activation=`{event['activation_type']}` outcome=`{event['outcome']}` failure=`{event['failure_type']}`"
         )
     if not report["recent_events"]:
@@ -404,6 +431,8 @@ def main() -> None:
     parser.add_argument("--activation-type", choices=sorted(ALLOWED_ACTIVATION_TYPES), default="unknown")
     parser.add_argument("--outcome", choices=sorted(ALLOWED_OUTCOMES), default="unknown")
     parser.add_argument("--failure-type", choices=sorted(ALLOWED_FAILURE_TYPES), default="none")
+    parser.add_argument("--source", choices=sorted(ALLOWED_SOURCES), default="manual")
+    parser.add_argument("--command", default="unknown")
     parser.add_argument("--timestamp")
     parser.add_argument("--skill-name")
     parser.add_argument("--version")
@@ -416,6 +445,8 @@ def main() -> None:
             "activation_type": args.activation_type,
             "outcome": args.outcome,
             "failure_type": args.failure_type,
+            "source": args.source,
+            "command": args.command,
         }
         if args.timestamp:
             record_event["timestamp"] = args.timestamp

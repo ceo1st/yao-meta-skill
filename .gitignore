@@ -3,6 +3,7 @@ dist/
 *.zip
 __pycache__/
 tests/tmp/
+tests/tmp_*/
 tests/tmp_snapshot/
 tests/tmp_cli/
 tests/tmp_skill_overview/
@@ -23,9 +24,12 @@ tests/tmp_baseline_compare.*
 reports/release_snapshots/
 reports/telemetry_events.jsonl
 .yao/
+evidence/world_class/submission-kit/
+evidence/world_class/submissions/
 
 # Local business-skill experiments belong outside this meta-skill repo unless promoted intentionally.
 geo-ranking-article-generator/
 
 # Private or one-off pattern analysis reports should not be committed as factory evidence.
 reports/*pattern-analysis*.md
+reports/*research-plan*.md

@@ -3,6 +3,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -28,18 +29,20 @@ def run(cmd: list[str]) -> dict:
     }
 
 
-def build_package(out_dir: Path) -> dict:
+def build_package(out_dir: Path, skill_root: Path = ROOT) -> dict:
     return run(
         [
             sys.executable,
             str(PACKAGER),
-            str(ROOT),
+            str(skill_root),
             "--platform",
             "openai",
             "--platform",
             "claude",
             "--platform",
             "generic",
+            "--platform",
+            "vscode",
             "--expectations",
             str(EXPECTATIONS),
             "--output-dir",
@@ -49,12 +52,12 @@ def build_package(out_dir: Path) -> dict:
     )
 
 
-def verify_package(out_dir: Path, output_json: Path, output_md: Path) -> dict:
+def verify_package(out_dir: Path, output_json: Path, output_md: Path, skill_root: Path = ROOT) -> dict:
     return run(
         [
             sys.executable,
             str(VERIFIER),
-            str(ROOT),
+            str(skill_root),
             "--package-dir",
             str(out_dir),
             "--expectations",
@@ -84,12 +87,29 @@ def main() -> None:
     payload = valid["payload"]
     assert valid["ok"], valid
     assert payload["ok"], payload
-    assert payload["summary"]["target_count"] == 3, payload
-    assert payload["summary"]["adapter_count"] == 3, payload
+    assert payload["summary"]["target_count"] == 4, payload
+    assert payload["summary"]["adapter_count"] == 4, payload
     assert payload["summary"]["archive_present"], payload
     assert payload["summary"]["archive_sha256"], payload
     assert not payload["failures"], payload
     assert (TMP / "package_verification.md").exists(), TMP
+
+    with tempfile.TemporaryDirectory(prefix="renamed-package-root-") as temp_root:
+        renamed_root = Path(temp_root) / "checkout-alias"
+        shutil.copytree(
+            ROOT,
+            renamed_root,
+            ignore=shutil.ignore_patterns(".git", ".previews", "dist", "__pycache__", ".pytest_cache", "tmp*"),
+        )
+        renamed_dir = TMP / "renamed-dist"
+        renamed_build = build_package(renamed_dir, renamed_root)
+        assert renamed_build["ok"], renamed_build
+        assert (renamed_dir / "yao-meta-skill.zip").exists(), renamed_build
+        with zipfile.ZipFile(renamed_dir / "yao-meta-skill.zip") as archive:
+            names = set(archive.namelist())
+        assert "yao-meta-skill/SKILL.md" in names, sorted(list(names))[:10]
+        renamed_valid = verify_package(renamed_dir, TMP / "renamed_package_verification.json", TMP / "renamed_package_verification.md", renamed_root)
+        assert renamed_valid["ok"], renamed_valid
 
     unsafe_dir = TMP / "unsafe-dist"
     shutil.copytree(valid_dir, unsafe_dir)

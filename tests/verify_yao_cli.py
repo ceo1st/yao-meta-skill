@@ -1,34 +1,20 @@
 #!/usr/bin/env python3
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
 
-
-ROOT = Path(__file__).resolve().parent.parent
-CLI = ROOT / "scripts" / "yao.py"
-BENCHMARK_FIXTURE_DIR = ROOT / "tests" / "fixtures" / "github_benchmark_scan"
-sys.path.insert(0, str(ROOT / "scripts"))
-import yao_cli_config  # noqa: E402
-
-
-def run(*args: str, input_text: str | None = None) -> dict:
-    proc = subprocess.run(
-        [sys.executable, str(CLI), *args],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        input=input_text,
-        env=os.environ,
-    )
-    payload = json.loads(proc.stdout)
-    return {
-        "ok": proc.returncode == 0,
-        "returncode": proc.returncode,
-        "payload": payload,
-        "stderr": proc.stderr,
-    }
+from yao_cli_helpers import (
+    BENCHMARK_FIXTURE_DIR,
+    ROOT,
+    assert_cli_module_contracts,
+    assert_created_skill_reports,
+    assert_creation_report_view,
+    assert_help_surface,
+    refresh_root_report_consistency_inputs,
+    run,
+    run_with_env,
+)
 
 
 def main() -> None:
@@ -38,55 +24,117 @@ def main() -> None:
     tmp_root.mkdir(parents=True, exist_ok=True)
     remote_version = tmp_root / "remote-version.txt"
     remote_version.write_text("9.9.9\n", encoding="utf-8")
-    assert yao_cli_config.resolve_target("root")["title"] == "Root Description Optimization"
-    assert yao_cli_config.resolve_promotion_target("root") == "yao-meta-skill"
-    assert yao_cli_config.infer_archetype("Standardize team review workflow.", "")[0] == "production"
-    assert yao_cli_config.infer_archetype("Govern release policy.", "")[0] == "governed"
-    assert "--entry" in yao_cli_config.baseline_compare_args()
+    assert_cli_module_contracts()
+    assert_help_surface()
 
     init_result = run("init", "cli-demo-skill", "--description", "CLI demo skill.", "--output-dir", str(tmp_root))
     assert init_result["ok"], init_result
     created = Path(init_result["payload"]["root"])
     assert (created / "SKILL.md").exists(), created
     assert (created / "README.md").exists(), created
-    assert (created / "reports" / "intent-dialogue.md").exists(), created
-    assert (created / "reports" / "intent-confidence.md").exists(), created
-    assert (created / "reports" / "skill-overview.html").exists(), created
-    assert (created / "reports" / "review-studio.html").exists(), created
-    assert (created / "reports" / "review-studio.json").exists(), created
-    assert (created / "reports" / "review-viewer.html").exists(), created
-    assert (created / "reports" / "reference-scan.md").exists(), created
-    assert (created / "reports" / "reference-synthesis.md").exists(), created
-    assert (created / "reports" / "output-risk-profile.md").exists(), created
-    assert (created / "reports" / "artifact-design-profile.md").exists(), created
-    assert (created / "reports" / "prompt-quality-profile.md").exists(), created
-    assert (created / "reports" / "system-model.md").exists(), created
-    assert (created / "reports" / "skill-ir.json").exists(), created
-    assert (created / "reports" / "compiled_targets.md").exists(), created
-    assert (created / "reports" / "compiled_targets.json").exists(), created
-    assert (created / "reports" / "iteration-directions.md").exists(), created
-    assert (created / "reports" / "adoption_drift_report.md").exists(), created
-    assert (created / "reports" / "adoption_drift_report.json").exists(), created
-    assert (created / "reports" / "review_waivers.md").exists(), created
-    assert (created / "reports" / "review_waivers.json").exists(), created
-    assert (created / "reports" / "review_annotations.md").exists(), created
-    assert (created / "reports" / "review_annotations.json").exists(), created
+    assert_created_skill_reports(created)
     assert "Honest Boundaries" in (created / "SKILL.md").read_text(encoding="utf-8"), created
-    init_report_view = init_result["payload"]["report_view"]
-    assert init_report_view["html_report"].endswith("reports/skill-overview.html"), init_report_view
-    assert Path(init_report_view["html_report"]).exists(), init_report_view
-    assert init_report_view["review_studio"].endswith("reports/review-studio.html"), init_report_view
-    assert Path(init_report_view["review_studio"]).exists(), init_report_view
-    assert "Skill 已创建完成" in init_report_view["message"], init_report_view
-    assert "Review Studio 2.0" in init_report_view["message"], init_report_view
-    assert "目标编译" in init_report_view["message"], init_report_view
-    assert "reports/compiled_targets.md" in init_report_view["message"], init_report_view
-    assert "概述、指标、原理、触发边界、输入输出、目标编译、质量评估、风险治理、包体资产和升级路线" in init_report_view["message"], init_report_view
-    assert "默认使用中文简体" in init_report_view["message"], init_report_view
-    assert "切换英文版" in init_report_view["message"], init_report_view
+    assert_creation_report_view(init_result["payload"]["report_view"])
     init_skill_ir = init_result["payload"]["skill_ir"]
     assert init_skill_ir["name"] == "cli-demo-skill", init_skill_ir
     assert init_skill_ir["trigger_samples"] >= 1, init_skill_ir
+
+    telemetry_log = tmp_root / "cli-telemetry-events.jsonl"
+    telemetry_env = {
+        "YAO_CLI_TELEMETRY": "1",
+        "YAO_CLI_TELEMETRY_EVENTS": str(telemetry_log),
+    }
+    telemetry_ok = run_with_env(telemetry_env, "validate", str(created))
+    assert telemetry_ok["ok"], telemetry_ok
+    telemetry_fail = run_with_env(
+        telemetry_env,
+        "output-exec",
+        "--runner-command",
+        json.dumps([sys.executable, str(ROOT / "scripts" / "local_output_eval_runner.py")]),
+        "--provider-runner",
+        "openai",
+    )
+    assert not telemetry_fail["ok"], telemetry_fail
+    telemetry_events = [json.loads(line) for line in telemetry_log.read_text(encoding="utf-8").splitlines()]
+    assert len(telemetry_events) == 2, telemetry_events
+    assert telemetry_events[0]["event"] == "script_run", telemetry_events
+    assert telemetry_events[0]["source"] == "yao_cli", telemetry_events
+    assert telemetry_events[0]["command"] == "validate", telemetry_events
+    assert telemetry_events[0]["outcome"] == "accepted", telemetry_events
+    assert telemetry_events[0]["failure_type"] == "none", telemetry_events
+    assert telemetry_events[1]["command"] == "output-exec", telemetry_events
+    assert telemetry_events[1]["outcome"] == "failed", telemetry_events
+    assert telemetry_events[1]["failure_type"] == "script_error", telemetry_events
+
+    skill_os2_audit_result = run(
+        "skill-os2-audit",
+        str(ROOT),
+        "--output-json",
+        str(tmp_root / "skill_os2_audit.json"),
+        "--output-md",
+        str(tmp_root / "skill_os2_audit.md"),
+        "--generated-at",
+        "2026-06-13",
+    )
+    assert skill_os2_audit_result["ok"], skill_os2_audit_result
+    assert skill_os2_audit_result["payload"]["summary"]["decision"] == "continue-iteration", skill_os2_audit_result
+    assert skill_os2_audit_result["payload"]["summary"]["world_class_ready"] is False, skill_os2_audit_result
+
+    skill_os2_coverage_result = run(
+        "skill-os2-coverage",
+        str(ROOT),
+        "--output-json",
+        str(tmp_root / "skill_os2_coverage.json"),
+        "--output-md",
+        str(tmp_root / "skill_os2_coverage.md"),
+        "--generated-at",
+        "2026-06-14",
+    )
+    assert skill_os2_coverage_result["ok"], skill_os2_coverage_result
+    assert skill_os2_coverage_result["payload"]["summary"]["local_blueprint_ready"] is True, skill_os2_coverage_result
+    assert skill_os2_coverage_result["payload"]["summary"]["public_world_class_ready"] is False, skill_os2_coverage_result
+
+    python_compat_result = run(
+        "python-compat",
+        str(ROOT),
+        "--output-json",
+        str(tmp_root / "python_compatibility.json"),
+        "--output-md",
+        str(tmp_root / "python_compatibility.md"),
+        "--generated-at",
+        "2026-06-14",
+    )
+    assert python_compat_result["ok"], python_compat_result
+    assert python_compat_result["payload"]["summary"]["target_python"] == "3.11", python_compat_result
+    assert python_compat_result["payload"]["summary"]["issue_count"] == 0, python_compat_result
+    assert python_compat_result["payload"]["summary"]["file_count"] >= 50, python_compat_result
+
+    architecture_result = run(
+        "architecture-audit",
+        str(ROOT),
+        "--output-json",
+        str(tmp_root / "architecture_maintainability.json"),
+        "--output-md",
+        str(tmp_root / "architecture_maintainability.md"),
+        "--generated-at",
+        "2026-06-14",
+    )
+    assert architecture_result["ok"], architecture_result
+    assert architecture_result["payload"]["summary"]["hotspot_count"] == 0, architecture_result
+    assert architecture_result["payload"]["summary"]["watchlist_count"] == 0, architecture_result
+    assert architecture_result["payload"]["summary"]["blocker_count"] == 0, architecture_result
+    assert architecture_result["payload"]["summary"]["command_handler_count"] >= 60, architecture_result
+    assert architecture_result["payload"]["summary"]["entrypoint_command_handler_count"] < 30, architecture_result
+    refresh_root_report_consistency_inputs(run, ROOT)
+
+    evidence_consistency_result = run(
+        "evidence-consistency", str(ROOT),
+        "--output-json", str(tmp_root / "evidence_consistency.json"),
+        "--output-md", str(tmp_root / "evidence_consistency.md"),
+        "--generated-at", "2026-06-15",
+    )
+    assert evidence_consistency_result["ok"], evidence_consistency_result
+    assert evidence_consistency_result["payload"]["summary"]["decision"] == "consistent", evidence_consistency_result
 
     quickstart_result = run(
         "quickstart",
@@ -111,19 +159,13 @@ def main() -> None:
     )
     assert quickstart_result["ok"], quickstart_result
     quickstart_root = Path(quickstart_result["payload"]["root"])
-    assert (quickstart_root / "reports" / "review-viewer.html").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "review-studio.html").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "github-benchmark-scan.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "intent-confidence.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "reference-synthesis.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "artifact-design-profile.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "prompt-quality-profile.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "system-model.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "compiled_targets.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "compiled_targets.json").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "adoption_drift_report.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "review_waivers.md").exists(), quickstart_root
-    assert (quickstart_root / "reports" / "review_annotations.md").exists(), quickstart_root
+    quickstart_reports = [
+        "review-viewer.html", "skill-interpretation.html", "skill-interpretation.json", "review-studio.html",
+        "github-benchmark-scan.md", "intent-confidence.md", "reference-synthesis.md",
+        "artifact-design-profile.md", "prompt-quality-profile.md", "system-model.md", "compiled_targets.md",
+        "compiled_targets.json", "adoption_drift_report.md", "review_waivers.md", "review_annotations.md",
+    ]
+    assert all((quickstart_root / "reports" / path).exists() for path in quickstart_reports), quickstart_root
     assert quickstart_result["payload"]["archetype"] == "production", quickstart_result
     assert quickstart_result["payload"]["guidance"]["experience_note"], quickstart_result
     assert quickstart_result["payload"]["guidance"]["problem_diagnosis"]["candidates"], quickstart_result
@@ -132,25 +174,22 @@ def main() -> None:
     assert quickstart_result["payload"]["reference_mode"]["mode"] == "silent", quickstart_result
     quickstart_report_view = quickstart_result["payload"]["report_view"]
     assert quickstart_report_view["html_report"].endswith("reports/skill-overview.html"), quickstart_report_view
+    assert quickstart_report_view["interpretation_report"].endswith("reports/skill-interpretation.html"), quickstart_report_view
     assert Path(quickstart_report_view["html_report"]).exists(), quickstart_report_view
+    assert Path(quickstart_report_view["interpretation_report"]).exists(), quickstart_report_view
     assert Path(quickstart_report_view["review_studio"]).exists(), quickstart_report_view
     assert "Skill 已创建完成" in quickstart_report_view["message"], quickstart_report_view
     assert "默认使用中文简体" in quickstart_report_view["message"], quickstart_report_view
-    assert quickstart_result["payload"]["guidance"]["next_steps"][0].startswith("Open reports/skill-overview.html"), quickstart_result
-    assert "reports/review-studio.html" in quickstart_result["payload"]["guidance"]["next_steps"][2], quickstart_result
-    assert "audit report" in quickstart_result["payload"]["guidance"]["next_steps"][0], quickstart_result
-    assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["reference_synthesis"].endswith(
-        "reports/reference-synthesis.md"
-    ), quickstart_result
-    assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["prompt_quality_profile"].endswith(
-        "reports/prompt-quality-profile.md"
-    ), quickstart_result
-    assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["system_model"].endswith(
-        "reports/system-model.md"
-    ), quickstart_result
-    assert quickstart_result["payload"]["reviewer_evidence"]["artifacts"]["review_studio"].endswith(
-        "reports/review-studio.html"
-    ), quickstart_result
+    assert quickstart_result["payload"]["guidance"]["next_steps"][0].startswith("Open reports/skill-interpretation.html"), quickstart_result
+    assert quickstart_result["payload"]["guidance"]["next_steps"][1].startswith("Open reports/skill-overview.html"), quickstart_result
+    assert "reports/review-studio.html" in quickstart_result["payload"]["guidance"]["next_steps"][3], quickstart_result
+    assert "interpretation report" in quickstart_result["payload"]["guidance"]["next_steps"][0], quickstart_result
+    evidence_artifacts = quickstart_result["payload"]["reviewer_evidence"]["artifacts"]
+    assert evidence_artifacts["reference_synthesis"].endswith("reports/reference-synthesis.md"), quickstart_result
+    assert evidence_artifacts["prompt_quality_profile"].endswith("reports/prompt-quality-profile.md"), quickstart_result
+    assert evidence_artifacts["system_model"].endswith("reports/system-model.md"), quickstart_result
+    assert evidence_artifacts["skill_interpretation"].endswith("reports/skill-interpretation.html"), quickstart_result
+    assert evidence_artifacts["review_studio"].endswith("reports/review-studio.html"), quickstart_result
     assert "uncertainty_or_conflict" not in quickstart_result["payload"], quickstart_result
     quickstart_manifest = json.loads((quickstart_root / "manifest.json").read_text(encoding="utf-8"))
     assert quickstart_manifest["status"] == "active", quickstart_manifest
@@ -191,6 +230,14 @@ def main() -> None:
     assert skill_report_result["ok"], skill_report_result
     assert skill_report_result["payload"]["artifacts"]["html"].endswith("reports/skill-overview.html"), skill_report_result
 
+    skill_interpretation_result = run("skill-interpretation", str(created))
+    assert skill_interpretation_result["ok"], skill_interpretation_result
+    assert skill_interpretation_result["payload"]["artifacts"]["html"].endswith(
+        "reports/skill-interpretation.html"
+    ), skill_interpretation_result
+    assert skill_interpretation_result["payload"]["summary"]["report_kind"] == "skill-interpretation", skill_interpretation_result
+    assert skill_interpretation_result["payload"]["summary"]["default_language"] == "zh-CN", skill_interpretation_result
+
     review_viewer_result = run("review-viewer", str(created))
     assert review_viewer_result["ok"], review_viewer_result
     assert review_viewer_result["payload"]["artifacts"]["html"].endswith("reports/review-viewer.html"), review_viewer_result
@@ -198,7 +245,15 @@ def main() -> None:
     review_studio_result = run("review-studio", str(created))
     assert review_studio_result["ok"], review_studio_result
     assert review_studio_result["payload"]["artifacts"]["html"].endswith("reports/review-studio.html"), review_studio_result
-    assert review_studio_result["payload"]["summary"]["gate_count"] == 13, review_studio_result
+    assert review_studio_result["payload"]["summary"]["gate_count"] == 16, review_studio_result
+    created_world_class_gate = next(item for item in review_studio_result["payload"]["gates"] if item["key"] == "world-class-evidence")
+    assert created_world_class_gate["status"] == "pass", created_world_class_gate
+    assert "optional" in created_world_class_gate["detail"], created_world_class_gate
+    created_architecture_gate = next(
+        item for item in review_studio_result["payload"]["gates"] if item["key"] == "architecture-maintainability"
+    )
+    assert created_architecture_gate["status"] == "pass", created_architecture_gate
+    assert "optional" in created_architecture_gate["detail"], created_architecture_gate
 
     review_waivers_result = run(
         "review-waivers",
@@ -328,9 +383,9 @@ def main() -> None:
     assert created_skill_ir["schema_version"] == "2.0.0", created_skill_ir
     assert created_skill_ir["trigger_surface"]["description"], created_skill_ir
 
-    compile_result = run("compile-skill", str(created), "--target", "openai", "--target", "claude", "--target", "generic")
+    compile_result = run("compile-skill", str(created), "--target", "openai", "--target", "claude", "--target", "generic", "--target", "vscode")
     assert compile_result["ok"], compile_result
-    assert compile_result["payload"]["summary"]["target_count"] == 3, compile_result
+    assert compile_result["payload"]["summary"]["target_count"] == 4, compile_result
     assert compile_result["payload"]["summary"]["block_count"] == 0, compile_result
     assert compile_result["payload"]["artifacts"]["markdown"].endswith("reports/compiled_targets.md"), compile_result
 
@@ -369,6 +424,16 @@ def main() -> None:
     assert output_exec_result["payload"]["summary"]["recorded_fixture_count"] == 10, output_exec_result
     assert (created / "reports" / "output_execution_runs.md").exists(), output_exec_result
 
+    output_exec_conflict = run(
+        "output-exec",
+        "--runner-command",
+        json.dumps([sys.executable, str(ROOT / "scripts" / "local_output_eval_runner.py")]),
+        "--provider-runner",
+        "openai",
+    )
+    assert not output_exec_conflict["ok"], output_exec_conflict
+    assert "Use either --runner-command or --provider-runner" in output_exec_conflict["payload"]["failures"][0], output_exec_conflict
+
     output_review_result = run(
         "output-review",
         "--blind-pack",
@@ -385,6 +450,9 @@ def main() -> None:
     assert output_review_result["ok"], output_review_result
     assert output_review_result["payload"]["summary"]["judgment_count"] == 0, output_review_result
     assert output_review_result["payload"]["summary"]["pending_count"] == 5, output_review_result
+    assert output_review_result["payload"]["summary"]["reviewer_checklist_count"] == 5, output_review_result
+    assert output_review_result["payload"]["summary"]["reviewer_checklist_pending_count"] == 5, output_review_result
+    assert all(not item["answer_key_visible"] for item in output_review_result["payload"]["reviewer_checklist"]), output_review_result
     assert (created / "reports" / "output_review_adjudication.md").exists(), output_review_result
 
     conformance_result = run("conformance", str(created))
@@ -458,7 +526,6 @@ def main() -> None:
     promote_result = run("promote-check")
     assert promote_result["ok"], promote_result
     assert promote_result["payload"]["summary"]["blocked"] == 0, promote_result
-
     review_result = run("review", "--target", "root")
     assert review_result["ok"], review_result
     assert review_result["payload"]["artifacts"]["review_md"].endswith("reports/iteration_bundles/yao-meta-skill/review.md")
@@ -475,17 +542,39 @@ def main() -> None:
     assert report_result["ok"], report_result
     assert "iteration_ledger" in report_result["payload"]["artifacts"], report_result
     assert "portability_score" in report_result["payload"]["artifacts"], report_result
+    assert "python_compatibility" in report_result["payload"]["artifacts"], report_result
+    assert "architecture_maintainability" in report_result["payload"]["artifacts"], report_result
     assert "artifact_design_profile" in report_result["payload"]["artifacts"], report_result
     assert "prompt_quality_profile" in report_result["payload"]["artifacts"], report_result
     assert "compiled_targets" in report_result["payload"]["artifacts"], report_result
     assert "output_execution" in report_result["payload"]["artifacts"], report_result
+    assert "output_review_kit" in report_result["payload"]["artifacts"], report_result
     assert "output_review_adjudication" in report_result["payload"]["artifacts"], report_result
     assert "adoption_drift" in report_result["payload"]["artifacts"], report_result
     assert "review_annotations" in report_result["payload"]["artifacts"], report_result
+    assert "world_class_evidence_plan" in report_result["payload"]["artifacts"], report_result
+    assert "world_class_evidence_ledger" in report_result["payload"]["artifacts"], report_result
+    assert "world_class_evidence_intake" in report_result["payload"]["artifacts"], report_result
+    assert "world_class_claim_guard" in report_result["payload"]["artifacts"], report_result
+    assert "benchmark_reproducibility" in report_result["payload"]["artifacts"], report_result
+    assert "evidence_consistency" in report_result["payload"]["artifacts"], report_result
+    assert all(key in report_result["payload"]["artifacts"] for key in ("skill_os2_audit", "skill_os2_coverage")), report_result
+    assert any(step["command"].startswith("render_skill_os2_audit.py ") and step["ok"] for step in report_result["payload"]["steps"]), report_result
+    assert "weekly_curator" in report_result["payload"]["artifacts"], report_result
+    assert report_result["payload"]["artifacts"]["skill_overview"] == "reports/skill-overview.json", report_result
+    assert report_result["payload"]["artifacts"]["skill_interpretation"] == "reports/skill-interpretation.json", report_result
+    assert report_result["payload"]["artifacts"]["skill_interpretation_html"] == "reports/skill-interpretation.html", report_result
+    assert (report_result["payload"]["artifacts"]["review_studio"], report_result["payload"]["artifacts"]["review_studio_html"]) == ("reports/review-studio.json", "reports/review-studio.html"), report_result
+    assert report_result["payload"]["artifacts"]["review_viewer"] == "reports/review-viewer.json", report_result
+    assert report_result["payload"]["artifacts"]["review_viewer_html"] == "reports/review-viewer.html", report_result
     report_output_execution = json.loads((ROOT / "reports" / "output_execution_runs.json").read_text(encoding="utf-8"))
     assert report_output_execution["summary"]["command_executed_count"] == 10, report_output_execution
     assert report_output_execution["summary"]["recorded_fixture_count"] == 0, report_output_execution
-    assert report_output_execution["summary"]["model_executed_count"] == 0, report_output_execution
+    if report_output_execution["summary"]["model_executed_count"] > 0:
+        assert report_output_execution["summary"]["token_observed_count"] == 10, report_output_execution
+        assert report_output_execution["summary"]["token_estimated_count"] == 0, report_output_execution
+    else:
+        assert report_output_execution["summary"]["model_executed_count"] == 0, report_output_execution
 
     package_dir = tmp_root / "dist"
     package_result = run("package", ".", "--platform", "generic", "--output-dir", str(package_dir))
@@ -505,6 +594,8 @@ def main() -> None:
         "claude",
         "--platform",
         "generic",
+        "--platform",
+        "vscode",
         "--expectations",
         str(ROOT / "evals" / "packaging_expectations.json"),
         "--output-dir",
@@ -530,22 +621,8 @@ def main() -> None:
         "2026-06-13",
     )
     assert package_verify_result["ok"], package_verify_result
-    assert package_verify_result["payload"]["summary"]["adapter_count"] == 3, package_verify_result
+    assert package_verify_result["payload"]["summary"]["adapter_count"] == 4, package_verify_result
     assert package_verify_result["payload"]["summary"]["archive_sha256"], package_verify_result
-
-    runtime_permissions_result = run(
-        "runtime-permissions",
-        ".",
-        "--package-dir",
-        str(package_zip_dir),
-        "--output-json",
-        str(tmp_root / "runtime_permission_probes.json"),
-        "--output-md",
-        str(tmp_root / "runtime_permission_probes.md"),
-    )
-    assert runtime_permissions_result["ok"], runtime_permissions_result
-    assert runtime_permissions_result["payload"]["summary"]["metadata_fallback_count"] == 3, runtime_permissions_result
-    assert runtime_permissions_result["payload"]["summary"]["native_enforcement_count"] == 0, runtime_permissions_result
 
     install_simulate_result = run(
         "install-simulate",
@@ -563,7 +640,26 @@ def main() -> None:
     )
     assert install_simulate_result["ok"], install_simulate_result
     assert install_simulate_result["payload"]["summary"]["archive_extracted"], install_simulate_result
-    assert install_simulate_result["payload"]["summary"]["adapter_count"] == 3, install_simulate_result
+    assert install_simulate_result["payload"]["summary"]["adapter_count"] == 4, install_simulate_result
+
+    runtime_permissions_result = run(
+        "runtime-permissions",
+        ".",
+        "--package-dir",
+        str(package_zip_dir),
+        "--install-simulation-json",
+        str(tmp_root / "install_simulation.json"),
+        "--output-json",
+        str(tmp_root / "runtime_permission_probes_with_install.json"),
+        "--output-md",
+        str(tmp_root / "runtime_permission_probes.md"),
+    )
+    assert runtime_permissions_result["ok"], runtime_permissions_result
+    runtime_install_summary = runtime_permissions_result["payload"]["summary"]
+    assert runtime_install_summary["metadata_fallback_count"] == 4, runtime_install_summary
+    assert runtime_install_summary["native_enforcement_count"] == 0, runtime_install_summary
+    assert runtime_install_summary["installer_enforcement_pass_count"] == 4, runtime_install_summary
+    assert runtime_install_summary["installer_permission_failure_count"] == 0, runtime_install_summary
 
     upgrade_result = run(
         "upgrade-check",
@@ -599,7 +695,6 @@ def main() -> None:
     assert test_result["ok"], test_result
 
     print(json.dumps({"ok": True}, ensure_ascii=False, indent=2))
-
 
 if __name__ == "__main__":
     main()

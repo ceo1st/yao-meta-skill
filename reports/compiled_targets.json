@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "ok": true,
-  "generated_at": "2026-06-13",
+  "generated_at": "2026-06-17",
   "skill_dir": ".",
   "summary": {
-    "target_count": 4,
-    "pass_count": 4,
+    "target_count": 5,
+    "pass_count": 5,
     "warn_count": 0,
     "block_count": 0,
     "failure_count": 0,
@@ -30,17 +30,18 @@
           "openai",
           "claude",
           "generic",
-          "agent-skills-compatible"
+          "agent-skills-compatible",
+          "vscode"
         ]
       },
       "compiled_contract": {
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -76,21 +77,18 @@
         },
         "workflow": {
           "steps": [
-            "Decide whether the request should become a skill and choose the lightest fit.",
-            "Capture job, output, exclusions, constraints, and standards.",
-            "Run reference scan: external benchmarks first, user references second, local fit third; surface only uncertainty or conflict.",
-            "Write the `description` early and test route quality before expanding the package.",
-            "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.",
-            "Add only folders and gates that earn their keep.",
-            "Surface the top three next iteration directions."
+            "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
+            "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
+            "Scan references in order: external benchmark, user source, local fit; surface only uncertainty or conflict.",
+            "Write `description` early, test route quality, then add only earned folders and gates.",
+            "Add output-risk, artifact-design, prompt-quality, system-model, and next directions only when useful."
           ],
           "decision_points": [
             "Route by frontmatter `description`.",
             "Keep `SKILL.md` lean; put guidance in `references/`, logic in `scripts/`, and evidence in `reports/`.",
             "Use the lightest reliable process.",
-            "`Scaffold`: exploratory or personal.",
-            "`Production`: team reuse.",
-            "`Library`: shared infrastructure.",
+            "`Scaffold`: exploratory/personal. `Production`: team reuse. `Library`: shared infrastructure. `Governed`: high-trust, policy-sensitive, or release-critical.",
+            "Rules: [Method](references/skill-engineering-method.md), [Operating Modes](references/operating-modes.md), [Resource Boundaries](references/resource-boundaries.md).",
             "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
             "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
             "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
@@ -112,6 +110,7 @@
           "references": [
             "references/artifact-design-doctrine.md",
             "references/authoring-discipline.md",
+            "references/autonomous-adaptation.md",
             "references/distribution-registry-method.md",
             "references/eval-playbook.md",
             "references/gate-selection.md",
@@ -139,39 +138,71 @@
             "references/skill-atlas-method.md",
             "references/skill-engineering-method.md",
             "references/skill-ir-method.md",
+            "references/skillops-decision-policy.md",
             "references/systems-thinking-doctrine.md",
             "references/telemetry-drift-method.md",
-            "references/trust-security-method.md"
+            "references/trust-security-method.md",
+            "references/user-memory-policy.md"
           ],
           "scripts": [
+            "scripts/adaptation_patch_safety.py",
+            "scripts/adaptation_report_contracts.py",
             "scripts/adjudicate_output_review.py",
+            "scripts/apply_adaptation.py",
+            "scripts/benchmark_release_lock.py",
             "scripts/build_confusion_matrix.py",
             "scripts/build_skill_atlas.py",
+            "scripts/build_skill_atlas_layout.py",
+            "scripts/build_skill_atlas_opportunities.py",
             "scripts/check_update.py",
             "scripts/ci_test.py",
             "scripts/collect_feedback.py",
             "scripts/compile_skill.py",
+            "scripts/compile_skill_targets.py",
             "scripts/context_sizer.py",
             "scripts/create_iteration_snapshot.py",
             "scripts/cross_packager.py",
+            "scripts/cross_packager_contracts.py",
+            "scripts/description_optimizer_reporting.py",
             "scripts/diff_eval.py",
+            "scripts/emit_telemetry_event.py",
+            "scripts/evidence_consistency_artifact_roles.py",
+            "scripts/evidence_consistency_core.py",
+            "scripts/evidence_consistency_phase_queue.py",
+            "scripts/evidence_consistency_release.py",
+            "scripts/evidence_consistency_skill_os2_review.py",
+            "scripts/evidence_consistency_world_class.py",
             "scripts/export_skill_ir.py",
             "scripts/github_benchmark_scan.py",
             "scripts/governance_check.py",
+            "scripts/html_rendering.py",
+            "scripts/import_output_review_decisions.py",
+            "scripts/import_telemetry_events.py",
             "scripts/init_skill.py",
             "scripts/judge_blind_eval.py",
             "scripts/lint_skill.py",
             "scripts/local_output_eval_runner.py",
             "scripts/optimize_description.py",
+            "scripts/output_review_privacy.py",
+            "scripts/prepare_output_review_kit.py",
+            "scripts/prepare_world_class_submission_kit.py",
             "scripts/probe_runtime_permissions.py",
             "scripts/promotion_checker.py",
+            "scripts/propose_adaptation.py",
+            "scripts/provider_output_eval_runner.py",
+            "scripts/python_compat_check.py",
+            "scripts/reference_synthesis_markdown.py",
             "scripts/registry_audit.py",
             "scripts/render_adoption_drift_report.py",
+            "scripts/render_architecture_maintainability.py",
             "scripts/render_artifact_design_profile.py",
             "scripts/render_baseline_compare.py",
+            "scripts/render_benchmark_reproducibility.py",
             "scripts/render_context_reports.py",
+            "scripts/render_daily_skillops_report.py",
             "scripts/render_description_drift_history.py",
             "scripts/render_eval_dashboard.py",
+            "scripts/render_evidence_consistency.py",
             "scripts/render_intent_confidence.py",
             "scripts/render_intent_dialogue.py",
             "scripts/render_iteration_directions.py",
@@ -186,32 +217,93 @@
             "scripts/render_review_studio.py",
             "scripts/render_review_viewer.py",
             "scripts/render_review_waivers.py",
+            "scripts/render_skill_interpretation.py",
+            "scripts/render_skill_os2_audit.py",
+            "scripts/render_skill_os2_coverage.py",
             "scripts/render_skill_overview.py",
             "scripts/render_social_preview.py",
             "scripts/render_system_model.py",
+            "scripts/render_telemetry_hook_recipes.py",
+            "scripts/render_weekly_curator_report.py",
+            "scripts/render_world_class_claim_guard.py",
+            "scripts/render_world_class_evidence_intake.py",
+            "scripts/render_world_class_evidence_ledger.py",
+            "scripts/render_world_class_evidence_plan.py",
+            "scripts/render_world_class_operator_runbook.py",
+            "scripts/render_world_class_preflight.py",
+            "scripts/render_world_class_submission_review.py",
             "scripts/resource_boundary_check.py",
+            "scripts/review_studio_action_evidence.py",
+            "scripts/review_studio_actions.py",
+            "scripts/review_studio_data.py",
             "scripts/review_studio_formatting.py",
+            "scripts/review_studio_gate_contract.py",
+            "scripts/review_studio_gate_helpers.py",
+            "scripts/review_studio_gates.py",
             "scripts/review_studio_layout.py",
+            "scripts/review_studio_output_review.py",
+            "scripts/review_studio_panels.py",
+            "scripts/review_studio_skillops.py",
+            "scripts/review_studio_waivers.py",
+            "scripts/review_studio_world_class.py",
+            "scripts/review_viewer_data.py",
             "scripts/run_conformance_suite.py",
             "scripts/run_description_optimization_suite.py",
             "scripts/run_eval_suite.py",
             "scripts/run_output_eval.py",
             "scripts/run_output_execution.py",
             "scripts/simulate_install.py",
+            "scripts/skill_ir_paths.py",
+            "scripts/skill_os2_coverage_markdown.py",
             "scripts/skill_report_charts.py",
+            "scripts/skill_report_i18n.py",
             "scripts/skill_report_layout.py",
             "scripts/skill_report_metrics.py",
             "scripts/skill_report_model.py",
+            "scripts/skill_report_sections.py",
+            "scripts/skill_report_sources.py",
+            "scripts/skill_report_world_class.py",
+            "scripts/skillops_opportunity.py",
+            "scripts/summarize_user_signals.py",
             "scripts/sync_local_install.py",
+            "scripts/telemetry_native_host.py",
             "scripts/trigger_eval.py",
             "scripts/trust_check.py",
+            "scripts/trust_check_scripts.py",
             "scripts/upgrade_check.py",
             "scripts/validate_skill.py",
             "scripts/verify_package.py",
+            "scripts/world_class_evidence_contract.py",
+            "scripts/world_class_human_evidence.py",
+            "scripts/world_class_native_permission_evidence.py",
+            "scripts/world_class_native_telemetry_evidence.py",
+            "scripts/world_class_operator_runbook_coordination.py",
+            "scripts/world_class_phase_queue.py",
+            "scripts/world_class_preflight_layout.py",
+            "scripts/world_class_preflight_markdown.py",
+            "scripts/world_class_provider_evidence.py",
+            "scripts/world_class_repair_checklist.py",
+            "scripts/world_class_source_checks.py",
+            "scripts/world_class_submission_kit_rendering.py",
+            "scripts/world_class_submission_matrix.py",
             "scripts/yao.py",
-            "scripts/yao_cli_config.py"
+            "scripts/yao_cli_adaptation_commands.py",
+            "scripts/yao_cli_config.py",
+            "scripts/yao_cli_create_commands.py",
+            "scripts/yao_cli_distribution_commands.py",
+            "scripts/yao_cli_output_commands.py",
+            "scripts/yao_cli_parser.py",
+            "scripts/yao_cli_parser_evidence.py",
+            "scripts/yao_cli_parser_operations.py",
+            "scripts/yao_cli_report_commands.py",
+            "scripts/yao_cli_runtime.py",
+            "scripts/yao_cli_telemetry.py"
           ],
           "assets": [
+            "assets/review-studio.css",
+            "assets/review-viewer.css",
+            "assets/skill-overview.css",
+            "assets/skill-overview.js",
             "templates/basic_skill.md.j2",
             "templates/complex_skill.md.j2"
           ],
@@ -251,6 +343,8 @@
             "reports/security_trust_report.md",
             "reports/runtime_permission_probes.json",
             "reports/runtime_permission_probes.md",
+            "reports/telemetry_hook_recipes.json",
+            "reports/telemetry_hook_recipes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html",
             "reports/skill-os-2-review.md",
@@ -259,15 +353,16 @@
             "reports/governance_score.json"
           ],
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           }
         },
         "eval_plan": {
           "trigger": [
             "evals/README.md",
+            "evals/adaptation/user_signals.example.jsonl",
             "evals/adversarial/trigger_cases.json",
             "evals/blind_holdout/trigger_cases.json",
             "evals/confusion/route_cases.json",
@@ -304,7 +399,7 @@
           ],
           "baseline": "without_skill",
           "counts": {
-            "trigger": 26,
+            "trigger": 27,
             "output": 3,
             "adversarial": 1,
             "baseline": 1
@@ -338,7 +433,8 @@
           "adapter_targets": [
             "openai",
             "claude",
-            "generic"
+            "generic",
+            "vscode"
           ],
           "canonical_format": "agent-skills"
         },
@@ -355,18 +451,20 @@
           "capabilities": {
             "network": {
               "required": true,
-              "script_count": 2,
+              "script_count": 3,
               "scripts": [
                 "scripts/check_update.py",
-                "scripts/github_benchmark_scan.py"
+                "scripts/github_benchmark_scan.py",
+                "scripts/provider_output_eval_runner.py"
               ],
               "review_reason": "Outbound hosts must match security/network_policy.json."
             },
             "file_write": {
               "required": true,
-              "script_count": 47,
+              "script_count": 73,
               "scripts": [
                 "scripts/adjudicate_output_review.py",
+                "scripts/apply_adaptation.py",
                 "scripts/build_confusion_matrix.py",
                 "scripts/build_skill_atlas.py",
                 "scripts/check_update.py",
@@ -375,18 +473,29 @@
                 "scripts/compile_skill.py",
                 "scripts/create_iteration_snapshot.py",
                 "scripts/cross_packager.py",
+                "scripts/emit_telemetry_event.py",
                 "scripts/export_skill_ir.py",
                 "scripts/github_benchmark_scan.py",
+                "scripts/import_output_review_decisions.py",
+                "scripts/import_telemetry_events.py",
                 "scripts/init_skill.py",
+                "scripts/prepare_output_review_kit.py",
+                "scripts/prepare_world_class_submission_kit.py",
                 "scripts/probe_runtime_permissions.py",
                 "scripts/promotion_checker.py",
+                "scripts/propose_adaptation.py",
+                "scripts/python_compat_check.py",
                 "scripts/registry_audit.py",
                 "scripts/render_adoption_drift_report.py",
+                "scripts/render_architecture_maintainability.py",
                 "scripts/render_artifact_design_profile.py",
                 "scripts/render_baseline_compare.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_context_reports.py",
+                "scripts/render_daily_skillops_report.py",
                 "scripts/render_description_drift_history.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/render_intent_confidence.py",
                 "scripts/render_intent_dialogue.py",
                 "scripts/render_iteration_directions.py",
@@ -401,15 +510,29 @@
                 "scripts/render_review_studio.py",
                 "scripts/render_review_viewer.py",
                 "scripts/render_review_waivers.py",
+                "scripts/render_skill_interpretation.py",
+                "scripts/render_skill_os2_audit.py",
+                "scripts/render_skill_os2_coverage.py",
                 "scripts/render_skill_overview.py",
                 "scripts/render_social_preview.py",
                 "scripts/render_system_model.py",
+                "scripts/render_telemetry_hook_recipes.py",
+                "scripts/render_weekly_curator_report.py",
+                "scripts/render_world_class_claim_guard.py",
+                "scripts/render_world_class_evidence_intake.py",
+                "scripts/render_world_class_evidence_ledger.py",
+                "scripts/render_world_class_evidence_plan.py",
+                "scripts/render_world_class_operator_runbook.py",
+                "scripts/render_world_class_preflight.py",
+                "scripts/render_world_class_submission_review.py",
                 "scripts/run_conformance_suite.py",
                 "scripts/run_description_optimization_suite.py",
                 "scripts/run_output_eval.py",
                 "scripts/run_output_execution.py",
                 "scripts/simulate_install.py",
+                "scripts/summarize_user_signals.py",
                 "scripts/sync_local_install.py",
+                "scripts/telemetry_native_host.py",
                 "scripts/trust_check.py",
                 "scripts/upgrade_check.py",
                 "scripts/verify_package.py"
@@ -418,15 +541,20 @@
             },
             "subprocess": {
               "required": true,
-              "script_count": 7,
+              "script_count": 12,
               "scripts": [
+                "scripts/apply_adaptation.py",
+                "scripts/benchmark_release_lock.py",
                 "scripts/ci_test.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/run_eval_suite.py",
                 "scripts/run_output_execution.py",
                 "scripts/sync_local_install.py",
                 "scripts/trust_check.py",
-                "scripts/yao.py"
+                "scripts/yao.py",
+                "scripts/yao_cli_runtime.py"
               ],
               "review_reason": "Scripts spawn local commands and need operator review."
             },
@@ -441,22 +569,23 @@
             "source": "security/network_policy.json",
             "covered_scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "missing_scripts": [],
             "mismatches": []
           },
           "help_smoke": {
             "enabled": true,
-            "checked_count": 59,
+            "checked_count": 86,
             "failed_count": 0,
             "failed_scripts": []
           },
           "trust_summary": {
             "secret_findings": 0,
-            "network_script_count": 2,
-            "file_write_script_count": 47,
-            "subprocess_script_count": 7,
+            "network_script_count": 3,
+            "file_write_script_count": 73,
+            "subprocess_script_count": 12,
             "interactive_script_count": 0,
             "help_smoke_failed_count": 0
           }
@@ -476,9 +605,9 @@
             "subprocess"
           ],
           "capability_counts": {
-            "network": 2,
-            "file_write": 47,
-            "subprocess": 7,
+            "network": 3,
+            "file_write": 73,
+            "subprocess": 12,
             "interactive": 0
           },
           "evidence": "reports/security_trust_report.json",
@@ -490,17 +619,17 @@
           "native_surface": "OpenAI-style interface metadata plus neutral Agent Skills source",
           "activation": {
             "policy": "Use frontmatter description for catalog routing and targets/openai/agents/openai.yaml for display name, default prompt, and compatibility metadata.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
           "resources": {
             "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
             "counts": {
-              "references": 32,
-              "scripts": 66,
-              "assets": 2,
-              "reports": 41
+              "references": 35,
+              "scripts": 153,
+              "assets": 6,
+              "reports": 43
             },
             "generated_files": [
               "targets/openai/adapter.json",
@@ -509,7 +638,7 @@
           },
           "scripts": {
             "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-            "script_count": 66,
+            "script_count": 153,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -580,18 +709,20 @@
         "capabilities": {
           "network": {
             "required": true,
-            "script_count": 2,
+            "script_count": 3,
             "scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "review_reason": "Outbound hosts must match security/network_policy.json."
           },
           "file_write": {
             "required": true,
-            "script_count": 47,
+            "script_count": 73,
             "scripts": [
               "scripts/adjudicate_output_review.py",
+              "scripts/apply_adaptation.py",
               "scripts/build_confusion_matrix.py",
               "scripts/build_skill_atlas.py",
               "scripts/check_update.py",
@@ -600,18 +731,29 @@
               "scripts/compile_skill.py",
               "scripts/create_iteration_snapshot.py",
               "scripts/cross_packager.py",
+              "scripts/emit_telemetry_event.py",
               "scripts/export_skill_ir.py",
               "scripts/github_benchmark_scan.py",
+              "scripts/import_output_review_decisions.py",
+              "scripts/import_telemetry_events.py",
               "scripts/init_skill.py",
+              "scripts/prepare_output_review_kit.py",
+              "scripts/prepare_world_class_submission_kit.py",
               "scripts/probe_runtime_permissions.py",
               "scripts/promotion_checker.py",
+              "scripts/propose_adaptation.py",
+              "scripts/python_compat_check.py",
               "scripts/registry_audit.py",
               "scripts/render_adoption_drift_report.py",
+              "scripts/render_architecture_maintainability.py",
               "scripts/render_artifact_design_profile.py",
               "scripts/render_baseline_compare.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_context_reports.py",
+              "scripts/render_daily_skillops_report.py",
               "scripts/render_description_drift_history.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/render_intent_confidence.py",
               "scripts/render_intent_dialogue.py",
               "scripts/render_iteration_directions.py",
@@ -626,15 +768,29 @@
               "scripts/render_review_studio.py",
               "scripts/render_review_viewer.py",
               "scripts/render_review_waivers.py",
+              "scripts/render_skill_interpretation.py",
+              "scripts/render_skill_os2_audit.py",
+              "scripts/render_skill_os2_coverage.py",
               "scripts/render_skill_overview.py",
               "scripts/render_social_preview.py",
               "scripts/render_system_model.py",
+              "scripts/render_telemetry_hook_recipes.py",
+              "scripts/render_weekly_curator_report.py",
+              "scripts/render_world_class_claim_guard.py",
+              "scripts/render_world_class_evidence_intake.py",
+              "scripts/render_world_class_evidence_ledger.py",
+              "scripts/render_world_class_evidence_plan.py",
+              "scripts/render_world_class_operator_runbook.py",
+              "scripts/render_world_class_preflight.py",
+              "scripts/render_world_class_submission_review.py",
               "scripts/run_conformance_suite.py",
               "scripts/run_description_optimization_suite.py",
               "scripts/run_output_eval.py",
               "scripts/run_output_execution.py",
               "scripts/simulate_install.py",
+              "scripts/summarize_user_signals.py",
               "scripts/sync_local_install.py",
+              "scripts/telemetry_native_host.py",
               "scripts/trust_check.py",
               "scripts/upgrade_check.py",
               "scripts/verify_package.py"
@@ -643,15 +799,20 @@
           },
           "subprocess": {
             "required": true,
-            "script_count": 7,
+            "script_count": 12,
             "scripts": [
+              "scripts/apply_adaptation.py",
+              "scripts/benchmark_release_lock.py",
               "scripts/ci_test.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/run_eval_suite.py",
               "scripts/run_output_execution.py",
               "scripts/sync_local_install.py",
               "scripts/trust_check.py",
-              "scripts/yao.py"
+              "scripts/yao.py",
+              "scripts/yao_cli_runtime.py"
             ],
             "review_reason": "Scripts spawn local commands and need operator review."
           },
@@ -666,22 +827,23 @@
           "source": "security/network_policy.json",
           "covered_scripts": [
             "scripts/check_update.py",
-            "scripts/github_benchmark_scan.py"
+            "scripts/github_benchmark_scan.py",
+            "scripts/provider_output_eval_runner.py"
           ],
           "missing_scripts": [],
           "mismatches": []
         },
         "help_smoke": {
           "enabled": true,
-          "checked_count": 59,
+          "checked_count": 86,
           "failed_count": 0,
           "failed_scripts": []
         },
         "trust_summary": {
           "secret_findings": 0,
-          "network_script_count": 2,
-          "file_write_script_count": 47,
-          "subprocess_script_count": 7,
+          "network_script_count": 3,
+          "file_write_script_count": 73,
+          "subprocess_script_count": 12,
           "interactive_script_count": 0,
           "help_smoke_failed_count": 0
         }
@@ -699,9 +861,9 @@
           "subprocess"
         ],
         "capability_counts": {
-          "network": 2,
-          "file_write": 47,
-          "subprocess": 7,
+          "network": 3,
+          "file_write": 73,
+          "subprocess": 12,
           "interactive": 0
         },
         "evidence": "reports/security_trust_report.json",
@@ -713,17 +875,17 @@
         "native_surface": "OpenAI-style interface metadata plus neutral Agent Skills source",
         "activation": {
           "policy": "Use frontmatter description for catalog routing and targets/openai/agents/openai.yaml for display name, default prompt, and compatibility metadata.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
         "resources": {
           "strategy": "Ship the neutral source tree and expose OpenAI-facing interface metadata as a generated companion file.",
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           },
           "generated_files": [
             "targets/openai/adapter.json",
@@ -732,7 +894,7 @@
         },
         "scripts": {
           "strategy": "Keep scripts as local package resources; expose help-smoke and permission metadata for reviewer approval before execution.",
-          "script_count": 66,
+          "script_count": 153,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -819,17 +981,18 @@
           "openai",
           "claude",
           "generic",
-          "agent-skills-compatible"
+          "agent-skills-compatible",
+          "vscode"
         ]
       },
       "compiled_contract": {
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -865,21 +1028,18 @@
         },
         "workflow": {
           "steps": [
-            "Decide whether the request should become a skill and choose the lightest fit.",
-            "Capture job, output, exclusions, constraints, and standards.",
-            "Run reference scan: external benchmarks first, user references second, local fit third; surface only uncertainty or conflict.",
-            "Write the `description` early and test route quality before expanding the package.",
-            "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.",
-            "Add only folders and gates that earn their keep.",
-            "Surface the top three next iteration directions."
+            "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
+            "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
+            "Scan references in order: external benchmark, user source, local fit; surface only uncertainty or conflict.",
+            "Write `description` early, test route quality, then add only earned folders and gates.",
+            "Add output-risk, artifact-design, prompt-quality, system-model, and next directions only when useful."
           ],
           "decision_points": [
             "Route by frontmatter `description`.",
             "Keep `SKILL.md` lean; put guidance in `references/`, logic in `scripts/`, and evidence in `reports/`.",
             "Use the lightest reliable process.",
-            "`Scaffold`: exploratory or personal.",
-            "`Production`: team reuse.",
-            "`Library`: shared infrastructure.",
+            "`Scaffold`: exploratory/personal. `Production`: team reuse. `Library`: shared infrastructure. `Governed`: high-trust, policy-sensitive, or release-critical.",
+            "Rules: [Method](references/skill-engineering-method.md), [Operating Modes](references/operating-modes.md), [Resource Boundaries](references/resource-boundaries.md).",
             "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
             "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
             "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
@@ -901,6 +1061,7 @@
           "references": [
             "references/artifact-design-doctrine.md",
             "references/authoring-discipline.md",
+            "references/autonomous-adaptation.md",
             "references/distribution-registry-method.md",
             "references/eval-playbook.md",
             "references/gate-selection.md",
@@ -928,39 +1089,71 @@
             "references/skill-atlas-method.md",
             "references/skill-engineering-method.md",
             "references/skill-ir-method.md",
+            "references/skillops-decision-policy.md",
             "references/systems-thinking-doctrine.md",
             "references/telemetry-drift-method.md",
-            "references/trust-security-method.md"
+            "references/trust-security-method.md",
+            "references/user-memory-policy.md"
           ],
           "scripts": [
+            "scripts/adaptation_patch_safety.py",
+            "scripts/adaptation_report_contracts.py",
             "scripts/adjudicate_output_review.py",
+            "scripts/apply_adaptation.py",
+            "scripts/benchmark_release_lock.py",
             "scripts/build_confusion_matrix.py",
             "scripts/build_skill_atlas.py",
+            "scripts/build_skill_atlas_layout.py",
+            "scripts/build_skill_atlas_opportunities.py",
             "scripts/check_update.py",
             "scripts/ci_test.py",
             "scripts/collect_feedback.py",
             "scripts/compile_skill.py",
+            "scripts/compile_skill_targets.py",
             "scripts/context_sizer.py",
             "scripts/create_iteration_snapshot.py",
             "scripts/cross_packager.py",
+            "scripts/cross_packager_contracts.py",
+            "scripts/description_optimizer_reporting.py",
             "scripts/diff_eval.py",
+            "scripts/emit_telemetry_event.py",
+            "scripts/evidence_consistency_artifact_roles.py",
+            "scripts/evidence_consistency_core.py",
+            "scripts/evidence_consistency_phase_queue.py",
+            "scripts/evidence_consistency_release.py",
+            "scripts/evidence_consistency_skill_os2_review.py",
+            "scripts/evidence_consistency_world_class.py",
             "scripts/export_skill_ir.py",
             "scripts/github_benchmark_scan.py",
             "scripts/governance_check.py",
+            "scripts/html_rendering.py",
+            "scripts/import_output_review_decisions.py",
+            "scripts/import_telemetry_events.py",
             "scripts/init_skill.py",
             "scripts/judge_blind_eval.py",
             "scripts/lint_skill.py",
             "scripts/local_output_eval_runner.py",
             "scripts/optimize_description.py",
+            "scripts/output_review_privacy.py",
+            "scripts/prepare_output_review_kit.py",
+            "scripts/prepare_world_class_submission_kit.py",
             "scripts/probe_runtime_permissions.py",
             "scripts/promotion_checker.py",
+            "scripts/propose_adaptation.py",
+            "scripts/provider_output_eval_runner.py",
+            "scripts/python_compat_check.py",
+            "scripts/reference_synthesis_markdown.py",
             "scripts/registry_audit.py",
             "scripts/render_adoption_drift_report.py",
+            "scripts/render_architecture_maintainability.py",
             "scripts/render_artifact_design_profile.py",
             "scripts/render_baseline_compare.py",
+            "scripts/render_benchmark_reproducibility.py",
             "scripts/render_context_reports.py",
+            "scripts/render_daily_skillops_report.py",
             "scripts/render_description_drift_history.py",
             "scripts/render_eval_dashboard.py",
+            "scripts/render_evidence_consistency.py",
             "scripts/render_intent_confidence.py",
             "scripts/render_intent_dialogue.py",
             "scripts/render_iteration_directions.py",
@@ -975,32 +1168,93 @@
             "scripts/render_review_studio.py",
             "scripts/render_review_viewer.py",
             "scripts/render_review_waivers.py",
+            "scripts/render_skill_interpretation.py",
+            "scripts/render_skill_os2_audit.py",
+            "scripts/render_skill_os2_coverage.py",
             "scripts/render_skill_overview.py",
             "scripts/render_social_preview.py",
             "scripts/render_system_model.py",
+            "scripts/render_telemetry_hook_recipes.py",
+            "scripts/render_weekly_curator_report.py",
+            "scripts/render_world_class_claim_guard.py",
+            "scripts/render_world_class_evidence_intake.py",
+            "scripts/render_world_class_evidence_ledger.py",
+            "scripts/render_world_class_evidence_plan.py",
+            "scripts/render_world_class_operator_runbook.py",
+            "scripts/render_world_class_preflight.py",
+            "scripts/render_world_class_submission_review.py",
             "scripts/resource_boundary_check.py",
+            "scripts/review_studio_action_evidence.py",
+            "scripts/review_studio_actions.py",
+            "scripts/review_studio_data.py",
             "scripts/review_studio_formatting.py",
+            "scripts/review_studio_gate_contract.py",
+            "scripts/review_studio_gate_helpers.py",
+            "scripts/review_studio_gates.py",
             "scripts/review_studio_layout.py",
+            "scripts/review_studio_output_review.py",
+            "scripts/review_studio_panels.py",
+            "scripts/review_studio_skillops.py",
+            "scripts/review_studio_waivers.py",
+            "scripts/review_studio_world_class.py",
+            "scripts/review_viewer_data.py",
             "scripts/run_conformance_suite.py",
             "scripts/run_description_optimization_suite.py",
             "scripts/run_eval_suite.py",
             "scripts/run_output_eval.py",
             "scripts/run_output_execution.py",
             "scripts/simulate_install.py",
+            "scripts/skill_ir_paths.py",
+            "scripts/skill_os2_coverage_markdown.py",
             "scripts/skill_report_charts.py",
+            "scripts/skill_report_i18n.py",
             "scripts/skill_report_layout.py",
             "scripts/skill_report_metrics.py",
             "scripts/skill_report_model.py",
+            "scripts/skill_report_sections.py",
+            "scripts/skill_report_sources.py",
+            "scripts/skill_report_world_class.py",
+            "scripts/skillops_opportunity.py",
+            "scripts/summarize_user_signals.py",
             "scripts/sync_local_install.py",
+            "scripts/telemetry_native_host.py",
             "scripts/trigger_eval.py",
             "scripts/trust_check.py",
+            "scripts/trust_check_scripts.py",
             "scripts/upgrade_check.py",
             "scripts/validate_skill.py",
             "scripts/verify_package.py",
+            "scripts/world_class_evidence_contract.py",
+            "scripts/world_class_human_evidence.py",
+            "scripts/world_class_native_permission_evidence.py",
+            "scripts/world_class_native_telemetry_evidence.py",
+            "scripts/world_class_operator_runbook_coordination.py",
+            "scripts/world_class_phase_queue.py",
+            "scripts/world_class_preflight_layout.py",
+            "scripts/world_class_preflight_markdown.py",
+            "scripts/world_class_provider_evidence.py",
+            "scripts/world_class_repair_checklist.py",
+            "scripts/world_class_source_checks.py",
+            "scripts/world_class_submission_kit_rendering.py",
+            "scripts/world_class_submission_matrix.py",
             "scripts/yao.py",
-            "scripts/yao_cli_config.py"
+            "scripts/yao_cli_adaptation_commands.py",
+            "scripts/yao_cli_config.py",
+            "scripts/yao_cli_create_commands.py",
+            "scripts/yao_cli_distribution_commands.py",
+            "scripts/yao_cli_output_commands.py",
+            "scripts/yao_cli_parser.py",
+            "scripts/yao_cli_parser_evidence.py",
+            "scripts/yao_cli_parser_operations.py",
+            "scripts/yao_cli_report_commands.py",
+            "scripts/yao_cli_runtime.py",
+            "scripts/yao_cli_telemetry.py"
           ],
           "assets": [
+            "assets/review-studio.css",
+            "assets/review-viewer.css",
+            "assets/skill-overview.css",
+            "assets/skill-overview.js",
             "templates/basic_skill.md.j2",
             "templates/complex_skill.md.j2"
           ],
@@ -1040,6 +1294,8 @@
             "reports/security_trust_report.md",
             "reports/runtime_permission_probes.json",
             "reports/runtime_permission_probes.md",
+            "reports/telemetry_hook_recipes.json",
+            "reports/telemetry_hook_recipes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html",
             "reports/skill-os-2-review.md",
@@ -1048,15 +1304,16 @@
             "reports/governance_score.json"
           ],
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           }
         },
         "eval_plan": {
           "trigger": [
             "evals/README.md",
+            "evals/adaptation/user_signals.example.jsonl",
             "evals/adversarial/trigger_cases.json",
             "evals/blind_holdout/trigger_cases.json",
             "evals/confusion/route_cases.json",
@@ -1093,7 +1350,7 @@
           ],
           "baseline": "without_skill",
           "counts": {
-            "trigger": 26,
+            "trigger": 27,
             "output": 3,
             "adversarial": 1,
             "baseline": 1
@@ -1127,7 +1384,8 @@
           "adapter_targets": [
             "openai",
             "claude",
-            "generic"
+            "generic",
+            "vscode"
           ],
           "canonical_format": "agent-skills"
         },
@@ -1144,18 +1402,20 @@
           "capabilities": {
             "network": {
               "required": true,
-              "script_count": 2,
+              "script_count": 3,
               "scripts": [
                 "scripts/check_update.py",
-                "scripts/github_benchmark_scan.py"
+                "scripts/github_benchmark_scan.py",
+                "scripts/provider_output_eval_runner.py"
               ],
               "review_reason": "Outbound hosts must match security/network_policy.json."
             },
             "file_write": {
               "required": true,
-              "script_count": 47,
+              "script_count": 73,
               "scripts": [
                 "scripts/adjudicate_output_review.py",
+                "scripts/apply_adaptation.py",
                 "scripts/build_confusion_matrix.py",
                 "scripts/build_skill_atlas.py",
                 "scripts/check_update.py",
@@ -1164,18 +1424,29 @@
                 "scripts/compile_skill.py",
                 "scripts/create_iteration_snapshot.py",
                 "scripts/cross_packager.py",
+                "scripts/emit_telemetry_event.py",
                 "scripts/export_skill_ir.py",
                 "scripts/github_benchmark_scan.py",
+                "scripts/import_output_review_decisions.py",
+                "scripts/import_telemetry_events.py",
                 "scripts/init_skill.py",
+                "scripts/prepare_output_review_kit.py",
+                "scripts/prepare_world_class_submission_kit.py",
                 "scripts/probe_runtime_permissions.py",
                 "scripts/promotion_checker.py",
+                "scripts/propose_adaptation.py",
+                "scripts/python_compat_check.py",
                 "scripts/registry_audit.py",
                 "scripts/render_adoption_drift_report.py",
+                "scripts/render_architecture_maintainability.py",
                 "scripts/render_artifact_design_profile.py",
                 "scripts/render_baseline_compare.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_context_reports.py",
+                "scripts/render_daily_skillops_report.py",
                 "scripts/render_description_drift_history.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/render_intent_confidence.py",
                 "scripts/render_intent_dialogue.py",
                 "scripts/render_iteration_directions.py",
@@ -1190,15 +1461,29 @@
                 "scripts/render_review_studio.py",
                 "scripts/render_review_viewer.py",
                 "scripts/render_review_waivers.py",
+                "scripts/render_skill_interpretation.py",
+                "scripts/render_skill_os2_audit.py",
+                "scripts/render_skill_os2_coverage.py",
                 "scripts/render_skill_overview.py",
                 "scripts/render_social_preview.py",
                 "scripts/render_system_model.py",
+                "scripts/render_telemetry_hook_recipes.py",
+                "scripts/render_weekly_curator_report.py",
+                "scripts/render_world_class_claim_guard.py",
+                "scripts/render_world_class_evidence_intake.py",
+                "scripts/render_world_class_evidence_ledger.py",
+                "scripts/render_world_class_evidence_plan.py",
+                "scripts/render_world_class_operator_runbook.py",
+                "scripts/render_world_class_preflight.py",
+                "scripts/render_world_class_submission_review.py",
                 "scripts/run_conformance_suite.py",
                 "scripts/run_description_optimization_suite.py",
                 "scripts/run_output_eval.py",
                 "scripts/run_output_execution.py",
                 "scripts/simulate_install.py",
+                "scripts/summarize_user_signals.py",
                 "scripts/sync_local_install.py",
+                "scripts/telemetry_native_host.py",
                 "scripts/trust_check.py",
                 "scripts/upgrade_check.py",
                 "scripts/verify_package.py"
@@ -1207,15 +1492,20 @@
             },
             "subprocess": {
               "required": true,
-              "script_count": 7,
+              "script_count": 12,
               "scripts": [
+                "scripts/apply_adaptation.py",
+                "scripts/benchmark_release_lock.py",
                 "scripts/ci_test.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/run_eval_suite.py",
                 "scripts/run_output_execution.py",
                 "scripts/sync_local_install.py",
                 "scripts/trust_check.py",
-                "scripts/yao.py"
+                "scripts/yao.py",
+                "scripts/yao_cli_runtime.py"
               ],
               "review_reason": "Scripts spawn local commands and need operator review."
             },
@@ -1230,22 +1520,23 @@
             "source": "security/network_policy.json",
             "covered_scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "missing_scripts": [],
             "mismatches": []
           },
           "help_smoke": {
             "enabled": true,
-            "checked_count": 59,
+            "checked_count": 86,
             "failed_count": 0,
             "failed_scripts": []
           },
           "trust_summary": {
             "secret_findings": 0,
-            "network_script_count": 2,
-            "file_write_script_count": 47,
-            "subprocess_script_count": 7,
+            "network_script_count": 3,
+            "file_write_script_count": 73,
+            "subprocess_script_count": 12,
             "interactive_script_count": 0,
             "help_smoke_failed_count": 0
           }
@@ -1265,9 +1556,9 @@
             "subprocess"
           ],
           "capability_counts": {
-            "network": 2,
-            "file_write": 47,
-            "subprocess": 7,
+            "network": 3,
+            "file_write": 73,
+            "subprocess": 12,
             "interactive": 0
           },
           "evidence": "reports/security_trust_report.json",
@@ -1279,17 +1570,17 @@
           "native_surface": "Claude-compatible neutral source folder with adapter notes",
           "activation": {
             "policy": "Use SKILL.md frontmatter description as the primary activation contract and adapter.json for review metadata.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
           "resources": {
             "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
             "counts": {
-              "references": 32,
-              "scripts": 66,
-              "assets": 2,
-              "reports": 41
+              "references": 35,
+              "scripts": 153,
+              "assets": 6,
+              "reports": 43
             },
             "generated_files": [
               "targets/claude/adapter.json",
@@ -1298,7 +1589,7 @@
           },
           "scripts": {
             "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-            "script_count": 66,
+            "script_count": 153,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -1369,18 +1660,20 @@
         "capabilities": {
           "network": {
             "required": true,
-            "script_count": 2,
+            "script_count": 3,
             "scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "review_reason": "Outbound hosts must match security/network_policy.json."
           },
           "file_write": {
             "required": true,
-            "script_count": 47,
+            "script_count": 73,
             "scripts": [
               "scripts/adjudicate_output_review.py",
+              "scripts/apply_adaptation.py",
               "scripts/build_confusion_matrix.py",
               "scripts/build_skill_atlas.py",
               "scripts/check_update.py",
@@ -1389,18 +1682,29 @@
               "scripts/compile_skill.py",
               "scripts/create_iteration_snapshot.py",
               "scripts/cross_packager.py",
+              "scripts/emit_telemetry_event.py",
               "scripts/export_skill_ir.py",
               "scripts/github_benchmark_scan.py",
+              "scripts/import_output_review_decisions.py",
+              "scripts/import_telemetry_events.py",
               "scripts/init_skill.py",
+              "scripts/prepare_output_review_kit.py",
+              "scripts/prepare_world_class_submission_kit.py",
               "scripts/probe_runtime_permissions.py",
               "scripts/promotion_checker.py",
+              "scripts/propose_adaptation.py",
+              "scripts/python_compat_check.py",
               "scripts/registry_audit.py",
               "scripts/render_adoption_drift_report.py",
+              "scripts/render_architecture_maintainability.py",
               "scripts/render_artifact_design_profile.py",
               "scripts/render_baseline_compare.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_context_reports.py",
+              "scripts/render_daily_skillops_report.py",
               "scripts/render_description_drift_history.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/render_intent_confidence.py",
               "scripts/render_intent_dialogue.py",
               "scripts/render_iteration_directions.py",
@@ -1415,15 +1719,29 @@
               "scripts/render_review_studio.py",
               "scripts/render_review_viewer.py",
               "scripts/render_review_waivers.py",
+              "scripts/render_skill_interpretation.py",
+              "scripts/render_skill_os2_audit.py",
+              "scripts/render_skill_os2_coverage.py",
               "scripts/render_skill_overview.py",
               "scripts/render_social_preview.py",
               "scripts/render_system_model.py",
+              "scripts/render_telemetry_hook_recipes.py",
+              "scripts/render_weekly_curator_report.py",
+              "scripts/render_world_class_claim_guard.py",
+              "scripts/render_world_class_evidence_intake.py",
+              "scripts/render_world_class_evidence_ledger.py",
+              "scripts/render_world_class_evidence_plan.py",
+              "scripts/render_world_class_operator_runbook.py",
+              "scripts/render_world_class_preflight.py",
+              "scripts/render_world_class_submission_review.py",
               "scripts/run_conformance_suite.py",
               "scripts/run_description_optimization_suite.py",
               "scripts/run_output_eval.py",
               "scripts/run_output_execution.py",
               "scripts/simulate_install.py",
+              "scripts/summarize_user_signals.py",
               "scripts/sync_local_install.py",
+              "scripts/telemetry_native_host.py",
               "scripts/trust_check.py",
               "scripts/upgrade_check.py",
               "scripts/verify_package.py"
@@ -1432,15 +1750,20 @@
           },
           "subprocess": {
             "required": true,
-            "script_count": 7,
+            "script_count": 12,
             "scripts": [
+              "scripts/apply_adaptation.py",
+              "scripts/benchmark_release_lock.py",
               "scripts/ci_test.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/run_eval_suite.py",
               "scripts/run_output_execution.py",
               "scripts/sync_local_install.py",
               "scripts/trust_check.py",
-              "scripts/yao.py"
+              "scripts/yao.py",
+              "scripts/yao_cli_runtime.py"
             ],
             "review_reason": "Scripts spawn local commands and need operator review."
           },
@@ -1455,22 +1778,23 @@
           "source": "security/network_policy.json",
           "covered_scripts": [
             "scripts/check_update.py",
-            "scripts/github_benchmark_scan.py"
+            "scripts/github_benchmark_scan.py",
+            "scripts/provider_output_eval_runner.py"
           ],
           "missing_scripts": [],
           "mismatches": []
         },
         "help_smoke": {
           "enabled": true,
-          "checked_count": 59,
+          "checked_count": 86,
           "failed_count": 0,
           "failed_scripts": []
         },
         "trust_summary": {
           "secret_findings": 0,
-          "network_script_count": 2,
-          "file_write_script_count": 47,
-          "subprocess_script_count": 7,
+          "network_script_count": 3,
+          "file_write_script_count": 73,
+          "subprocess_script_count": 12,
           "interactive_script_count": 0,
           "help_smoke_failed_count": 0
         }
@@ -1488,9 +1812,9 @@
           "subprocess"
         ],
         "capability_counts": {
-          "network": 2,
-          "file_write": 47,
-          "subprocess": 7,
+          "network": 3,
+          "file_write": 73,
+          "subprocess": 12,
           "interactive": 0
         },
         "evidence": "reports/security_trust_report.json",
@@ -1502,17 +1826,17 @@
         "native_surface": "Claude-compatible neutral source folder with adapter notes",
         "activation": {
           "policy": "Use SKILL.md frontmatter description as the primary activation contract and adapter.json for review metadata.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
         "resources": {
           "strategy": "Preserve the source tree directly; write target notes in targets/claude/README.md.",
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           },
           "generated_files": [
             "targets/claude/adapter.json",
@@ -1521,7 +1845,7 @@
         },
         "scripts": {
           "strategy": "Scripts remain local package resources and must be reviewed through trust and permission reports before use.",
-          "script_count": 66,
+          "script_count": 153,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -1608,17 +1932,18 @@
           "openai",
           "claude",
           "generic",
-          "agent-skills-compatible"
+          "agent-skills-compatible",
+          "vscode"
         ]
       },
       "compiled_contract": {
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -1654,21 +1979,18 @@
         },
         "workflow": {
           "steps": [
-            "Decide whether the request should become a skill and choose the lightest fit.",
-            "Capture job, output, exclusions, constraints, and standards.",
-            "Run reference scan: external benchmarks first, user references second, local fit third; surface only uncertainty or conflict.",
-            "Write the `description` early and test route quality before expanding the package.",
-            "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.",
-            "Add only folders and gates that earn their keep.",
-            "Surface the top three next iteration directions."
+            "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
+            "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
+            "Scan references in order: external benchmark, user source, local fit; surface only uncertainty or conflict.",
+            "Write `description` early, test route quality, then add only earned folders and gates.",
+            "Add output-risk, artifact-design, prompt-quality, system-model, and next directions only when useful."
           ],
           "decision_points": [
             "Route by frontmatter `description`.",
             "Keep `SKILL.md` lean; put guidance in `references/`, logic in `scripts/`, and evidence in `reports/`.",
             "Use the lightest reliable process.",
-            "`Scaffold`: exploratory or personal.",
-            "`Production`: team reuse.",
-            "`Library`: shared infrastructure.",
+            "`Scaffold`: exploratory/personal. `Production`: team reuse. `Library`: shared infrastructure. `Governed`: high-trust, policy-sensitive, or release-critical.",
+            "Rules: [Method](references/skill-engineering-method.md), [Operating Modes](references/operating-modes.md), [Resource Boundaries](references/resource-boundaries.md).",
             "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
             "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
             "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
@@ -1690,6 +2012,7 @@
           "references": [
             "references/artifact-design-doctrine.md",
             "references/authoring-discipline.md",
+            "references/autonomous-adaptation.md",
             "references/distribution-registry-method.md",
             "references/eval-playbook.md",
             "references/gate-selection.md",
@@ -1717,39 +2040,71 @@
             "references/skill-atlas-method.md",
             "references/skill-engineering-method.md",
             "references/skill-ir-method.md",
+            "references/skillops-decision-policy.md",
             "references/systems-thinking-doctrine.md",
             "references/telemetry-drift-method.md",
-            "references/trust-security-method.md"
+            "references/trust-security-method.md",
+            "references/user-memory-policy.md"
           ],
           "scripts": [
+            "scripts/adaptation_patch_safety.py",
+            "scripts/adaptation_report_contracts.py",
             "scripts/adjudicate_output_review.py",
+            "scripts/apply_adaptation.py",
+            "scripts/benchmark_release_lock.py",
             "scripts/build_confusion_matrix.py",
             "scripts/build_skill_atlas.py",
+            "scripts/build_skill_atlas_layout.py",
+            "scripts/build_skill_atlas_opportunities.py",
             "scripts/check_update.py",
             "scripts/ci_test.py",
             "scripts/collect_feedback.py",
             "scripts/compile_skill.py",
+            "scripts/compile_skill_targets.py",
             "scripts/context_sizer.py",
             "scripts/create_iteration_snapshot.py",
             "scripts/cross_packager.py",
+            "scripts/cross_packager_contracts.py",
+            "scripts/description_optimizer_reporting.py",
             "scripts/diff_eval.py",
+            "scripts/emit_telemetry_event.py",
+            "scripts/evidence_consistency_artifact_roles.py",
+            "scripts/evidence_consistency_core.py",
+            "scripts/evidence_consistency_phase_queue.py",
+            "scripts/evidence_consistency_release.py",
+            "scripts/evidence_consistency_skill_os2_review.py",
+            "scripts/evidence_consistency_world_class.py",
             "scripts/export_skill_ir.py",
             "scripts/github_benchmark_scan.py",
             "scripts/governance_check.py",
+            "scripts/html_rendering.py",
+            "scripts/import_output_review_decisions.py",
+            "scripts/import_telemetry_events.py",
             "scripts/init_skill.py",
             "scripts/judge_blind_eval.py",
             "scripts/lint_skill.py",
             "scripts/local_output_eval_runner.py",
             "scripts/optimize_description.py",
+            "scripts/output_review_privacy.py",
+            "scripts/prepare_output_review_kit.py",
+            "scripts/prepare_world_class_submission_kit.py",
             "scripts/probe_runtime_permissions.py",
             "scripts/promotion_checker.py",
+            "scripts/propose_adaptation.py",
+            "scripts/provider_output_eval_runner.py",
+            "scripts/python_compat_check.py",
+            "scripts/reference_synthesis_markdown.py",
             "scripts/registry_audit.py",
             "scripts/render_adoption_drift_report.py",
+            "scripts/render_architecture_maintainability.py",
             "scripts/render_artifact_design_profile.py",
             "scripts/render_baseline_compare.py",
+            "scripts/render_benchmark_reproducibility.py",
             "scripts/render_context_reports.py",
+            "scripts/render_daily_skillops_report.py",
             "scripts/render_description_drift_history.py",
             "scripts/render_eval_dashboard.py",
+            "scripts/render_evidence_consistency.py",
             "scripts/render_intent_confidence.py",
             "scripts/render_intent_dialogue.py",
             "scripts/render_iteration_directions.py",
@@ -1764,32 +2119,93 @@
             "scripts/render_review_studio.py",
             "scripts/render_review_viewer.py",
             "scripts/render_review_waivers.py",
+            "scripts/render_skill_interpretation.py",
+            "scripts/render_skill_os2_audit.py",
+            "scripts/render_skill_os2_coverage.py",
             "scripts/render_skill_overview.py",
             "scripts/render_social_preview.py",
             "scripts/render_system_model.py",
+            "scripts/render_telemetry_hook_recipes.py",
+            "scripts/render_weekly_curator_report.py",
+            "scripts/render_world_class_claim_guard.py",
+            "scripts/render_world_class_evidence_intake.py",
+            "scripts/render_world_class_evidence_ledger.py",
+            "scripts/render_world_class_evidence_plan.py",
+            "scripts/render_world_class_operator_runbook.py",
+            "scripts/render_world_class_preflight.py",
+            "scripts/render_world_class_submission_review.py",
             "scripts/resource_boundary_check.py",
+            "scripts/review_studio_action_evidence.py",
+            "scripts/review_studio_actions.py",
+            "scripts/review_studio_data.py",
             "scripts/review_studio_formatting.py",
+            "scripts/review_studio_gate_contract.py",
+            "scripts/review_studio_gate_helpers.py",
+            "scripts/review_studio_gates.py",
             "scripts/review_studio_layout.py",
+            "scripts/review_studio_output_review.py",
+            "scripts/review_studio_panels.py",
+            "scripts/review_studio_skillops.py",
+            "scripts/review_studio_waivers.py",
+            "scripts/review_studio_world_class.py",
+            "scripts/review_viewer_data.py",
             "scripts/run_conformance_suite.py",
             "scripts/run_description_optimization_suite.py",
             "scripts/run_eval_suite.py",
             "scripts/run_output_eval.py",
             "scripts/run_output_execution.py",
             "scripts/simulate_install.py",
+            "scripts/skill_ir_paths.py",
+            "scripts/skill_os2_coverage_markdown.py",
             "scripts/skill_report_charts.py",
+            "scripts/skill_report_i18n.py",
             "scripts/skill_report_layout.py",
             "scripts/skill_report_metrics.py",
             "scripts/skill_report_model.py",
+            "scripts/skill_report_sections.py",
+            "scripts/skill_report_sources.py",
+            "scripts/skill_report_world_class.py",
+            "scripts/skillops_opportunity.py",
+            "scripts/summarize_user_signals.py",
             "scripts/sync_local_install.py",
+            "scripts/telemetry_native_host.py",
             "scripts/trigger_eval.py",
             "scripts/trust_check.py",
+            "scripts/trust_check_scripts.py",
             "scripts/upgrade_check.py",
             "scripts/validate_skill.py",
             "scripts/verify_package.py",
+            "scripts/world_class_evidence_contract.py",
+            "scripts/world_class_human_evidence.py",
+            "scripts/world_class_native_permission_evidence.py",
+            "scripts/world_class_native_telemetry_evidence.py",
+            "scripts/world_class_operator_runbook_coordination.py",
+            "scripts/world_class_phase_queue.py",
+            "scripts/world_class_preflight_layout.py",
+            "scripts/world_class_preflight_markdown.py",
+            "scripts/world_class_provider_evidence.py",
+            "scripts/world_class_repair_checklist.py",
+            "scripts/world_class_source_checks.py",
+            "scripts/world_class_submission_kit_rendering.py",
+            "scripts/world_class_submission_matrix.py",
             "scripts/yao.py",
-            "scripts/yao_cli_config.py"
+            "scripts/yao_cli_adaptation_commands.py",
+            "scripts/yao_cli_config.py",
+            "scripts/yao_cli_create_commands.py",
+            "scripts/yao_cli_distribution_commands.py",
+            "scripts/yao_cli_output_commands.py",
+            "scripts/yao_cli_parser.py",
+            "scripts/yao_cli_parser_evidence.py",
+            "scripts/yao_cli_parser_operations.py",
+            "scripts/yao_cli_report_commands.py",
+            "scripts/yao_cli_runtime.py",
+            "scripts/yao_cli_telemetry.py"
           ],
           "assets": [
+            "assets/review-studio.css",
+            "assets/review-viewer.css",
+            "assets/skill-overview.css",
+            "assets/skill-overview.js",
             "templates/basic_skill.md.j2",
             "templates/complex_skill.md.j2"
           ],
@@ -1829,6 +2245,8 @@
             "reports/security_trust_report.md",
             "reports/runtime_permission_probes.json",
             "reports/runtime_permission_probes.md",
+            "reports/telemetry_hook_recipes.json",
+            "reports/telemetry_hook_recipes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html",
             "reports/skill-os-2-review.md",
@@ -1837,15 +2255,16 @@
             "reports/governance_score.json"
           ],
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           }
         },
         "eval_plan": {
           "trigger": [
             "evals/README.md",
+            "evals/adaptation/user_signals.example.jsonl",
             "evals/adversarial/trigger_cases.json",
             "evals/blind_holdout/trigger_cases.json",
             "evals/confusion/route_cases.json",
@@ -1882,7 +2301,7 @@
           ],
           "baseline": "without_skill",
           "counts": {
-            "trigger": 26,
+            "trigger": 27,
             "output": 3,
             "adversarial": 1,
             "baseline": 1
@@ -1916,7 +2335,8 @@
           "adapter_targets": [
             "openai",
             "claude",
-            "generic"
+            "generic",
+            "vscode"
           ],
           "canonical_format": "agent-skills"
         },
@@ -1933,18 +2353,20 @@
           "capabilities": {
             "network": {
               "required": true,
-              "script_count": 2,
+              "script_count": 3,
               "scripts": [
                 "scripts/check_update.py",
-                "scripts/github_benchmark_scan.py"
+                "scripts/github_benchmark_scan.py",
+                "scripts/provider_output_eval_runner.py"
               ],
               "review_reason": "Outbound hosts must match security/network_policy.json."
             },
             "file_write": {
               "required": true,
-              "script_count": 47,
+              "script_count": 73,
               "scripts": [
                 "scripts/adjudicate_output_review.py",
+                "scripts/apply_adaptation.py",
                 "scripts/build_confusion_matrix.py",
                 "scripts/build_skill_atlas.py",
                 "scripts/check_update.py",
@@ -1953,18 +2375,29 @@
                 "scripts/compile_skill.py",
                 "scripts/create_iteration_snapshot.py",
                 "scripts/cross_packager.py",
+                "scripts/emit_telemetry_event.py",
                 "scripts/export_skill_ir.py",
                 "scripts/github_benchmark_scan.py",
+                "scripts/import_output_review_decisions.py",
+                "scripts/import_telemetry_events.py",
                 "scripts/init_skill.py",
+                "scripts/prepare_output_review_kit.py",
+                "scripts/prepare_world_class_submission_kit.py",
                 "scripts/probe_runtime_permissions.py",
                 "scripts/promotion_checker.py",
+                "scripts/propose_adaptation.py",
+                "scripts/python_compat_check.py",
                 "scripts/registry_audit.py",
                 "scripts/render_adoption_drift_report.py",
+                "scripts/render_architecture_maintainability.py",
                 "scripts/render_artifact_design_profile.py",
                 "scripts/render_baseline_compare.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_context_reports.py",
+                "scripts/render_daily_skillops_report.py",
                 "scripts/render_description_drift_history.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/render_intent_confidence.py",
                 "scripts/render_intent_dialogue.py",
                 "scripts/render_iteration_directions.py",
@@ -1979,15 +2412,29 @@
                 "scripts/render_review_studio.py",
                 "scripts/render_review_viewer.py",
                 "scripts/render_review_waivers.py",
+                "scripts/render_skill_interpretation.py",
+                "scripts/render_skill_os2_audit.py",
+                "scripts/render_skill_os2_coverage.py",
                 "scripts/render_skill_overview.py",
                 "scripts/render_social_preview.py",
                 "scripts/render_system_model.py",
+                "scripts/render_telemetry_hook_recipes.py",
+                "scripts/render_weekly_curator_report.py",
+                "scripts/render_world_class_claim_guard.py",
+                "scripts/render_world_class_evidence_intake.py",
+                "scripts/render_world_class_evidence_ledger.py",
+                "scripts/render_world_class_evidence_plan.py",
+                "scripts/render_world_class_operator_runbook.py",
+                "scripts/render_world_class_preflight.py",
+                "scripts/render_world_class_submission_review.py",
                 "scripts/run_conformance_suite.py",
                 "scripts/run_description_optimization_suite.py",
                 "scripts/run_output_eval.py",
                 "scripts/run_output_execution.py",
                 "scripts/simulate_install.py",
+                "scripts/summarize_user_signals.py",
                 "scripts/sync_local_install.py",
+                "scripts/telemetry_native_host.py",
                 "scripts/trust_check.py",
                 "scripts/upgrade_check.py",
                 "scripts/verify_package.py"
@@ -1996,15 +2443,20 @@
             },
             "subprocess": {
               "required": true,
-              "script_count": 7,
+              "script_count": 12,
               "scripts": [
+                "scripts/apply_adaptation.py",
+                "scripts/benchmark_release_lock.py",
                 "scripts/ci_test.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/run_eval_suite.py",
                 "scripts/run_output_execution.py",
                 "scripts/sync_local_install.py",
                 "scripts/trust_check.py",
-                "scripts/yao.py"
+                "scripts/yao.py",
+                "scripts/yao_cli_runtime.py"
               ],
               "review_reason": "Scripts spawn local commands and need operator review."
             },
@@ -2019,22 +2471,23 @@
             "source": "security/network_policy.json",
             "covered_scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "missing_scripts": [],
             "mismatches": []
           },
           "help_smoke": {
             "enabled": true,
-            "checked_count": 59,
+            "checked_count": 86,
             "failed_count": 0,
             "failed_scripts": []
           },
           "trust_summary": {
             "secret_findings": 0,
-            "network_script_count": 2,
-            "file_write_script_count": 47,
-            "subprocess_script_count": 7,
+            "network_script_count": 3,
+            "file_write_script_count": 73,
+            "subprocess_script_count": 12,
             "interactive_script_count": 0,
             "help_smoke_failed_count": 0
           }
@@ -2054,9 +2507,9 @@
             "subprocess"
           ],
           "capability_counts": {
-            "network": 2,
-            "file_write": 47,
-            "subprocess": 7,
+            "network": 3,
+            "file_write": 73,
+            "subprocess": 12,
             "interactive": 0
           },
           "evidence": "reports/security_trust_report.json",
@@ -2068,17 +2521,17 @@
           "native_surface": "Agent Skills compatible neutral package",
           "activation": {
             "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
           "resources": {
             "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
             "counts": {
-              "references": 32,
-              "scripts": 66,
-              "assets": 2,
-              "reports": 41
+              "references": 35,
+              "scripts": 153,
+              "assets": 6,
+              "reports": 43
             },
             "generated_files": [
               "targets/generic/adapter.json"
@@ -2086,7 +2539,7 @@
           },
           "scripts": {
             "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-            "script_count": 66,
+            "script_count": 153,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -2151,18 +2604,20 @@
         "capabilities": {
           "network": {
             "required": true,
-            "script_count": 2,
+            "script_count": 3,
             "scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "review_reason": "Outbound hosts must match security/network_policy.json."
           },
           "file_write": {
             "required": true,
-            "script_count": 47,
+            "script_count": 73,
             "scripts": [
               "scripts/adjudicate_output_review.py",
+              "scripts/apply_adaptation.py",
               "scripts/build_confusion_matrix.py",
               "scripts/build_skill_atlas.py",
               "scripts/check_update.py",
@@ -2171,18 +2626,29 @@
               "scripts/compile_skill.py",
               "scripts/create_iteration_snapshot.py",
               "scripts/cross_packager.py",
+              "scripts/emit_telemetry_event.py",
               "scripts/export_skill_ir.py",
               "scripts/github_benchmark_scan.py",
+              "scripts/import_output_review_decisions.py",
+              "scripts/import_telemetry_events.py",
               "scripts/init_skill.py",
+              "scripts/prepare_output_review_kit.py",
+              "scripts/prepare_world_class_submission_kit.py",
               "scripts/probe_runtime_permissions.py",
               "scripts/promotion_checker.py",
+              "scripts/propose_adaptation.py",
+              "scripts/python_compat_check.py",
               "scripts/registry_audit.py",
               "scripts/render_adoption_drift_report.py",
+              "scripts/render_architecture_maintainability.py",
               "scripts/render_artifact_design_profile.py",
               "scripts/render_baseline_compare.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_context_reports.py",
+              "scripts/render_daily_skillops_report.py",
               "scripts/render_description_drift_history.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/render_intent_confidence.py",
               "scripts/render_intent_dialogue.py",
               "scripts/render_iteration_directions.py",
@@ -2197,15 +2663,29 @@
               "scripts/render_review_studio.py",
               "scripts/render_review_viewer.py",
               "scripts/render_review_waivers.py",
+              "scripts/render_skill_interpretation.py",
+              "scripts/render_skill_os2_audit.py",
+              "scripts/render_skill_os2_coverage.py",
               "scripts/render_skill_overview.py",
               "scripts/render_social_preview.py",
               "scripts/render_system_model.py",
+              "scripts/render_telemetry_hook_recipes.py",
+              "scripts/render_weekly_curator_report.py",
+              "scripts/render_world_class_claim_guard.py",
+              "scripts/render_world_class_evidence_intake.py",
+              "scripts/render_world_class_evidence_ledger.py",
+              "scripts/render_world_class_evidence_plan.py",
+              "scripts/render_world_class_operator_runbook.py",
+              "scripts/render_world_class_preflight.py",
+              "scripts/render_world_class_submission_review.py",
               "scripts/run_conformance_suite.py",
               "scripts/run_description_optimization_suite.py",
               "scripts/run_output_eval.py",
               "scripts/run_output_execution.py",
               "scripts/simulate_install.py",
+              "scripts/summarize_user_signals.py",
               "scripts/sync_local_install.py",
+              "scripts/telemetry_native_host.py",
               "scripts/trust_check.py",
               "scripts/upgrade_check.py",
               "scripts/verify_package.py"
@@ -2214,15 +2694,20 @@
           },
           "subprocess": {
             "required": true,
-            "script_count": 7,
+            "script_count": 12,
             "scripts": [
+              "scripts/apply_adaptation.py",
+              "scripts/benchmark_release_lock.py",
               "scripts/ci_test.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/run_eval_suite.py",
               "scripts/run_output_execution.py",
               "scripts/sync_local_install.py",
               "scripts/trust_check.py",
-              "scripts/yao.py"
+              "scripts/yao.py",
+              "scripts/yao_cli_runtime.py"
             ],
             "review_reason": "Scripts spawn local commands and need operator review."
           },
@@ -2237,22 +2722,23 @@
           "source": "security/network_policy.json",
           "covered_scripts": [
             "scripts/check_update.py",
-            "scripts/github_benchmark_scan.py"
+            "scripts/github_benchmark_scan.py",
+            "scripts/provider_output_eval_runner.py"
           ],
           "missing_scripts": [],
           "mismatches": []
         },
         "help_smoke": {
           "enabled": true,
-          "checked_count": 59,
+          "checked_count": 86,
           "failed_count": 0,
           "failed_scripts": []
         },
         "trust_summary": {
           "secret_findings": 0,
-          "network_script_count": 2,
-          "file_write_script_count": 47,
-          "subprocess_script_count": 7,
+          "network_script_count": 3,
+          "file_write_script_count": 73,
+          "subprocess_script_count": 12,
           "interactive_script_count": 0,
           "help_smoke_failed_count": 0
         }
@@ -2270,9 +2756,9 @@
           "subprocess"
         ],
         "capability_counts": {
-          "network": 2,
-          "file_write": 47,
-          "subprocess": 7,
+          "network": 3,
+          "file_write": 73,
+          "subprocess": 12,
           "interactive": 0
         },
         "evidence": "reports/security_trust_report.json",
@@ -2284,17 +2770,17 @@
         "native_surface": "Agent Skills compatible neutral package",
         "activation": {
           "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
         "resources": {
           "strategy": "Preserve references, scripts, assets, evals, reports, and adapter metadata as relative package resources.",
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           },
           "generated_files": [
             "targets/generic/adapter.json"
@@ -2302,7 +2788,7 @@
         },
         "scripts": {
           "strategy": "Expose script and permission metadata for downstream clients or installers to enforce.",
-          "script_count": 66,
+          "script_count": 153,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -2381,17 +2867,18 @@
           "openai",
           "claude",
           "generic",
-          "agent-skills-compatible"
+          "agent-skills-compatible",
+          "vscode"
         ]
       },
       "compiled_contract": {
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -2427,21 +2914,18 @@
         },
         "workflow": {
           "steps": [
-            "Decide whether the request should become a skill and choose the lightest fit.",
-            "Capture job, output, exclusions, constraints, and standards.",
-            "Run reference scan: external benchmarks first, user references second, local fit third; surface only uncertainty or conflict.",
-            "Write the `description` early and test route quality before expanding the package.",
-            "Add output-risk, artifact-design, prompt-quality, and system-model reports only when they matter.",
-            "Add only folders and gates that earn their keep.",
-            "Surface the top three next iteration directions."
+            "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
+            "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
+            "Scan references in order: external benchmark, user source, local fit; surface only uncertainty or conflict.",
+            "Write `description` early, test route quality, then add only earned folders and gates.",
+            "Add output-risk, artifact-design, prompt-quality, system-model, and next directions only when useful."
           ],
           "decision_points": [
             "Route by frontmatter `description`.",
             "Keep `SKILL.md` lean; put guidance in `references/`, logic in `scripts/`, and evidence in `reports/`.",
             "Use the lightest reliable process.",
-            "`Scaffold`: exploratory or personal.",
-            "`Production`: team reuse.",
-            "`Library`: shared infrastructure.",
+            "`Scaffold`: exploratory/personal. `Production`: team reuse. `Library`: shared infrastructure. `Governed`: high-trust, policy-sensitive, or release-critical.",
+            "Rules: [Method](references/skill-engineering-method.md), [Operating Modes](references/operating-modes.md), [Resource Boundaries](references/resource-boundaries.md).",
             "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
             "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
             "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
@@ -2463,6 +2947,7 @@
           "references": [
             "references/artifact-design-doctrine.md",
             "references/authoring-discipline.md",
+            "references/autonomous-adaptation.md",
             "references/distribution-registry-method.md",
             "references/eval-playbook.md",
             "references/gate-selection.md",
@@ -2490,39 +2975,71 @@
             "references/skill-atlas-method.md",
             "references/skill-engineering-method.md",
             "references/skill-ir-method.md",
+            "references/skillops-decision-policy.md",
             "references/systems-thinking-doctrine.md",
             "references/telemetry-drift-method.md",
-            "references/trust-security-method.md"
+            "references/trust-security-method.md",
+            "references/user-memory-policy.md"
           ],
           "scripts": [
+            "scripts/adaptation_patch_safety.py",
+            "scripts/adaptation_report_contracts.py",
             "scripts/adjudicate_output_review.py",
+            "scripts/apply_adaptation.py",
+            "scripts/benchmark_release_lock.py",
             "scripts/build_confusion_matrix.py",
             "scripts/build_skill_atlas.py",
+            "scripts/build_skill_atlas_layout.py",
+            "scripts/build_skill_atlas_opportunities.py",
             "scripts/check_update.py",
             "scripts/ci_test.py",
             "scripts/collect_feedback.py",
             "scripts/compile_skill.py",
+            "scripts/compile_skill_targets.py",
             "scripts/context_sizer.py",
             "scripts/create_iteration_snapshot.py",
             "scripts/cross_packager.py",
+            "scripts/cross_packager_contracts.py",
+            "scripts/description_optimizer_reporting.py",
             "scripts/diff_eval.py",
+            "scripts/emit_telemetry_event.py",
+            "scripts/evidence_consistency_artifact_roles.py",
+            "scripts/evidence_consistency_core.py",
+            "scripts/evidence_consistency_phase_queue.py",
+            "scripts/evidence_consistency_release.py",
+            "scripts/evidence_consistency_skill_os2_review.py",
+            "scripts/evidence_consistency_world_class.py",
             "scripts/export_skill_ir.py",
             "scripts/github_benchmark_scan.py",
             "scripts/governance_check.py",
+            "scripts/html_rendering.py",
+            "scripts/import_output_review_decisions.py",
+            "scripts/import_telemetry_events.py",
             "scripts/init_skill.py",
             "scripts/judge_blind_eval.py",
             "scripts/lint_skill.py",
             "scripts/local_output_eval_runner.py",
             "scripts/optimize_description.py",
+            "scripts/output_review_privacy.py",
+            "scripts/prepare_output_review_kit.py",
+            "scripts/prepare_world_class_submission_kit.py",
             "scripts/probe_runtime_permissions.py",
             "scripts/promotion_checker.py",
+            "scripts/propose_adaptation.py",
+            "scripts/provider_output_eval_runner.py",
+            "scripts/python_compat_check.py",
+            "scripts/reference_synthesis_markdown.py",
             "scripts/registry_audit.py",
             "scripts/render_adoption_drift_report.py",
+            "scripts/render_architecture_maintainability.py",
             "scripts/render_artifact_design_profile.py",
             "scripts/render_baseline_compare.py",
+            "scripts/render_benchmark_reproducibility.py",
             "scripts/render_context_reports.py",
+            "scripts/render_daily_skillops_report.py",
             "scripts/render_description_drift_history.py",
             "scripts/render_eval_dashboard.py",
+            "scripts/render_evidence_consistency.py",
             "scripts/render_intent_confidence.py",
             "scripts/render_intent_dialogue.py",
             "scripts/render_iteration_directions.py",
@@ -2537,32 +3054,93 @@
             "scripts/render_review_studio.py",
             "scripts/render_review_viewer.py",
             "scripts/render_review_waivers.py",
+            "scripts/render_skill_interpretation.py",
+            "scripts/render_skill_os2_audit.py",
+            "scripts/render_skill_os2_coverage.py",
             "scripts/render_skill_overview.py",
             "scripts/render_social_preview.py",
             "scripts/render_system_model.py",
+            "scripts/render_telemetry_hook_recipes.py",
+            "scripts/render_weekly_curator_report.py",
+            "scripts/render_world_class_claim_guard.py",
+            "scripts/render_world_class_evidence_intake.py",
+            "scripts/render_world_class_evidence_ledger.py",
+            "scripts/render_world_class_evidence_plan.py",
+            "scripts/render_world_class_operator_runbook.py",
+            "scripts/render_world_class_preflight.py",
+            "scripts/render_world_class_submission_review.py",
             "scripts/resource_boundary_check.py",
+            "scripts/review_studio_action_evidence.py",
+            "scripts/review_studio_actions.py",
+            "scripts/review_studio_data.py",
             "scripts/review_studio_formatting.py",
+            "scripts/review_studio_gate_contract.py",
+            "scripts/review_studio_gate_helpers.py",
+            "scripts/review_studio_gates.py",
             "scripts/review_studio_layout.py",
+            "scripts/review_studio_output_review.py",
+            "scripts/review_studio_panels.py",
+            "scripts/review_studio_skillops.py",
+            "scripts/review_studio_waivers.py",
+            "scripts/review_studio_world_class.py",
+            "scripts/review_viewer_data.py",
             "scripts/run_conformance_suite.py",
             "scripts/run_description_optimization_suite.py",
             "scripts/run_eval_suite.py",
             "scripts/run_output_eval.py",
             "scripts/run_output_execution.py",
             "scripts/simulate_install.py",
+            "scripts/skill_ir_paths.py",
+            "scripts/skill_os2_coverage_markdown.py",
             "scripts/skill_report_charts.py",
+            "scripts/skill_report_i18n.py",
             "scripts/skill_report_layout.py",
             "scripts/skill_report_metrics.py",
             "scripts/skill_report_model.py",
+            "scripts/skill_report_sections.py",
+            "scripts/skill_report_sources.py",
+            "scripts/skill_report_world_class.py",
+            "scripts/skillops_opportunity.py",
+            "scripts/summarize_user_signals.py",
             "scripts/sync_local_install.py",
+            "scripts/telemetry_native_host.py",
             "scripts/trigger_eval.py",
             "scripts/trust_check.py",
+            "scripts/trust_check_scripts.py",
             "scripts/upgrade_check.py",
             "scripts/validate_skill.py",
             "scripts/verify_package.py",
+            "scripts/world_class_evidence_contract.py",
+            "scripts/world_class_human_evidence.py",
+            "scripts/world_class_native_permission_evidence.py",
+            "scripts/world_class_native_telemetry_evidence.py",
+            "scripts/world_class_operator_runbook_coordination.py",
+            "scripts/world_class_phase_queue.py",
+            "scripts/world_class_preflight_layout.py",
+            "scripts/world_class_preflight_markdown.py",
+            "scripts/world_class_provider_evidence.py",
+            "scripts/world_class_repair_checklist.py",
+            "scripts/world_class_source_checks.py",
+            "scripts/world_class_submission_kit_rendering.py",
+            "scripts/world_class_submission_matrix.py",
             "scripts/yao.py",
-            "scripts/yao_cli_config.py"
+            "scripts/yao_cli_adaptation_commands.py",
+            "scripts/yao_cli_config.py",
+            "scripts/yao_cli_create_commands.py",
+            "scripts/yao_cli_distribution_commands.py",
+            "scripts/yao_cli_output_commands.py",
+            "scripts/yao_cli_parser.py",
+            "scripts/yao_cli_parser_evidence.py",
+            "scripts/yao_cli_parser_operations.py",
+            "scripts/yao_cli_report_commands.py",
+            "scripts/yao_cli_runtime.py",
+            "scripts/yao_cli_telemetry.py"
           ],
           "assets": [
+            "assets/review-studio.css",
+            "assets/review-viewer.css",
+            "assets/skill-overview.css",
+            "assets/skill-overview.js",
             "templates/basic_skill.md.j2",
             "templates/complex_skill.md.j2"
           ],
@@ -2602,6 +3180,8 @@
             "reports/security_trust_report.md",
             "reports/runtime_permission_probes.json",
             "reports/runtime_permission_probes.md",
+            "reports/telemetry_hook_recipes.json",
+            "reports/telemetry_hook_recipes.md",
             "reports/skill_atlas.json",
             "reports/skill_atlas.html",
             "reports/skill-os-2-review.md",
@@ -2610,15 +3190,16 @@
             "reports/governance_score.json"
           ],
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           }
         },
         "eval_plan": {
           "trigger": [
             "evals/README.md",
+            "evals/adaptation/user_signals.example.jsonl",
             "evals/adversarial/trigger_cases.json",
             "evals/blind_holdout/trigger_cases.json",
             "evals/confusion/route_cases.json",
@@ -2655,7 +3236,7 @@
           ],
           "baseline": "without_skill",
           "counts": {
-            "trigger": 26,
+            "trigger": 27,
             "output": 3,
             "adversarial": 1,
             "baseline": 1
@@ -2689,7 +3270,8 @@
           "adapter_targets": [
             "openai",
             "claude",
-            "generic"
+            "generic",
+            "vscode"
           ],
           "canonical_format": "agent-skills"
         },
@@ -2706,18 +3288,20 @@
           "capabilities": {
             "network": {
               "required": true,
-              "script_count": 2,
+              "script_count": 3,
               "scripts": [
                 "scripts/check_update.py",
-                "scripts/github_benchmark_scan.py"
+                "scripts/github_benchmark_scan.py",
+                "scripts/provider_output_eval_runner.py"
               ],
               "review_reason": "Outbound hosts must match security/network_policy.json."
             },
             "file_write": {
               "required": true,
-              "script_count": 47,
+              "script_count": 73,
               "scripts": [
                 "scripts/adjudicate_output_review.py",
+                "scripts/apply_adaptation.py",
                 "scripts/build_confusion_matrix.py",
                 "scripts/build_skill_atlas.py",
                 "scripts/check_update.py",
@@ -2726,18 +3310,29 @@
                 "scripts/compile_skill.py",
                 "scripts/create_iteration_snapshot.py",
                 "scripts/cross_packager.py",
+                "scripts/emit_telemetry_event.py",
                 "scripts/export_skill_ir.py",
                 "scripts/github_benchmark_scan.py",
+                "scripts/import_output_review_decisions.py",
+                "scripts/import_telemetry_events.py",
                 "scripts/init_skill.py",
+                "scripts/prepare_output_review_kit.py",
+                "scripts/prepare_world_class_submission_kit.py",
                 "scripts/probe_runtime_permissions.py",
                 "scripts/promotion_checker.py",
+                "scripts/propose_adaptation.py",
+                "scripts/python_compat_check.py",
                 "scripts/registry_audit.py",
                 "scripts/render_adoption_drift_report.py",
+                "scripts/render_architecture_maintainability.py",
                 "scripts/render_artifact_design_profile.py",
                 "scripts/render_baseline_compare.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_context_reports.py",
+                "scripts/render_daily_skillops_report.py",
                 "scripts/render_description_drift_history.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/render_intent_confidence.py",
                 "scripts/render_intent_dialogue.py",
                 "scripts/render_iteration_directions.py",
@@ -2752,15 +3347,29 @@
                 "scripts/render_review_studio.py",
                 "scripts/render_review_viewer.py",
                 "scripts/render_review_waivers.py",
+                "scripts/render_skill_interpretation.py",
+                "scripts/render_skill_os2_audit.py",
+                "scripts/render_skill_os2_coverage.py",
                 "scripts/render_skill_overview.py",
                 "scripts/render_social_preview.py",
                 "scripts/render_system_model.py",
+                "scripts/render_telemetry_hook_recipes.py",
+                "scripts/render_weekly_curator_report.py",
+                "scripts/render_world_class_claim_guard.py",
+                "scripts/render_world_class_evidence_intake.py",
+                "scripts/render_world_class_evidence_ledger.py",
+                "scripts/render_world_class_evidence_plan.py",
+                "scripts/render_world_class_operator_runbook.py",
+                "scripts/render_world_class_preflight.py",
+                "scripts/render_world_class_submission_review.py",
                 "scripts/run_conformance_suite.py",
                 "scripts/run_description_optimization_suite.py",
                 "scripts/run_output_eval.py",
                 "scripts/run_output_execution.py",
                 "scripts/simulate_install.py",
+                "scripts/summarize_user_signals.py",
                 "scripts/sync_local_install.py",
+                "scripts/telemetry_native_host.py",
                 "scripts/trust_check.py",
                 "scripts/upgrade_check.py",
                 "scripts/verify_package.py"
@@ -2769,15 +3378,20 @@
             },
             "subprocess": {
               "required": true,
-              "script_count": 7,
+              "script_count": 12,
               "scripts": [
+                "scripts/apply_adaptation.py",
+                "scripts/benchmark_release_lock.py",
                 "scripts/ci_test.py",
+                "scripts/render_benchmark_reproducibility.py",
                 "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
                 "scripts/run_eval_suite.py",
                 "scripts/run_output_execution.py",
                 "scripts/sync_local_install.py",
                 "scripts/trust_check.py",
-                "scripts/yao.py"
+                "scripts/yao.py",
+                "scripts/yao_cli_runtime.py"
               ],
               "review_reason": "Scripts spawn local commands and need operator review."
             },
@@ -2792,22 +3406,23 @@
             "source": "security/network_policy.json",
             "covered_scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "missing_scripts": [],
             "mismatches": []
           },
           "help_smoke": {
             "enabled": true,
-            "checked_count": 59,
+            "checked_count": 86,
             "failed_count": 0,
             "failed_scripts": []
           },
           "trust_summary": {
             "secret_findings": 0,
-            "network_script_count": 2,
-            "file_write_script_count": 47,
-            "subprocess_script_count": 7,
+            "network_script_count": 3,
+            "file_write_script_count": 73,
+            "subprocess_script_count": 12,
             "interactive_script_count": 0,
             "help_smoke_failed_count": 0
           }
@@ -2827,9 +3442,9 @@
             "subprocess"
           ],
           "capability_counts": {
-            "network": 2,
-            "file_write": 47,
-            "subprocess": 7,
+            "network": 3,
+            "file_write": 73,
+            "subprocess": 12,
             "interactive": 0
           },
           "evidence": "reports/security_trust_report.json",
@@ -2841,17 +3456,17 @@
           "native_surface": "Agent Skills standard source tree",
           "activation": {
             "policy": "Use SKILL.md frontmatter name and description for progressive disclosure.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
           "resources": {
             "strategy": "Keep optional directories as relative resources next to SKILL.md.",
             "counts": {
-              "references": 32,
-              "scripts": 66,
-              "assets": 2,
-              "reports": 41
+              "references": 35,
+              "scripts": 153,
+              "assets": 6,
+              "reports": 43
             },
             "generated_files": [
               "SKILL.md",
@@ -2860,7 +3475,7 @@
           },
           "scripts": {
             "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-            "script_count": 66,
+            "script_count": 153,
             "help_smoke_failed_count": 0
           },
           "permissions": {
@@ -2924,18 +3539,20 @@
         "capabilities": {
           "network": {
             "required": true,
-            "script_count": 2,
+            "script_count": 3,
             "scripts": [
               "scripts/check_update.py",
-              "scripts/github_benchmark_scan.py"
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
             ],
             "review_reason": "Outbound hosts must match security/network_policy.json."
           },
           "file_write": {
             "required": true,
-            "script_count": 47,
+            "script_count": 73,
             "scripts": [
               "scripts/adjudicate_output_review.py",
+              "scripts/apply_adaptation.py",
               "scripts/build_confusion_matrix.py",
               "scripts/build_skill_atlas.py",
               "scripts/check_update.py",
@@ -2944,18 +3561,29 @@
               "scripts/compile_skill.py",
               "scripts/create_iteration_snapshot.py",
               "scripts/cross_packager.py",
+              "scripts/emit_telemetry_event.py",
               "scripts/export_skill_ir.py",
               "scripts/github_benchmark_scan.py",
+              "scripts/import_output_review_decisions.py",
+              "scripts/import_telemetry_events.py",
               "scripts/init_skill.py",
+              "scripts/prepare_output_review_kit.py",
+              "scripts/prepare_world_class_submission_kit.py",
               "scripts/probe_runtime_permissions.py",
               "scripts/promotion_checker.py",
+              "scripts/propose_adaptation.py",
+              "scripts/python_compat_check.py",
               "scripts/registry_audit.py",
               "scripts/render_adoption_drift_report.py",
+              "scripts/render_architecture_maintainability.py",
               "scripts/render_artifact_design_profile.py",
               "scripts/render_baseline_compare.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_context_reports.py",
+              "scripts/render_daily_skillops_report.py",
               "scripts/render_description_drift_history.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/render_intent_confidence.py",
               "scripts/render_intent_dialogue.py",
               "scripts/render_iteration_directions.py",
@@ -2970,15 +3598,29 @@
               "scripts/render_review_studio.py",
               "scripts/render_review_viewer.py",
               "scripts/render_review_waivers.py",
+              "scripts/render_skill_interpretation.py",
+              "scripts/render_skill_os2_audit.py",
+              "scripts/render_skill_os2_coverage.py",
               "scripts/render_skill_overview.py",
               "scripts/render_social_preview.py",
               "scripts/render_system_model.py",
+              "scripts/render_telemetry_hook_recipes.py",
+              "scripts/render_weekly_curator_report.py",
+              "scripts/render_world_class_claim_guard.py",
+              "scripts/render_world_class_evidence_intake.py",
+              "scripts/render_world_class_evidence_ledger.py",
+              "scripts/render_world_class_evidence_plan.py",
+              "scripts/render_world_class_operator_runbook.py",
+              "scripts/render_world_class_preflight.py",
+              "scripts/render_world_class_submission_review.py",
               "scripts/run_conformance_suite.py",
               "scripts/run_description_optimization_suite.py",
               "scripts/run_output_eval.py",
               "scripts/run_output_execution.py",
               "scripts/simulate_install.py",
+              "scripts/summarize_user_signals.py",
               "scripts/sync_local_install.py",
+              "scripts/telemetry_native_host.py",
               "scripts/trust_check.py",
               "scripts/upgrade_check.py",
               "scripts/verify_package.py"
@@ -2987,15 +3629,20 @@
           },
           "subprocess": {
             "required": true,
-            "script_count": 7,
+            "script_count": 12,
             "scripts": [
+              "scripts/apply_adaptation.py",
+              "scripts/benchmark_release_lock.py",
               "scripts/ci_test.py",
+              "scripts/render_benchmark_reproducibility.py",
               "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
               "scripts/run_eval_suite.py",
               "scripts/run_output_execution.py",
               "scripts/sync_local_install.py",
               "scripts/trust_check.py",
-              "scripts/yao.py"
+              "scripts/yao.py",
+              "scripts/yao_cli_runtime.py"
             ],
             "review_reason": "Scripts spawn local commands and need operator review."
           },
@@ -3010,22 +3657,23 @@
           "source": "security/network_policy.json",
           "covered_scripts": [
             "scripts/check_update.py",
-            "scripts/github_benchmark_scan.py"
+            "scripts/github_benchmark_scan.py",
+            "scripts/provider_output_eval_runner.py"
           ],
           "missing_scripts": [],
           "mismatches": []
         },
         "help_smoke": {
           "enabled": true,
-          "checked_count": 59,
+          "checked_count": 86,
           "failed_count": 0,
           "failed_scripts": []
         },
         "trust_summary": {
           "secret_findings": 0,
-          "network_script_count": 2,
-          "file_write_script_count": 47,
-          "subprocess_script_count": 7,
+          "network_script_count": 3,
+          "file_write_script_count": 73,
+          "subprocess_script_count": 12,
           "interactive_script_count": 0,
           "help_smoke_failed_count": 0
         }
@@ -3043,9 +3691,9 @@
           "subprocess"
         ],
         "capability_counts": {
-          "network": 2,
-          "file_write": 47,
-          "subprocess": 7,
+          "network": 3,
+          "file_write": 73,
+          "subprocess": 12,
           "interactive": 0
         },
         "evidence": "reports/security_trust_report.json",
@@ -3057,17 +3705,17 @@
         "native_surface": "Agent Skills standard source tree",
         "activation": {
           "policy": "Use SKILL.md frontmatter name and description for progressive disclosure.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use when asked to create a skill, turn a repeated process into a reusable skill, improve an existing skill, add evals, or package a skill for team reuse.",
+          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
         "resources": {
           "strategy": "Keep optional directories as relative resources next to SKILL.md.",
           "counts": {
-            "references": 32,
-            "scripts": 66,
-            "assets": 2,
-            "reports": 41
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
           },
           "generated_files": [
             "SKILL.md",
@@ -3076,7 +3724,7 @@
         },
         "scripts": {
           "strategy": "Scripts remain local optional resources and should advertise --help when executable.",
-          "script_count": 66,
+          "script_count": 153,
           "help_smoke_failed_count": 0
         },
         "permissions": {
@@ -3133,6 +3781,951 @@
         "permission_enforcement": "consumer-enforced-or-metadata-only"
       },
       "unsupported_features": [],
+      "warnings": [],
+      "failures": []
+    },
+    {
+      "schema_version": "1.0",
+      "target": "vscode",
+      "status": "pass",
+      "compiler": {
+        "name": "yao-skill-ir-compiler",
+        "schema_version": "1.0",
+        "source": "skill-ir",
+        "ir_source": "skill-ir/examples/yao-meta-skill.json",
+        "ir_schema_version": "2.0.0"
+      },
+      "source": {
+        "skill_dir": ".",
+        "canonical_metadata": "agents/interface.yaml",
+        "declared_targets": [
+          "openai",
+          "claude",
+          "generic",
+          "agent-skills-compatible",
+          "vscode"
+        ]
+      },
+      "compiled_contract": {
+        "name": "yao-meta-skill",
+        "title": "Yao Meta Skill",
+        "version": "1.1.0",
+        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
+        "trigger": {
+          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "should_trigger": [
+            "Create a skill from this repeated workflow.",
+            "Turn this runbook into a reusable agent skill.",
+            "Convert this process note into a reusable skill package for the team.",
+            "Improve this skill description and add evals.",
+            "Refactor this prompt into a proper skill package.",
+            "Package this skill for team reuse.",
+            "Create a meta-skill for packaging internal workflows.",
+            "Standardize this recurring workflow as a shareable skill package with references."
+          ],
+          "should_not_trigger": [
+            "Explain what a workflow is.",
+            "Just explain what a skill is.",
+            "Summarize this random note.",
+            "Translate this README into Japanese.",
+            "Write a product headline for this landing page.",
+            "Draft a blog title for this article.",
+            "Rewrite this paragraph more clearly, but do not package anything.",
+            "Explain the difference between a runbook and a workflow.",
+            "one-off writing, translation, explanation, or brainstorming requests that do not need a reusable skill",
+            "general code review or debugging unless the user is packaging that workflow as a skill"
+          ],
+          "edge_cases": [
+            "Create a one-off prompt for this task.",
+            "Write a custom answer for this request without creating a skill package.",
+            "Help me brainstorm process ideas without building a skill.",
+            "Improve this README but do not turn it into a skill.",
+            "Make a checklist for this task, but not a reusable skill.",
+            "Create a reusable-looking checklist, but keep it as a plain note instead of a skill.",
+            "Review this process note and explain it, no packaging needed.",
+            "Turn this into a checklist and template, but stop short of making a full skill."
+          ]
+        },
+        "workflow": {
+          "steps": [
+            "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
+            "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
+            "Scan references in order: external benchmark, user source, local fit; surface only uncertainty or conflict.",
+            "Write `description` early, test route quality, then add only earned folders and gates.",
+            "Add output-risk, artifact-design, prompt-quality, system-model, and next directions only when useful."
+          ],
+          "decision_points": [
+            "Route by frontmatter `description`.",
+            "Keep `SKILL.md` lean; put guidance in `references/`, logic in `scripts/`, and evidence in `reports/`.",
+            "Use the lightest reliable process.",
+            "`Scaffold`: exploratory/personal. `Production`: team reuse. `Library`: shared infrastructure. `Governed`: high-trust, policy-sensitive, or release-critical.",
+            "Rules: [Method](references/skill-engineering-method.md), [Operating Modes](references/operating-modes.md), [Resource Boundaries](references/resource-boundaries.md).",
+            "Ask one focused clarification when the real job, output, or exclusion boundary is unclear.",
+            "Escalate visible tradeoffs when benchmark patterns conflict with local privacy, naming, or governance constraints.",
+            "Do not silently broaden the skill into adjacent jobs just because the examples are nearby."
+          ],
+          "failure_modes": [
+            "Tables can render as dense grids with weak hierarchy or poor mobile readability.",
+            "Long bullets can make the output look complete while hiding the actual decision logic.",
+            "Footnote markers or dense citation notes can interrupt the reading flow.",
+            "Evidence can be over-attached to obvious statements and under-attached to risky claims.",
+            "Screenshots can be captured from the wrong state, wrong viewport, or wrong crop.",
+            "Missing screenshots can cause the skill to invent visual references instead of declaring the gap.",
+            "Users start invoking the skill for adjacent one-off or explanation-only requests.",
+            "Outputs remain valid but become generic, cluttered, or weakly aligned with the user's domain.",
+            "Borrowed benchmark patterns no longer fit the local job or add ceremony without payoff.",
+            "Skill usage becomes team-critical while ownership, review cadence, or rollback evidence stays informal."
+          ]
+        },
+        "resources": {
+          "references": [
+            "references/artifact-design-doctrine.md",
+            "references/authoring-discipline.md",
+            "references/autonomous-adaptation.md",
+            "references/distribution-registry-method.md",
+            "references/eval-playbook.md",
+            "references/gate-selection.md",
+            "references/governance.md",
+            "references/human-review-template.md",
+            "references/intent-dialogue.md",
+            "references/iteration-philosophy.md",
+            "references/non-skill-decision-tree.md",
+            "references/operating-modes.md",
+            "references/output-eval-method.md",
+            "references/output-quality-risk.md",
+            "references/output-visual-quality.md",
+            "references/packaging-contracts.md",
+            "references/pattern-extraction-doctrine.md",
+            "references/platform-capability-matrix.md",
+            "references/prompt-engineering-doctrine.md",
+            "references/qa-ladder.md",
+            "references/reference-scan.md",
+            "references/regression-cause-taxonomy.md",
+            "references/resource-boundaries.md",
+            "references/review-studio-method.md",
+            "references/review-waiver-method.md",
+            "references/runtime-conformance-method.md",
+            "references/skill-archetypes.md",
+            "references/skill-atlas-method.md",
+            "references/skill-engineering-method.md",
+            "references/skill-ir-method.md",
+            "references/skillops-decision-policy.md",
+            "references/systems-thinking-doctrine.md",
+            "references/telemetry-drift-method.md",
+            "references/trust-security-method.md",
+            "references/user-memory-policy.md"
+          ],
+          "scripts": [
+            "scripts/adaptation_patch_safety.py",
+            "scripts/adaptation_report_contracts.py",
+            "scripts/adjudicate_output_review.py",
+            "scripts/apply_adaptation.py",
+            "scripts/benchmark_release_lock.py",
+            "scripts/build_confusion_matrix.py",
+            "scripts/build_skill_atlas.py",
+            "scripts/build_skill_atlas_layout.py",
+            "scripts/build_skill_atlas_opportunities.py",
+            "scripts/check_update.py",
+            "scripts/ci_test.py",
+            "scripts/collect_feedback.py",
+            "scripts/compile_skill.py",
+            "scripts/compile_skill_targets.py",
+            "scripts/context_sizer.py",
+            "scripts/create_iteration_snapshot.py",
+            "scripts/cross_packager.py",
+            "scripts/cross_packager_contracts.py",
+            "scripts/description_optimizer_reporting.py",
+            "scripts/diff_eval.py",
+            "scripts/emit_telemetry_event.py",
+            "scripts/evidence_consistency_artifact_roles.py",
+            "scripts/evidence_consistency_core.py",
+            "scripts/evidence_consistency_phase_queue.py",
+            "scripts/evidence_consistency_release.py",
+            "scripts/evidence_consistency_skill_os2_review.py",
+            "scripts/evidence_consistency_world_class.py",
+            "scripts/export_skill_ir.py",
+            "scripts/github_benchmark_scan.py",
+            "scripts/governance_check.py",
+            "scripts/html_rendering.py",
+            "scripts/import_output_review_decisions.py",
+            "scripts/import_telemetry_events.py",
+            "scripts/init_skill.py",
+            "scripts/judge_blind_eval.py",
+            "scripts/lint_skill.py",
+            "scripts/local_output_eval_runner.py",
+            "scripts/optimize_description.py",
+            "scripts/output_review_privacy.py",
+            "scripts/prepare_output_review_kit.py",
+            "scripts/prepare_world_class_submission_kit.py",
+            "scripts/probe_runtime_permissions.py",
+            "scripts/promotion_checker.py",
+            "scripts/propose_adaptation.py",
+            "scripts/provider_output_eval_runner.py",
+            "scripts/python_compat_check.py",
+            "scripts/reference_synthesis_markdown.py",
+            "scripts/registry_audit.py",
+            "scripts/render_adoption_drift_report.py",
+            "scripts/render_architecture_maintainability.py",
+            "scripts/render_artifact_design_profile.py",
+            "scripts/render_baseline_compare.py",
+            "scripts/render_benchmark_reproducibility.py",
+            "scripts/render_context_reports.py",
+            "scripts/render_daily_skillops_report.py",
+            "scripts/render_description_drift_history.py",
+            "scripts/render_eval_dashboard.py",
+            "scripts/render_evidence_consistency.py",
+            "scripts/render_intent_confidence.py",
+            "scripts/render_intent_dialogue.py",
+            "scripts/render_iteration_directions.py",
+            "scripts/render_iteration_ledger.py",
+            "scripts/render_output_risk_profile.py",
+            "scripts/render_portability_report.py",
+            "scripts/render_prompt_quality_profile.py",
+            "scripts/render_reference_scan.py",
+            "scripts/render_reference_synthesis.py",
+            "scripts/render_regression_history.py",
+            "scripts/render_review_annotations.py",
+            "scripts/render_review_studio.py",
+            "scripts/render_review_viewer.py",
+            "scripts/render_review_waivers.py",
+            "scripts/render_skill_interpretation.py",
+            "scripts/render_skill_os2_audit.py",
+            "scripts/render_skill_os2_coverage.py",
+            "scripts/render_skill_overview.py",
+            "scripts/render_social_preview.py",
+            "scripts/render_system_model.py",
+            "scripts/render_telemetry_hook_recipes.py",
+            "scripts/render_weekly_curator_report.py",
+            "scripts/render_world_class_claim_guard.py",
+            "scripts/render_world_class_evidence_intake.py",
+            "scripts/render_world_class_evidence_ledger.py",
+            "scripts/render_world_class_evidence_plan.py",
+            "scripts/render_world_class_operator_runbook.py",
+            "scripts/render_world_class_preflight.py",
+            "scripts/render_world_class_submission_review.py",
+            "scripts/resource_boundary_check.py",
+            "scripts/review_studio_action_evidence.py",
+            "scripts/review_studio_actions.py",
+            "scripts/review_studio_data.py",
+            "scripts/review_studio_formatting.py",
+            "scripts/review_studio_gate_contract.py",
+            "scripts/review_studio_gate_helpers.py",
+            "scripts/review_studio_gates.py",
+            "scripts/review_studio_layout.py",
+            "scripts/review_studio_output_review.py",
+            "scripts/review_studio_panels.py",
+            "scripts/review_studio_skillops.py",
+            "scripts/review_studio_waivers.py",
+            "scripts/review_studio_world_class.py",
+            "scripts/review_viewer_data.py",
+            "scripts/run_conformance_suite.py",
+            "scripts/run_description_optimization_suite.py",
+            "scripts/run_eval_suite.py",
+            "scripts/run_output_eval.py",
+            "scripts/run_output_execution.py",
+            "scripts/simulate_install.py",
+            "scripts/skill_ir_paths.py",
+            "scripts/skill_os2_coverage_markdown.py",
+            "scripts/skill_report_charts.py",
+            "scripts/skill_report_i18n.py",
+            "scripts/skill_report_layout.py",
+            "scripts/skill_report_metrics.py",
+            "scripts/skill_report_model.py",
+            "scripts/skill_report_sections.py",
+            "scripts/skill_report_sources.py",
+            "scripts/skill_report_world_class.py",
+            "scripts/skillops_opportunity.py",
+            "scripts/summarize_user_signals.py",
+            "scripts/sync_local_install.py",
+            "scripts/telemetry_native_host.py",
+            "scripts/trigger_eval.py",
+            "scripts/trust_check.py",
+            "scripts/trust_check_scripts.py",
+            "scripts/upgrade_check.py",
+            "scripts/validate_skill.py",
+            "scripts/verify_package.py",
+            "scripts/world_class_evidence_contract.py",
+            "scripts/world_class_human_evidence.py",
+            "scripts/world_class_native_permission_evidence.py",
+            "scripts/world_class_native_telemetry_evidence.py",
+            "scripts/world_class_operator_runbook_coordination.py",
+            "scripts/world_class_phase_queue.py",
+            "scripts/world_class_preflight_layout.py",
+            "scripts/world_class_preflight_markdown.py",
+            "scripts/world_class_provider_evidence.py",
+            "scripts/world_class_repair_checklist.py",
+            "scripts/world_class_source_checks.py",
+            "scripts/world_class_submission_kit_rendering.py",
+            "scripts/world_class_submission_matrix.py",
+            "scripts/yao.py",
+            "scripts/yao_cli_adaptation_commands.py",
+            "scripts/yao_cli_config.py",
+            "scripts/yao_cli_create_commands.py",
+            "scripts/yao_cli_distribution_commands.py",
+            "scripts/yao_cli_output_commands.py",
+            "scripts/yao_cli_parser.py",
+            "scripts/yao_cli_parser_evidence.py",
+            "scripts/yao_cli_parser_operations.py",
+            "scripts/yao_cli_report_commands.py",
+            "scripts/yao_cli_runtime.py",
+            "scripts/yao_cli_telemetry.py"
+          ],
+          "assets": [
+            "assets/review-studio.css",
+            "assets/review-viewer.css",
+            "assets/skill-overview.css",
+            "assets/skill-overview.js",
+            "templates/basic_skill.md.j2",
+            "templates/complex_skill.md.j2"
+          ],
+          "reports": [
+            "reports/benchmark_methodology.md",
+            "reports/intent-context.json",
+            "reports/intent-confidence.json",
+            "reports/intent-confidence.md",
+            "reports/reference-synthesis.json",
+            "reports/reference-synthesis.md",
+            "reports/output-risk-profile.json",
+            "reports/output-risk-profile.md",
+            "reports/artifact-design-profile.json",
+            "reports/artifact-design-profile.md",
+            "reports/prompt-quality-profile.json",
+            "reports/prompt-quality-profile.md",
+            "reports/system-model.json",
+            "reports/system-model.md",
+            "reports/iteration-directions.json",
+            "reports/iteration-directions.md",
+            "reports/skill-overview.json",
+            "reports/skill-overview.html",
+            "reports/output_quality_scorecard.json",
+            "reports/output_quality_scorecard.md",
+            "reports/output_execution_runs.json",
+            "reports/output_execution_runs.md",
+            "reports/output_blind_review_pack.json",
+            "reports/output_blind_review_pack.md",
+            "reports/output_blind_answer_key.json",
+            "reports/output_review_adjudication.json",
+            "reports/output_review_adjudication.md",
+            "reports/review_annotations.json",
+            "reports/review_annotations.md",
+            "reports/conformance_matrix.json",
+            "reports/conformance_matrix.md",
+            "reports/security_trust_report.json",
+            "reports/security_trust_report.md",
+            "reports/runtime_permission_probes.json",
+            "reports/runtime_permission_probes.md",
+            "reports/telemetry_hook_recipes.json",
+            "reports/telemetry_hook_recipes.md",
+            "reports/skill_atlas.json",
+            "reports/skill_atlas.html",
+            "reports/skill-os-2-review.md",
+            "reports/portability_score.json",
+            "reports/portability_score.md",
+            "reports/governance_score.json"
+          ],
+          "counts": {
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
+          }
+        },
+        "eval_plan": {
+          "trigger": [
+            "evals/README.md",
+            "evals/adaptation/user_signals.example.jsonl",
+            "evals/adversarial/trigger_cases.json",
+            "evals/blind_holdout/trigger_cases.json",
+            "evals/confusion/route_cases.json",
+            "evals/dev/trigger_cases.json",
+            "evals/failure-cases.md",
+            "evals/history/2026-03-31-context-first-pack.json",
+            "evals/history/2026-03-31-family-suite-expansion.json",
+            "evals/history/2026-03-31-governance-quality-gates.json",
+            "evals/history/2026-03-31-governed-assets-and-history.json",
+            "evals/history/2026-04-01-route-scorecard-foundation.json",
+            "evals/history/README.md",
+            "evals/history/description_optimization/2026-03-31-description-optimization-suite.json",
+            "evals/history/description_optimization/2026-04-01-adversarial-calibration-and-family-drift.json",
+            "evals/history/description_optimization/2026-04-01-blind-holdout-and-drift-history.json",
+            "evals/history/description_optimization/2026-04-01-judge-backed-blind-eval.json",
+            "evals/history/description_optimization/README.md",
+            "evals/holdout/trigger_cases.json",
+            "evals/output/cases.jsonl",
+            "evals/output/fixtures/release-brief-source.md",
+            "evals/output/schema.json",
+            "evals/packaging_expectations.json",
+            "evals/promotion_policy.md",
+            "evals/semantic_config.json",
+            "evals/train/trigger_cases.json",
+            "evals/trigger_cases.json"
+          ],
+          "output": [
+            "evals/output/cases.jsonl",
+            "evals/output/fixtures/release-brief-source.md",
+            "evals/output/schema.json"
+          ],
+          "adversarial": [
+            "evals/adversarial/trigger_cases.json"
+          ],
+          "baseline": "without_skill",
+          "counts": {
+            "trigger": 27,
+            "output": 3,
+            "adversarial": 1,
+            "baseline": 1
+          }
+        },
+        "risk": {
+          "output_risk": "high",
+          "execution_risk": "medium",
+          "trust_boundary": "external"
+        },
+        "governance": {
+          "owner": "Yao Team",
+          "maturity": "governed",
+          "review_cadence": "quarterly",
+          "review_due": ""
+        },
+        "runtime": {
+          "activation": {
+            "mode": "manual",
+            "paths": []
+          },
+          "execution": {
+            "context": "inline",
+            "shell": "bash"
+          },
+          "trust": {
+            "source_tier": "local",
+            "remote_inline_execution": "forbid",
+            "remote_metadata_policy": "allow-metadata-only"
+          },
+          "adapter_targets": [
+            "openai",
+            "claude",
+            "generic",
+            "vscode"
+          ],
+          "canonical_format": "agent-skills"
+        },
+        "permissions": {
+          "schema_version": "1.0",
+          "source": "reports/security_trust_report.json",
+          "source_available": true,
+          "declared_capabilities": [
+            "network",
+            "file_write",
+            "subprocess"
+          ],
+          "review_required": true,
+          "capabilities": {
+            "network": {
+              "required": true,
+              "script_count": 3,
+              "scripts": [
+                "scripts/check_update.py",
+                "scripts/github_benchmark_scan.py",
+                "scripts/provider_output_eval_runner.py"
+              ],
+              "review_reason": "Outbound hosts must match security/network_policy.json."
+            },
+            "file_write": {
+              "required": true,
+              "script_count": 73,
+              "scripts": [
+                "scripts/adjudicate_output_review.py",
+                "scripts/apply_adaptation.py",
+                "scripts/build_confusion_matrix.py",
+                "scripts/build_skill_atlas.py",
+                "scripts/check_update.py",
+                "scripts/ci_test.py",
+                "scripts/collect_feedback.py",
+                "scripts/compile_skill.py",
+                "scripts/create_iteration_snapshot.py",
+                "scripts/cross_packager.py",
+                "scripts/emit_telemetry_event.py",
+                "scripts/export_skill_ir.py",
+                "scripts/github_benchmark_scan.py",
+                "scripts/import_output_review_decisions.py",
+                "scripts/import_telemetry_events.py",
+                "scripts/init_skill.py",
+                "scripts/prepare_output_review_kit.py",
+                "scripts/prepare_world_class_submission_kit.py",
+                "scripts/probe_runtime_permissions.py",
+                "scripts/promotion_checker.py",
+                "scripts/propose_adaptation.py",
+                "scripts/python_compat_check.py",
+                "scripts/registry_audit.py",
+                "scripts/render_adoption_drift_report.py",
+                "scripts/render_architecture_maintainability.py",
+                "scripts/render_artifact_design_profile.py",
+                "scripts/render_baseline_compare.py",
+                "scripts/render_benchmark_reproducibility.py",
+                "scripts/render_context_reports.py",
+                "scripts/render_daily_skillops_report.py",
+                "scripts/render_description_drift_history.py",
+                "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
+                "scripts/render_intent_confidence.py",
+                "scripts/render_intent_dialogue.py",
+                "scripts/render_iteration_directions.py",
+                "scripts/render_iteration_ledger.py",
+                "scripts/render_output_risk_profile.py",
+                "scripts/render_portability_report.py",
+                "scripts/render_prompt_quality_profile.py",
+                "scripts/render_reference_scan.py",
+                "scripts/render_reference_synthesis.py",
+                "scripts/render_regression_history.py",
+                "scripts/render_review_annotations.py",
+                "scripts/render_review_studio.py",
+                "scripts/render_review_viewer.py",
+                "scripts/render_review_waivers.py",
+                "scripts/render_skill_interpretation.py",
+                "scripts/render_skill_os2_audit.py",
+                "scripts/render_skill_os2_coverage.py",
+                "scripts/render_skill_overview.py",
+                "scripts/render_social_preview.py",
+                "scripts/render_system_model.py",
+                "scripts/render_telemetry_hook_recipes.py",
+                "scripts/render_weekly_curator_report.py",
+                "scripts/render_world_class_claim_guard.py",
+                "scripts/render_world_class_evidence_intake.py",
+                "scripts/render_world_class_evidence_ledger.py",
+                "scripts/render_world_class_evidence_plan.py",
+                "scripts/render_world_class_operator_runbook.py",
+                "scripts/render_world_class_preflight.py",
+                "scripts/render_world_class_submission_review.py",
+                "scripts/run_conformance_suite.py",
+                "scripts/run_description_optimization_suite.py",
+                "scripts/run_output_eval.py",
+                "scripts/run_output_execution.py",
+                "scripts/simulate_install.py",
+                "scripts/summarize_user_signals.py",
+                "scripts/sync_local_install.py",
+                "scripts/telemetry_native_host.py",
+                "scripts/trust_check.py",
+                "scripts/upgrade_check.py",
+                "scripts/verify_package.py"
+              ],
+              "review_reason": "Scripts write local files or generated artifacts."
+            },
+            "subprocess": {
+              "required": true,
+              "script_count": 12,
+              "scripts": [
+                "scripts/apply_adaptation.py",
+                "scripts/benchmark_release_lock.py",
+                "scripts/ci_test.py",
+                "scripts/render_benchmark_reproducibility.py",
+                "scripts/render_eval_dashboard.py",
+                "scripts/render_evidence_consistency.py",
+                "scripts/run_eval_suite.py",
+                "scripts/run_output_execution.py",
+                "scripts/sync_local_install.py",
+                "scripts/trust_check.py",
+                "scripts/yao.py",
+                "scripts/yao_cli_runtime.py"
+              ],
+              "review_reason": "Scripts spawn local commands and need operator review."
+            },
+            "interactive": {
+              "required": false,
+              "script_count": 0,
+              "scripts": [],
+              "review_reason": ""
+            }
+          },
+          "network_policy": {
+            "source": "security/network_policy.json",
+            "covered_scripts": [
+              "scripts/check_update.py",
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
+            ],
+            "missing_scripts": [],
+            "mismatches": []
+          },
+          "help_smoke": {
+            "enabled": true,
+            "checked_count": 86,
+            "failed_count": 0,
+            "failed_scripts": []
+          },
+          "trust_summary": {
+            "secret_findings": 0,
+            "network_script_count": 3,
+            "file_write_script_count": 73,
+            "subprocess_script_count": 12,
+            "interactive_script_count": 0,
+            "help_smoke_failed_count": 0
+          }
+        },
+        "source_files_count": 6,
+        "target": "vscode",
+        "target_permission_contract": {
+          "schema_version": "1.0",
+          "target": "vscode",
+          "permission_model": "vscode-workspace-trust-plus-metadata",
+          "native_enforcement": false,
+          "representation": "targets/vscode/adapter.json::target_permission_contract and targets/vscode/README.md install notes",
+          "review_required": true,
+          "declared_capabilities": [
+            "network",
+            "file_write",
+            "subprocess"
+          ],
+          "capability_counts": {
+            "network": 3,
+            "file_write": 73,
+            "subprocess": 12,
+            "interactive": 0
+          },
+          "evidence": "reports/security_trust_report.json",
+          "operator_note": "VS Code target relies on project or user skill installation plus VS Code workspace trust; Yao preserves permission metadata for reviewer and installer checks."
+        },
+        "target_native_contract": {
+          "schema_version": "1.0",
+          "target": "vscode",
+          "native_surface": "VS Code/Copilot Agent Skills project or user scope",
+          "activation": {
+            "policy": "Use folder name plus SKILL.md name/description; keep description under platform limits.",
+            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "manual_activation_supported": true,
+            "automatic_activation_note": "Depends on the target client route/catalog implementation."
+          },
+          "resources": {
+            "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
+            "counts": {
+              "references": 35,
+              "scripts": 153,
+              "assets": 6,
+              "reports": 43
+            },
+            "generated_files": [
+              "targets/vscode/adapter.json",
+              "targets/vscode/README.md"
+            ]
+          },
+          "scripts": {
+            "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
+            "script_count": 153,
+            "help_smoke_failed_count": 0
+          },
+          "permissions": {
+            "enforcement": "client-or-workspace-trust",
+            "native_enforcement": false,
+            "declared_capabilities": [
+              "network",
+              "file_write",
+              "subprocess"
+            ],
+            "review_required": true
+          },
+          "review": {
+            "artifacts": [
+              "SKILL.md",
+              "agents/interface.yaml",
+              "reports/review-studio.html"
+            ],
+            "fallback_behavior": "If VS Code scope is not installed, use the neutral Agent Skills source.",
+            "unsupported_native_features": [
+              "automatic VS Code installation",
+              "VS Code installation scope is documented but not installed by this compiler"
+            ]
+          },
+          "install_scope": "VS Code user or project skills directory"
+        },
+        "degradation_strategy": "agent-skills-source-with-vscode-notes",
+        "target_runtime": {
+          "adapter_mode": "vscode-agent-skills-adapter",
+          "generated_files": [
+            "targets/vscode/adapter.json",
+            "targets/vscode/README.md"
+          ],
+          "metadata_mapping": {
+            "name": "folder-name-and-SKILL.md::frontmatter.name",
+            "description": "SKILL.md::frontmatter.description",
+            "interface": "agents/interface.yaml",
+            "permissions": "targets/vscode/adapter.json::target_permission_contract",
+            "install_scope": "targets/vscode/README.md"
+          },
+          "preserved_semantics": [
+            "trigger",
+            "workflow",
+            "resources",
+            "eval-plan",
+            "risk",
+            "governance",
+            "runtime",
+            "trust",
+            "permissions"
+          ],
+          "native_surface": "VS Code/Copilot Agent Skills project or user scope"
+        }
+      },
+      "permission_contract": {
+        "schema_version": "1.0",
+        "source": "reports/security_trust_report.json",
+        "source_available": true,
+        "declared_capabilities": [
+          "network",
+          "file_write",
+          "subprocess"
+        ],
+        "review_required": true,
+        "capabilities": {
+          "network": {
+            "required": true,
+            "script_count": 3,
+            "scripts": [
+              "scripts/check_update.py",
+              "scripts/github_benchmark_scan.py",
+              "scripts/provider_output_eval_runner.py"
+            ],
+            "review_reason": "Outbound hosts must match security/network_policy.json."
+          },
+          "file_write": {
+            "required": true,
+            "script_count": 73,
+            "scripts": [
+              "scripts/adjudicate_output_review.py",
+              "scripts/apply_adaptation.py",
+              "scripts/build_confusion_matrix.py",
+              "scripts/build_skill_atlas.py",
+              "scripts/check_update.py",
+              "scripts/ci_test.py",
+              "scripts/collect_feedback.py",
+              "scripts/compile_skill.py",
+              "scripts/create_iteration_snapshot.py",
+              "scripts/cross_packager.py",
+              "scripts/emit_telemetry_event.py",
+              "scripts/export_skill_ir.py",
+              "scripts/github_benchmark_scan.py",
+              "scripts/import_output_review_decisions.py",
+              "scripts/import_telemetry_events.py",
+              "scripts/init_skill.py",
+              "scripts/prepare_output_review_kit.py",
+              "scripts/prepare_world_class_submission_kit.py",
+              "scripts/probe_runtime_permissions.py",
+              "scripts/promotion_checker.py",
+              "scripts/propose_adaptation.py",
+              "scripts/python_compat_check.py",
+              "scripts/registry_audit.py",
+              "scripts/render_adoption_drift_report.py",
+              "scripts/render_architecture_maintainability.py",
+              "scripts/render_artifact_design_profile.py",
+              "scripts/render_baseline_compare.py",
+              "scripts/render_benchmark_reproducibility.py",
+              "scripts/render_context_reports.py",
+              "scripts/render_daily_skillops_report.py",
+              "scripts/render_description_drift_history.py",
+              "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
+              "scripts/render_intent_confidence.py",
+              "scripts/render_intent_dialogue.py",
+              "scripts/render_iteration_directions.py",
+              "scripts/render_iteration_ledger.py",
+              "scripts/render_output_risk_profile.py",
+              "scripts/render_portability_report.py",
+              "scripts/render_prompt_quality_profile.py",
+              "scripts/render_reference_scan.py",
+              "scripts/render_reference_synthesis.py",
+              "scripts/render_regression_history.py",
+              "scripts/render_review_annotations.py",
+              "scripts/render_review_studio.py",
+              "scripts/render_review_viewer.py",
+              "scripts/render_review_waivers.py",
+              "scripts/render_skill_interpretation.py",
+              "scripts/render_skill_os2_audit.py",
+              "scripts/render_skill_os2_coverage.py",
+              "scripts/render_skill_overview.py",
+              "scripts/render_social_preview.py",
+              "scripts/render_system_model.py",
+              "scripts/render_telemetry_hook_recipes.py",
+              "scripts/render_weekly_curator_report.py",
+              "scripts/render_world_class_claim_guard.py",
+              "scripts/render_world_class_evidence_intake.py",
+              "scripts/render_world_class_evidence_ledger.py",
+              "scripts/render_world_class_evidence_plan.py",
+              "scripts/render_world_class_operator_runbook.py",
+              "scripts/render_world_class_preflight.py",
+              "scripts/render_world_class_submission_review.py",
+              "scripts/run_conformance_suite.py",
+              "scripts/run_description_optimization_suite.py",
+              "scripts/run_output_eval.py",
+              "scripts/run_output_execution.py",
+              "scripts/simulate_install.py",
+              "scripts/summarize_user_signals.py",
+              "scripts/sync_local_install.py",
+              "scripts/telemetry_native_host.py",
+              "scripts/trust_check.py",
+              "scripts/upgrade_check.py",
+              "scripts/verify_package.py"
+            ],
+            "review_reason": "Scripts write local files or generated artifacts."
+          },
+          "subprocess": {
+            "required": true,
+            "script_count": 12,
+            "scripts": [
+              "scripts/apply_adaptation.py",
+              "scripts/benchmark_release_lock.py",
+              "scripts/ci_test.py",
+              "scripts/render_benchmark_reproducibility.py",
+              "scripts/render_eval_dashboard.py",
+              "scripts/render_evidence_consistency.py",
+              "scripts/run_eval_suite.py",
+              "scripts/run_output_execution.py",
+              "scripts/sync_local_install.py",
+              "scripts/trust_check.py",
+              "scripts/yao.py",
+              "scripts/yao_cli_runtime.py"
+            ],
+            "review_reason": "Scripts spawn local commands and need operator review."
+          },
+          "interactive": {
+            "required": false,
+            "script_count": 0,
+            "scripts": [],
+            "review_reason": ""
+          }
+        },
+        "network_policy": {
+          "source": "security/network_policy.json",
+          "covered_scripts": [
+            "scripts/check_update.py",
+            "scripts/github_benchmark_scan.py",
+            "scripts/provider_output_eval_runner.py"
+          ],
+          "missing_scripts": [],
+          "mismatches": []
+        },
+        "help_smoke": {
+          "enabled": true,
+          "checked_count": 86,
+          "failed_count": 0,
+          "failed_scripts": []
+        },
+        "trust_summary": {
+          "secret_findings": 0,
+          "network_script_count": 3,
+          "file_write_script_count": 73,
+          "subprocess_script_count": 12,
+          "interactive_script_count": 0,
+          "help_smoke_failed_count": 0
+        }
+      },
+      "target_permission_contract": {
+        "schema_version": "1.0",
+        "target": "vscode",
+        "permission_model": "vscode-workspace-trust-plus-metadata",
+        "native_enforcement": false,
+        "representation": "targets/vscode/adapter.json::target_permission_contract and targets/vscode/README.md install notes",
+        "review_required": true,
+        "declared_capabilities": [
+          "network",
+          "file_write",
+          "subprocess"
+        ],
+        "capability_counts": {
+          "network": 3,
+          "file_write": 73,
+          "subprocess": 12,
+          "interactive": 0
+        },
+        "evidence": "reports/security_trust_report.json",
+        "operator_note": "VS Code target relies on project or user skill installation plus VS Code workspace trust; Yao preserves permission metadata for reviewer and installer checks."
+      },
+      "target_native_contract": {
+        "schema_version": "1.0",
+        "target": "vscode",
+        "native_surface": "VS Code/Copilot Agent Skills project or user scope",
+        "activation": {
+          "policy": "Use folder name plus SKILL.md name/description; keep description under platform limits.",
+          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "manual_activation_supported": true,
+          "automatic_activation_note": "Depends on the target client route/catalog implementation."
+        },
+        "resources": {
+          "strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
+          "counts": {
+            "references": 35,
+            "scripts": 153,
+            "assets": 6,
+            "reports": 43
+          },
+          "generated_files": [
+            "targets/vscode/adapter.json",
+            "targets/vscode/README.md"
+          ]
+        },
+        "scripts": {
+          "strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
+          "script_count": 153,
+          "help_smoke_failed_count": 0
+        },
+        "permissions": {
+          "enforcement": "client-or-workspace-trust",
+          "native_enforcement": false,
+          "declared_capabilities": [
+            "network",
+            "file_write",
+            "subprocess"
+          ],
+          "review_required": true
+        },
+        "review": {
+          "artifacts": [
+            "SKILL.md",
+            "agents/interface.yaml",
+            "reports/review-studio.html"
+          ],
+          "fallback_behavior": "If VS Code scope is not installed, use the neutral Agent Skills source.",
+          "unsupported_native_features": [
+            "automatic VS Code installation",
+            "VS Code installation scope is documented but not installed by this compiler"
+          ]
+        },
+        "install_scope": "VS Code user or project skills directory"
+      },
+      "target_transform": {
+        "target": "vscode",
+        "adapter_mode": "vscode-agent-skills-adapter",
+        "generated_files": [
+          "targets/vscode/adapter.json",
+          "targets/vscode/README.md"
+        ],
+        "metadata_mapping": {
+          "name": "folder-name-and-SKILL.md::frontmatter.name",
+          "description": "SKILL.md::frontmatter.description",
+          "interface": "agents/interface.yaml",
+          "permissions": "targets/vscode/adapter.json::target_permission_contract",
+          "install_scope": "targets/vscode/README.md"
+        },
+        "preserved_semantics": [
+          "trigger",
+          "workflow",
+          "resources",
+          "eval-plan",
+          "risk",
+          "governance",
+          "runtime",
+          "trust",
+          "permissions"
+        ],
+        "degradation_strategy": "agent-skills-source-with-vscode-notes",
+        "permission_representation": "targets/vscode/adapter.json::target_permission_contract and targets/vscode/README.md install notes",
+        "native_surface": "VS Code/Copilot Agent Skills project or user scope",
+        "activation_policy": "Use folder name plus SKILL.md name/description; keep description under platform limits.",
+        "resource_strategy": "Install as project or user scoped skill source, preserving relative references and scripts.",
+        "script_strategy": "Scripts require workspace trust and operator/client approval outside this compiler.",
+        "permission_enforcement": "client-or-workspace-trust"
+      },
+      "unsupported_features": [
+        "VS Code installation scope is documented but not installed by this compiler"
+      ],
       "warnings": [],
       "failures": []
     }

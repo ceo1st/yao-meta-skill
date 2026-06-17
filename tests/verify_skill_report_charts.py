@@ -53,10 +53,14 @@ def main() -> None:
         assert svg.startswith("<figure"), (key, svg[:200])
         assert "<svg" in svg and "</svg>" in svg, (key, svg[:400])
         assert "<figcaption>" in svg, (key, svg[:400])
+        assert 'data-lang="zh-CN"' in svg and 'data-lang="en"' in svg, (key, svg[:600])
         assert "http://" not in svg and "https://" not in svg, (key, svg[:400])
         assert "data:image" not in svg, (key, svg[:400])
         if key in {"flow", "layers"}:
             assert 'fill="#F6F8FB"' in svg, (key, svg[:500])
+    assert "Rating Radar" in charts["radar"], charts["radar"][:900]
+    assert "Delivery Flow" in charts["flow"], charts["flow"][:900]
+    assert "The radar chart compares" in charts["radar"], charts["radar"][-500:]
 
     print(json.dumps({"ok": True}, ensure_ascii=False, indent=2))
 

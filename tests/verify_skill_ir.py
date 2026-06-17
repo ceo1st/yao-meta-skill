@@ -41,8 +41,20 @@ def main() -> None:
     assert payload["trigger_surface"]["edge_cases"], payload
     assert payload["workflow"]["steps"], payload
     assert payload["workflow"]["decision_points"], payload
+    assert any("`Governed`" in item for item in payload["workflow"]["decision_points"]), payload["workflow"]["decision_points"]
     assert payload["resources"]["references"], payload
     assert payload["resources"]["scripts"], payload
+    expected_scripts = {
+        str(path.relative_to(ROOT))
+        for path in (ROOT / "scripts").rglob("*")
+        if path.is_file() and path.suffix in {".py", ".sh", ".js", ".ts"}
+    }
+    actual_scripts = set(payload["resources"]["scripts"])
+    assert expected_scripts <= actual_scripts, sorted(expected_scripts - actual_scripts)
+    assert "assets/skill-overview.css" in payload["resources"]["assets"], payload["resources"]["assets"]
+    assert "assets/skill-overview.js" in payload["resources"]["assets"], payload["resources"]["assets"]
+    assert "assets/review-studio.css" in payload["resources"]["assets"], payload["resources"]["assets"]
+    assert "assets/review-viewer.css" in payload["resources"]["assets"], payload["resources"]["assets"]
     assert payload["resources"]["reports"], payload
     assert "evals/trigger_cases.json" in payload["eval_plan"]["trigger"], payload["eval_plan"]
     assert payload["risk"]["trust_boundary"] == "external", payload

@@ -6,7 +6,7 @@
       "decision": "approved",
       "reviewer": "Yao Team",
       "scope": "Only scripts declared in security/network_policy.json may perform outbound requests.",
-      "reason": "Network use is bounded to public GitHub metadata and benchmark discovery, with allowed hosts reviewed in security/network_policy.json.",
+      "reason": "Network use is bounded to public GitHub metadata, benchmark discovery, update checks, and reviewed provider output-eval endpoints, with allowed hosts reviewed in security/network_policy.json.",
       "expires_at": "2026-09-30",
       "evidence": [
         "security/network_policy.json",
@@ -15,7 +15,8 @@
       "target_enforcement": {
         "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
         "claude": "adapter.json target_permission_contract and README note",
-        "generic": "adapter.json target_permission_contract"
+        "generic": "adapter.json target_permission_contract",
+        "vscode": "adapter.json target_permission_contract plus VS Code workspace-trust note"
       }
     },
     "file_write": {
@@ -32,7 +33,8 @@
       "target_enforcement": {
         "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
         "claude": "adapter.json target_permission_contract and README note",
-        "generic": "adapter.json target_permission_contract"
+        "generic": "adapter.json target_permission_contract",
+        "vscode": "adapter.json target_permission_contract plus VS Code workspace-trust note"
       }
     },
     "subprocess": {
@@ -48,7 +50,8 @@
       "target_enforcement": {
         "openai": "metadata-only permission_contract in openai.yaml plus adapter.json",
         "claude": "adapter.json target_permission_contract and README note",
-        "generic": "adapter.json target_permission_contract"
+        "generic": "adapter.json target_permission_contract",
+        "vscode": "adapter.json target_permission_contract plus VS Code workspace-trust note"
       }
     }
   }

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 
-TEXT_EXTS = {".md", ".txt", ".yaml", ".yml", ".json", ".py", ".sh", ".js", ".ts"}
+TEXT_EXTS = {".css", ".md", ".txt", ".yaml", ".yml", ".json", ".py", ".sh", ".js", ".ts"}
 IGNORED_RELATIVE_DIRS = {
     Path("reports") / "release_snapshots",
     Path("tests") / "tmp",
@@ -26,6 +26,27 @@ PACKAGE_PATHS = (
     "input",
     "outputs",
 )
+IGNORED_FILE_PATTERNS = {
+    "reports/benchmark_reproducibility*.json",
+    "reports/benchmark_reproducibility*.md",
+    "reports/context_budget*.json",
+    "reports/context_budget*.md",
+    "reports/evidence_consistency*.json",
+    "reports/evidence_consistency*.md",
+    "reports/review-studio*.html",
+    "reports/review-studio*.json",
+    "reports/review-viewer*.html",
+    "reports/review-viewer*.json",
+    "reports/skill-interpretation*.html",
+    "reports/skill-interpretation*.json",
+    "reports/skill-overview*.html",
+    "reports/skill-overview*.json",
+    "reports/world_class_evidence_preflight*.json",
+    "reports/world_class_evidence_preflight*.md",
+    "reports/world_class_evidence_preflight*.html",
+    "reports/*pattern-analysis*.md",
+    "reports/*research-plan*.md",
+}
 
 
 def estimate_tokens(text: str) -> int:
@@ -60,6 +81,8 @@ def classify(path: Path) -> str:
 def should_ignore(path: Path, skill_dir: Path) -> bool:
     rel = path.relative_to(skill_dir)
     if any(rel == ignored or ignored in rel.parents for ignored in IGNORED_RELATIVE_DIRS):
+        return True
+    if any(rel.match(pattern) for pattern in IGNORED_FILE_PATTERNS):
         return True
     return len(rel.parts) >= 2 and rel.parts[0] == "tests" and rel.parts[1].startswith("tmp_")
 
