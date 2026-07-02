@@ -27,7 +27,7 @@
 | Role | Label | Ranking State | Promotion State | Tokens | Dev Errors | Holdout Errors |
 | --- | --- | --- | --- | ---: | ---: | ---: |
 | baseline | `Baseline` | reference | reference | 8 | 1 | 0 |
-| current | `Current` | selected_by_dev | kept_current | 53 | 0 | 0 |
+| current | `Current` | selected_by_dev | kept_current | 54 | 0 | 0 |
 | candidate | `Minimal` | not_selected | blocked | 41 | 2 | 0 |
 | candidate | `Guardrail` | not_selected | blocked | 56 | 2 | 0 |
 | candidate | `Balanced` | not_selected | blocked | 60 | 2 | 0 |
@@ -37,8 +37,8 @@
 ## Human Review Stub
 
 - target: yao-meta-skill
-- current description: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.
-- candidate description: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.
+- current description: Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.
+- candidate description: Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.
 - review focus: no_candidate_outperformed_current
 
 ## Artifact Paths

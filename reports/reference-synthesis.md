@@ -1,7 +1,7 @@
 # Reference Synthesis
 
 Skill: `yao-meta-skill`
-- Description: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.
+- Description: Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.
 - Intent confidence: `100/100` (`high`)
 
 ## Live GitHub Benchmarks
@@ -33,24 +33,24 @@ Skill: `yao-meta-skill`
 - Borrow: Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
 - Avoid: Do not let packaging or platform concerns swallow the core job boundary.
 
-### Human-in-the-loop verification
+### Hypothesis-test-learn loop
 - Type: `research`
 - Evidence mode: `curated-pattern-track`
-- Why relevant: This track matches: review, govern.
-- Borrow: Borrow a review checkpoint wherever trust matters more than raw speed.
-- Avoid: Do not force every skill through heavyweight review when the risk is low.
+- Why relevant: This track matches: test, iteration.
+- Borrow: Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
+- Avoid: Do not create experimental overhead that exceeds the skill's real risk tier.
 
 ### Boundary-first design
 - Type: `principles`
 - Evidence mode: `curated-pattern-track`
-- Why relevant: This track matches: route.
+- Why relevant: This track matches: route, trigger, exclude.
 - Borrow: Borrow the discipline of defining what the skill should not own before growing the package.
 - Avoid: Do not expand execution assets until route boundaries stay clean.
 
 ## Borrow Now
 
 - Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
-- Borrow a review checkpoint wherever trust matters more than raw speed.
+- Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
 - Borrow the discipline of defining what the skill should not own before growing the package.
 - Borrow the way it turns a messy workflow into a repeatable operating path.
 - Borrow the clear execution entrypoints and command structure.
@@ -58,7 +58,7 @@ Skill: `yao-meta-skill`
 ## Avoid Now
 
 - Do not let packaging or platform concerns swallow the core job boundary.
-- Do not force every skill through heavyweight review when the risk is low.
+- Do not create experimental overhead that exceeds the skill's real risk tier.
 - Do not expand execution assets until route boundaries stay clean.
 - Do not import process overhead that only exists for that project's scale.
 - Do not copy repo-specific commands or environment assumptions verbatim.
@@ -69,7 +69,7 @@ Skill: `yao-meta-skill`
 - Acceptance threshold: `4/4`
 - Accepted patterns:
   - **Official skill anatomy and context discipline**: 4/4 (recurrence, generativity, distinctiveness, boundary)
-  - **Human-in-the-loop verification**: 4/4 (recurrence, generativity, distinctiveness, boundary)
+  - **Hypothesis-test-learn loop**: 4/4 (recurrence, generativity, distinctiveness, boundary)
   - **Boundary-first design**: 4/4 (recurrence, generativity, distinctiveness, boundary)
   - **obra/superpowers**: 4/4 (recurrence, generativity, distinctiveness, boundary)
   - **affaan-m/ECC**: 4/4 (recurrence, generativity, distinctiveness, boundary)

@@ -3,7 +3,7 @@
     "name": "yao-meta-skill",
     "title": "Yao Meta Skill",
     "display_name": "Yao Meta Skill",
-    "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+    "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
     "maturity": "governed",
     "updated_at": "2026-03-31",
     "core_value": "把一次性经验沉淀为可复用、可评估、可迁移的 Skill 包体。",
@@ -80,7 +80,7 @@
       "label": "可维护性",
       "score": 100,
       "reasons": [
-        "SKILL.md 约 339 个词/字。",
+        "SKILL.md 约 342 个词/字。",
         "入口文件保持克制，可维护性较好。",
         "references/ 已承载扩展指导。",
         "scripts/ 已承载确定性逻辑。",
@@ -101,7 +101,7 @@
       "label": "上下文成本",
       "score": 42,
       "reasons": [
-        "入口约 339 个词/字，references 约 16934 个词/字。",
+        "入口约 342 个词/字，references 约 16934 个词/字。",
         "分数越高代表上下文成本越低。",
         "上下文成本偏高，建议压缩入口或拆分 references。"
       ]
@@ -155,7 +155,7 @@
   },
   "contract_boundary": {
     "trigger": {
-      "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+      "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
       "activation": "manual",
       "execution": "inline",
       "shell": "bash"
@@ -183,7 +183,7 @@
     "boundary_cards": [
       {
         "label": "Owned",
-        "body": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution."
+        "body": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs."
       },
       {
         "label": "Adjacent",
@@ -205,7 +205,7 @@
       "已生成 Output Review Adjudication，可记录盲评决策、一致率和待评审项。"
     ],
     "gaps": [
-      "上下文成本需要补强：入口约 339 个词/字，references 约 16934 个词/字。"
+      "上下文成本需要补强：入口约 342 个词/字，references 约 16934 个词/字。"
     ],
     "recommendations": [
       "先改触发边界，再扩展工作流。",
@@ -270,7 +270,7 @@
         "name": "包体膨胀风险",
         "impact": 2,
         "probability": 1,
-        "signal": "SKILL.md 约 339 个词/字。",
+        "signal": "SKILL.md 约 342 个词/字。",
         "response": "先补证据和边界，再增加包体复杂度。"
       },
       {
@@ -521,10 +521,10 @@
         "path": "reports",
         "label": "Generated evidence and overview artifacts",
         "kind": "folder",
-        "file_count": 152
+        "file_count": 170
       }
     ],
-    "file_count": 375,
+    "file_count": 393,
     "folder_count": 4,
     "distribution": [
       {
@@ -557,7 +557,7 @@
       },
       {
         "label": "reports",
-        "value": 152
+        "value": 170
       }
     ]
   },
@@ -632,7 +632,7 @@
   "name": "yao-meta-skill",
   "title": "Yao Meta Skill",
   "display_name": "Yao Meta Skill",
-  "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+  "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
   "logic_steps": [
     "For one-off/no reusable process: `Do not create a skill`; `near-neighbor`; require `repeated use` + `reusable output contract`.",
     "Capture job, output, exclusions, constraints, standards, and the lightest fit.",
@@ -642,7 +642,7 @@
   ],
   "usage_steps": [
     "Use $yao-meta-skill to turn my workflow or notes into a reusable skill with lean structure, clear triggering, and the right evals.",
-    "Use this skill when the request matches: Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution."
+    "Use this skill when the request matches: Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs."
   ],
   "package_map": [
     {
@@ -691,7 +691,7 @@
       "path": "reports",
       "label": "Generated evidence and overview artifacts",
       "kind": "folder",
-      "file_count": 152
+      "file_count": 170
     }
   ],
   "strengths": [
@@ -709,7 +709,7 @@
     "用户说出类似需求时：Use $yao-meta-skill to turn my workflow or notes into a reusable skill with lean structure, clear triggering, and the right evals."
   ],
   "trigger_contract": {
-    "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+    "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
     "activation": "manual",
     "execution": "inline",
     "shell": "bash"
@@ -1011,12 +1011,12 @@
     "ok": true,
     "summary": {
       "reproducibility_ready": true,
-      "release_lock_ready": true,
+      "release_lock_ready": false,
       "methodology_complete": true,
       "required_artifact_count": 25,
       "missing_artifact_count": 0,
-      "evidence_bundle_sha256": "e819a616c7276f6433bbcf38f30696cc0f19b6c035adf5c8cf09e64cbe8db9ad",
-      "source_contract_sha256": "eddeea80a657e9c97cee2e1242d97577b886b33e2ffa6e319629ef5fcb029383",
+      "evidence_bundle_sha256": "639707e807e5ec8460f6aa6d1e5ba34874bb3228160555d8a01dbc37620d4873",
+      "source_contract_sha256": "e0863533e0a0f0b5069bace6a24d7adfb43d615453f08cff7578076a3cb1a2a3",
       "archive_sha256": "c56a8519244c0bc8ec17c92d4641c832629cc059f4b51fe177a2c039515253a7",
       "output_case_count": 5,
       "failure_disclosure_count": 3,
@@ -1034,19 +1034,19 @@
       "world_class_source_check_count": 19,
       "world_class_source_pass_count": 12,
       "world_class_source_blocked_count": 7,
-      "beta_test_ready": true,
-      "beta_test_blocker_count": 0,
+      "beta_test_ready": false,
+      "beta_test_blocker_count": 1,
       "beta_test_deferred_evidence_count": 4,
       "public_claim_ready": false,
-      "public_claim_blocker_count": 3,
+      "public_claim_blocker_count": 4,
       "working_tree_dirty": true,
-      "changed_file_count": 3,
-      "source_tree_dirty": false,
-      "source_changed_file_count": 0,
+      "changed_file_count": 84,
+      "source_tree_dirty": true,
+      "source_changed_file_count": 2,
       "generated_tree_dirty": true,
-      "generated_changed_file_count": 3
+      "generated_changed_file_count": 82
     },
-    "commit": "139d0fd15ce995757d6d75fb45fb417d0b1b4e7d",
+    "commit": "1710a5a3e0177313954758908735c147796e8981",
     "missing_artifacts": [],
     "limitations": [
       "The git commit and dirty flags are generation-time context; release lock is blocked by source changes, while generated evidence artifacts are tracked separately.",
@@ -1152,7 +1152,7 @@
     "interactive_script_count": 0,
     "package_hash_scope": "source-contract-without-generated-reports",
     "package_hash_file_count": 247,
-    "package_sha256": "eddeea80a657e9c97cee2e1242d97577b886b33e2ffa6e319629ef5fcb029383"
+    "package_sha256": "e0863533e0a0f0b5069bace6a24d7adfb43d615453f08cff7578076a3cb1a2a3"
   },
   "skill_atlas": {
     "skill_count": 11,
@@ -1176,7 +1176,7 @@
       "schema_version": "2.0",
       "name": "yao-meta-skill",
       "version": "1.1.0",
-      "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+      "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
       "targets": [
         "openai",
         "claude",
@@ -1190,7 +1190,7 @@
       "trust_level": "local",
       "license": "MIT",
       "checksums": {
-        "package_sha256": "eddeea80a657e9c97cee2e1242d97577b886b33e2ffa6e319629ef5fcb029383",
+        "package_sha256": "e0863533e0a0f0b5069bace6a24d7adfb43d615453f08cff7578076a3cb1a2a3",
         "archive_sha256": "c56a8519244c0bc8ec17c92d4641c832629cc059f4b51fe177a2c039515253a7"
       },
       "compatibility": {
@@ -1227,7 +1227,7 @@
         "install_simulated": true,
         "install_simulation": "reports/install_simulation.json"
       },
-      "generated_at": "2026-06-21"
+      "generated_at": "2026-06-13"
     },
     "failures": [],
     "warnings": []
@@ -1251,7 +1251,7 @@
     "ok": true,
     "summary": {
       "archive_present": true,
-      "archive_entry_count": 580,
+      "archive_entry_count": 598,
       "nested_skill_entry_count": 0,
       "archive_extracted": true,
       "entrypoint_loaded": true,
@@ -1312,7 +1312,7 @@
         {
           "field": "description",
           "from": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes.",
-          "to": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution."
+          "to": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs."
         }
       ],
       "checksum_changes": [
@@ -1324,7 +1324,7 @@
         {
           "field": "package_sha256",
           "from": "0000000000000000000000000000000000000000000000000000000000000000",
-          "to": "eddeea80a657e9c97cee2e1242d97577b886b33e2ffa6e319629ef5fcb029383"
+          "to": "e0863533e0a0f0b5069bace6a24d7adfb43d615453f08cff7578076a3cb1a2a3"
         }
       ]
     },
@@ -2218,7 +2218,7 @@
   },
   "synthesis_highlights": [
     "Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.",
-    "Borrow a review checkpoint wherever trust matters more than raw speed.",
+    "Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.",
     "Borrow the discipline of defining what the skill should not own before growing the package."
   ],
   "artifact_design": {

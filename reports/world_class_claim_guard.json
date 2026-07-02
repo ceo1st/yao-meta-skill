@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0",
   "ok": true,
-  "generated_at": "2026-06-21",
+  "generated_at": "2026-07-02",
   "skill_dir": ".",
   "summary": {
     "ledger_ready_to_claim_world_class": false,
     "ledger_pending_count": 4,
-    "claim_surface_count": 184,
-    "json_claim_surface_count": 91,
-    "metadata_claim_surface_count": 92,
-    "package_claim_surface_count": 17,
+    "claim_surface_count": 194,
+    "json_claim_surface_count": 92,
+    "metadata_claim_surface_count": 93,
+    "package_claim_surface_count": 10,
     "violation_count": 0,
     "overclaim_guard_active": true,
     "decision": "claim-guard-pass-evidence-pending"
@@ -52,34 +52,6 @@
     },
     {
       "path": "agents/interface.yaml",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/manifest.json",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/claude/README.md",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/claude/adapter.json",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/generic/adapter.json",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/openai/adapter.json",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/vscode/README.md",
-      "violation_count": 0
-    },
-    {
-      "path": "dist/targets/vscode/adapter.json",
       "violation_count": 0
     },
     {
@@ -212,6 +184,58 @@
     },
     {
       "path": "reports/benchmark_reproducibility.md",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/DO_NOT_OPEN_answer_key.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/DO_NOT_OPEN_answer_key.json",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/README.md",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/adjudication.md",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/blind-pack.json",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/case-01-support-triage.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/case-02-monthly-revenue-reconciliation.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/case-03-webinar-repurposing.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/case-04-incident-postmortem.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/case-05-pr-review-followup.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/index.html",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/review-decisions-template.json",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/blind-human-review-2026-06-29/review-decisions.recorded.json",
       "violation_count": 0
     },
     {
@@ -639,11 +663,27 @@
       "violation_count": 0
     },
     {
+      "path": "reports/skillops/daily/2026-07-02.json",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/skillops/daily/2026-07-02.md",
+      "violation_count": 0
+    },
+    {
       "path": "reports/skillops/weekly/2026-W25.json",
       "violation_count": 0
     },
     {
       "path": "reports/skillops/weekly/2026-W25.md",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/skillops/weekly/2026-W27.json",
+      "violation_count": 0
+    },
+    {
+      "path": "reports/skillops/weekly/2026-W27.md",
       "violation_count": 0
     },
     {

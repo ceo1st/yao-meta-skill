@@ -1,6 +1,6 @@
 {
   "skill_name": "yao-meta-skill",
-  "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+  "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
   "systems_doctrine": "Structure drives behavior: improve the boundary, feedback loops, drift watch, and leverage points before adding weight.",
   "stability": {
     "score": 100,
@@ -56,7 +56,7 @@
       "evidence": "reports/reference-synthesis.md",
       "current_patterns": [
         "Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.",
-        "Borrow a review checkpoint wherever trust matters more than raw speed.",
+        "Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.",
         "Borrow the discipline of defining what the skill should not own before growing the package.",
         "Borrow the way it turns a messy workflow into a repeatable operating path.",
         "Borrow the clear execution entrypoints and command structure."
