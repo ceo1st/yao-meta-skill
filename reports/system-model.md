@@ -53,7 +53,7 @@ Skill: `yao-meta-skill`
 - Evidence: reports/reference-synthesis.md
 - Current patterns:
   - Borrow progressive disclosure: keep the entrypoint lean and move depth into references or scripts.
-  - Borrow a review checkpoint wherever trust matters more than raw speed.
+  - Borrow a small hypothesis-test-learn loop so the first revision is evidence-backed.
   - Borrow the discipline of defining what the skill should not own before growing the package.
   - Borrow the way it turns a messy workflow into a repeatable operating path.
   - Borrow the clear execution entrypoints and command structure.

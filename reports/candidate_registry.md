@@ -3,7 +3,7 @@
 | Target | Role | Label | Ranking State | Promotion State | Tokens | Dev Errors | Holdout Errors | Reason Tags |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
 | `yao-meta-skill` | baseline | `Baseline` | reference | reference | 8 | 1 | 0 | - |
-| `yao-meta-skill` | current | `Current` | selected_by_dev | kept_current | 53 | 0 | 0 | - |
+| `yao-meta-skill` | current | `Current` | selected_by_dev | kept_current | 54 | 0 | 0 | - |
 | `yao-meta-skill` | candidate | `Minimal` | not_selected | blocked | 41 | 2 | 0 | weaker_dev_fit |
 | `yao-meta-skill` | candidate | `Guardrail` | not_selected | blocked | 56 | 2 | 0 | weaker_dev_fit, longer_without_gain |
 | `yao-meta-skill` | candidate | `Balanced` | not_selected | blocked | 60 | 2 | 0 | weaker_dev_fit, longer_without_gain |

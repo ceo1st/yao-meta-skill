@@ -20,7 +20,7 @@
         "adversarial_errors": 0
       },
       "current": {
-        "tokens": 53,
+        "tokens": 54,
         "dev_errors": 0,
         "holdout_errors": 0,
         "blind_errors": 0,
@@ -28,7 +28,7 @@
         "adversarial_errors": 0
       },
       "winner": {
-        "tokens": 53,
+        "tokens": 54,
         "dev_errors": 0,
         "holdout_errors": 0,
         "blind_errors": 0,

@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-21",
+  "generated_at": "2026-03-31",
   "targets": [
     {
       "label": "root",
       "path": ".",
       "budget_tier": "production",
       "budget_limit": 1000,
-      "initial_tokens": 998,
-      "skill_body_tokens": 805,
-      "deferred_resource_tokens": 530871,
+      "initial_tokens": 999,
+      "skill_body_tokens": 806,
+      "deferred_resource_tokens": 531767,
       "large_deferred_resource_dirs": [
         {
           "path": "scripts",
@@ -42,7 +42,7 @@
         ],
         "summary": "Large deferred resources are indexed and backed by evidence."
       },
-      "quality_density": 140.3,
+      "quality_density": 140.1,
       "unused_resource_dirs": [],
       "ok": true,
       "warnings": []

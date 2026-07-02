@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "ok": true,
-  "generated_at": "2026-06-21",
+  "generated_at": "2026-06-13",
   "skill_dir": ".",
   "summary": {
     "target_count": 5,
@@ -38,10 +38,10 @@
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -623,7 +623,7 @@
           "native_surface": "OpenAI-style interface metadata plus neutral Agent Skills source",
           "activation": {
             "policy": "Use frontmatter description for catalog routing and targets/openai/agents/openai.yaml for display name, default prompt, and compatibility metadata.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
@@ -881,7 +881,7 @@
         "native_surface": "OpenAI-style interface metadata plus neutral Agent Skills source",
         "activation": {
           "policy": "Use frontmatter description for catalog routing and targets/openai/agents/openai.yaml for display name, default prompt, and compatibility metadata.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
@@ -995,10 +995,10 @@
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -1580,7 +1580,7 @@
           "native_surface": "Claude-compatible neutral source folder with adapter notes",
           "activation": {
             "policy": "Use SKILL.md frontmatter description as the primary activation contract and adapter.json for review metadata.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
@@ -1838,7 +1838,7 @@
         "native_surface": "Claude-compatible neutral source folder with adapter notes",
         "activation": {
           "policy": "Use SKILL.md frontmatter description as the primary activation contract and adapter.json for review metadata.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
@@ -1952,10 +1952,10 @@
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -2537,7 +2537,7 @@
           "native_surface": "Agent Skills compatible neutral package",
           "activation": {
             "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
@@ -2788,7 +2788,7 @@
         "native_surface": "Agent Skills compatible neutral package",
         "activation": {
           "policy": "Use SKILL.md name and description; consumers decide automatic or manual activation.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
@@ -2893,10 +2893,10 @@
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -3478,7 +3478,7 @@
           "native_surface": "Agent Skills standard source tree",
           "activation": {
             "policy": "Use SKILL.md frontmatter name and description for progressive disclosure.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
@@ -3729,7 +3729,7 @@
         "native_surface": "Agent Skills standard source tree",
         "activation": {
           "policy": "Use SKILL.md frontmatter name and description for progressive disclosure.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
@@ -3834,10 +3834,10 @@
         "name": "yao-meta-skill",
         "title": "Yao Meta Skill",
         "version": "1.1.0",
-        "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+        "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
         "job_to_be_done": "Turn repeated workflows, prompts, transcripts, runbooks, documents, or existing skill packages into routeable, evaluable, packageable, and governable agent skills for personal, team, library, or governed reuse.",
         "trigger": {
-          "description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "should_trigger": [
             "Create a skill from this repeated workflow.",
             "Turn this runbook into a reusable agent skill.",
@@ -4419,7 +4419,7 @@
           "native_surface": "VS Code/Copilot Agent Skills project or user scope",
           "activation": {
             "policy": "Use folder name plus SKILL.md name/description; keep description under platform limits.",
-            "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+            "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
             "manual_activation_supported": true,
             "automatic_activation_note": "Depends on the target client route/catalog implementation."
           },
@@ -4674,7 +4674,7 @@
         "native_surface": "VS Code/Copilot Agent Skills project or user scope",
         "activation": {
           "policy": "Use folder name plus SKILL.md name/description; keep description under platform limits.",
-          "trigger_description": "Create, refactor, evaluate, and package agent skills from workflows, prompts, transcripts, docs, or notes. Use for skill creation, reusable workflow packaging, skill improvement, evals, and team-ready distribution.",
+          "trigger_description": "Create/improve/evaluate agent skills from workflows, prompts, SOPs, scripts. Use for migration/release/package, routing, evals/tests, install checks, 优化已有 skill, 补 trigger 评测. Exclude no-skill summary/translation/docs.",
           "manual_activation_supported": true,
           "automatic_activation_note": "Depends on the target client route/catalog implementation."
         },
